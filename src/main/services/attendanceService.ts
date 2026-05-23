@@ -468,6 +468,15 @@ export const attendanceService = {
         input.sessionDate,
       );
 
+      // Materi notes: persist when caller passes them (undefined = leave as-is).
+      if (input.notes !== undefined && input.notes !== session.notes) {
+        tx.update(sessions)
+          .set({ notes: input.notes })
+          .where(eq(sessions.id, session.id))
+          .run();
+        session.notes = input.notes;
+      }
+
       const now = deps.clock?.() ?? new Date();
 
       let upsertedCount = 0;

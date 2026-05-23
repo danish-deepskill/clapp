@@ -41,10 +41,12 @@ export function AttendanceDrawer({
   const [sessionTypeId, setSessionTypeId] = useState<number | null>(null);
   const [currentDate, setCurrentDate] = useState<string>(sessionDate);
   const [search, setSearch] = useState('');
+  const [notes, setNotes] = useState('');
   const [roster, setRoster] = useState<RosterRow[] | null>(null);
   const initialRosterRef = useRef<RosterRow[] | null>(null);
   const [savedSessionId, setSavedSessionId] = useState<number | null>(null);
   const savedTypeIdRef = useRef<number | null>(null);
+  const savedNotesRef = useRef<string>('');
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [confirmClose, setConfirmClose] = useState(false);
@@ -81,6 +83,9 @@ export function AttendanceDrawer({
       const session = result.data.session;
       setSavedSessionId(session?.id ?? null);
       savedTypeIdRef.current = session?.sessionTypeId ?? null;
+      const loadedNotes = session?.notes ?? '';
+      savedNotesRef.current = loadedNotes;
+      setNotes(loadedNotes);
       if (session) {
         setSessionTypeId(session.sessionTypeId);
       } else {
@@ -163,7 +168,8 @@ export function AttendanceDrawer({
 
   const typeChanged =
     savedTypeIdRef.current !== null && sessionTypeId !== savedTypeIdRef.current;
-  const dirty = rosterDirty || typeChanged;
+  const notesDirty = notes.trim() !== savedNotesRef.current.trim();
+  const dirty = rosterDirty || typeChanged || notesDirty;
 
   const visibleRows = useMemo(() => {
     if (!roster) return [];
@@ -178,8 +184,8 @@ export function AttendanceDrawer({
     if (sessionTypeId === null || !dirty || saving || !roster) return;
     setSaving(true);
 
-    // Fast path: only type changed on a saved session → relabel.
-    if (savedSessionId !== null && !rosterDirty && typeChanged) {
+    // Fast path: only type changed on a saved session (no roster/notes change) → relabel.
+    if (savedSessionId !== null && !rosterDirty && !notesDirty && typeChanged) {
       const result = await window.clapp.attendance.relabelSessionType({
         sessionId: savedSessionId,
         newSessionTypeId: sessionTypeId,
@@ -196,10 +202,12 @@ export function AttendanceDrawer({
       return;
     }
 
-    // Full save: send the whole roster (service handles null = DELETE).
+    // Full save: send the whole roster + notes (service handles null = DELETE).
+    const trimmedNotes = notes.trim();
     const result = await window.clapp.attendance.saveBatch({
       sessionTypeId,
       sessionDate: currentDate,
+      notes: trimmedNotes === '' ? null : trimmedNotes,
       rows: roster.map((r) => ({
         memberId: r.memberId,
         status: r.status,
@@ -215,6 +223,7 @@ export function AttendanceDrawer({
     initialRosterRef.current = roster;
     setSavedSessionId(result.data.session.id);
     savedTypeIdRef.current = result.data.session.sessionTypeId;
+    savedNotesRef.current = result.data.session.notes ?? '';
     const triggered = result.data.activityRecordsTouched;
     showToast({
       variant: 'success',
@@ -231,6 +240,8 @@ export function AttendanceDrawer({
     roster,
     sessionTypeId,
     currentDate,
+    notes,
+    notesDirty,
     dirty,
     rosterDirty,
     typeChanged,
@@ -249,6 +260,7 @@ export function AttendanceDrawer({
     if (savedTypeIdRef.current !== null) {
       setSessionTypeId(savedTypeIdRef.current);
     }
+    setNotes(savedNotesRef.current);
   }, []);
 
   /** Bulk-fill remaining (null status) members as Alpa. */
@@ -316,6 +328,8 @@ export function AttendanceDrawer({
           maxDate={maxDate}
           search={search}
           onSearchChange={setSearch}
+          notes={notes}
+          onNotesChange={setNotes}
         />
 
         {loadError && (

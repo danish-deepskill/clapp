@@ -4,6 +4,8 @@ export interface SessionRow {
   id: number;
   sessionDate: string;
   sessionTypeId: number;
+  /** Materi sesi: bab/ayat/hadist yang dibahas. Nullable. */
+  notes: string | null;
 }
 
 /**
@@ -50,6 +52,8 @@ export interface SaveBatchRow {
 export interface SaveBatchInput {
   sessionTypeId: number;
   sessionDate: string;
+  /** Materi sesi (optional). Null/undefined leaves existing notes untouched on UPSERT. */
+  notes?: string | null;
   rows: SaveBatchRow[];
 }
 

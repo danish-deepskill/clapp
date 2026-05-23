@@ -115,7 +115,7 @@ export function FilterBar({
                 className="flex items-center gap-1.5"
                 title={tok.label}
               >
-                <span className={clsx('h-2 w-2 rounded-full', tok.dot)} />
+                <span className={clsx('h-2 w-2 rounded-sm', tok.dot)} />
                 <span
                   className={clsx(
                     'font-mono text-[11px] font-semibold',

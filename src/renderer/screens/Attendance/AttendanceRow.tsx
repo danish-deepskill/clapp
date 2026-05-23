@@ -76,9 +76,15 @@ export function AttendanceRow({ index, row, onChange }: AttendanceRowProps) {
         const cur = row.status ? STATUSES.indexOf(row.status) : -1;
         const next = Math.max(0, Math.min(cur + horiz, STATUSES.length - 1));
         if (next !== cur) onStatusChange(STATUSES[next]!);
+        return;
+      }
+      // Backspace = clear status back to null (unmark).
+      if (e.key === 'Backspace' && row.status !== null) {
+        e.preventDefault();
+        onChange({ status: null, arrivalAt: null, donationAmount: null });
       }
     },
-    [row.status, onStatusChange],
+    [row.status, onStatusChange, onChange],
   );
 
   return (

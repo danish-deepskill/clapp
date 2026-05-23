@@ -11,7 +11,6 @@ import clappIcon from '@renderer/assets/clapp-icon.jpg';
 
 export type Screen =
   | 'Beranda'
-  | 'Absensi'
   | "Jama'ah"
   | 'Rekap Absensi'
   | 'Laporan Bulanan'
@@ -32,9 +31,8 @@ interface TabDef {
 }
 
 const TABS: TabDef[] = [
-  { name: 'Absensi' },
-  { name: "Jama'ah" },
   { name: 'Rekap Absensi' },
+  { name: "Jama'ah" },
   { name: 'Laporan Bulanan' },
   { name: 'Catatan Peristiwa' },
   { name: 'Musyawarah' },

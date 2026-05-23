@@ -15,6 +15,7 @@ import {
 import {
   FutureDateError,
   InvalidAttendanceInputError,
+  InvalidPeriodError,
   OneSessionPerDateError,
   SessionTypeNotFoundError,
   attendanceService,
@@ -583,6 +584,178 @@ describe('attendanceService.relabelSessionType', () => {
     const recs = db.select().from(activityRecords).all();
     expect(recs).toHaveLength(1);
     expect(recs[0]?.status).toBe('Terlaksana');
+  });
+});
+
+// ─── loadRecap (read-only matrix for a month/year) ─────────────────────────
+
+describe('attendanceService.loadRecap', () => {
+  let db: DB;
+  let hasdaId: number;
+  let quranId: number;
+  let memberIds: { faisal: number; siti: number; andi: number };
+  beforeEach(() => {
+    db = freshDb();
+    hasdaId = seedSessionType(db, 'Hasda');
+    quranId = seedSessionType(db, "Qur'an");
+    const { faisal, siti, andi } = seedThreeMembers(db);
+    memberIds = { faisal: faisal.id, siti: siti.id, andi: andi.id };
+  });
+
+  // Use a far-future clock so back-dated saves anywhere in 2026/2027 don't
+  // trip the future-date guard.
+  const farFuture = () => new Date('2099-12-31T00:00:00.000Z');
+
+  function saveAt(typeId: number, date: string, rows: { memberId: number; status: 'H' | 'A' | 'S' | 'I' }[]) {
+    return attendanceService.saveBatch(
+      { db, clock: farFuture },
+      {
+        sessionTypeId: typeId,
+        sessionDate: date,
+        rows: rows.map((r) => ({ ...r, arrivalAt: null, donationAmount: null })),
+      },
+    );
+  }
+
+  it('returns empty sessions + same eligible members for a quiet month', () => {
+    const r = attendanceService.loadRecap({ db, clock: fixedClock() }, {
+      month: 5,
+      year: 2026,
+    });
+    expect(r.sessions).toEqual([]);
+    expect(r.attendance).toEqual([]);
+    expect(r.members.map((m) => m.fullName)).toEqual([
+      'Ahmad Faisal Rahman',
+      'Andi Pratama',
+      'Siti Aminah Putri',
+    ]);
+  });
+
+  it('returns sessions in the month ordered by date asc', () => {
+    saveAt(hasdaId, '2026-05-20', [
+      { memberId: memberIds.faisal, status: 'H' },
+    ]);
+    saveAt(quranId, '2026-05-10', [
+      { memberId: memberIds.faisal, status: 'H' },
+    ]);
+    saveAt(hasdaId, '2026-05-15', [
+      { memberId: memberIds.faisal, status: 'A' },
+    ]);
+    const r = attendanceService.loadRecap({ db, clock: fixedClock() }, {
+      month: 5,
+      year: 2026,
+    });
+    expect(r.sessions.map((s) => s.sessionDate)).toEqual([
+      '2026-05-10',
+      '2026-05-15',
+      '2026-05-20',
+    ]);
+    expect(r.sessions[0]?.sessionTypeName).toBe("Qur'an");
+    expect(r.sessions[1]?.sessionTypeName).toBe('Hasda');
+  });
+
+  it('excludes sessions from adjacent months (string-compare bounds)', () => {
+    saveAt(hasdaId, '2026-04-30', [
+      { memberId: memberIds.faisal, status: 'H' },
+    ]);
+    saveAt(hasdaId, '2026-05-01', [
+      { memberId: memberIds.faisal, status: 'H' },
+    ]);
+    saveAt(hasdaId, '2026-05-31', [
+      { memberId: memberIds.faisal, status: 'H' },
+    ]);
+    saveAt(hasdaId, '2026-06-01', [
+      { memberId: memberIds.faisal, status: 'H' },
+    ]);
+    const r = attendanceService.loadRecap({ db, clock: fixedClock() }, {
+      month: 5,
+      year: 2026,
+    });
+    expect(r.sessions.map((s) => s.sessionDate)).toEqual([
+      '2026-05-01',
+      '2026-05-31',
+    ]);
+  });
+
+  it('December → January boundary works (year wraps)', () => {
+    saveAt(hasdaId, '2026-12-31', [
+      { memberId: memberIds.faisal, status: 'H' },
+    ]);
+    saveAt(hasdaId, '2027-01-01', [
+      { memberId: memberIds.faisal, status: 'H' },
+    ]);
+    const dec = attendanceService.loadRecap({ db, clock: fixedClock() }, {
+      month: 12,
+      year: 2026,
+    });
+    expect(dec.sessions.map((s) => s.sessionDate)).toEqual(['2026-12-31']);
+  });
+
+  it('attendance rows are scoped to in-period sessions only', () => {
+    saveAt(hasdaId, '2026-05-10', [
+      { memberId: memberIds.faisal, status: 'H' },
+      { memberId: memberIds.siti, status: 'S' },
+    ]);
+    saveAt(hasdaId, '2026-06-10', [
+      { memberId: memberIds.faisal, status: 'H' },
+    ]);
+    const r = attendanceService.loadRecap({ db, clock: fixedClock() }, {
+      month: 5,
+      year: 2026,
+    });
+    expect(r.attendance).toHaveLength(2);
+    expect(r.attendance.every((a) => a.sessionId === r.sessions[0]?.id)).toBe(true);
+  });
+
+  it('excludes ineligible life stages from the member list', () => {
+    memberService.addMember({ db }, {
+      ...FAISAL,
+      fullName: 'Bayi Aisyah',
+      lifeStage: 'Balita',
+      maritalStatus: 'Belum Menikah',
+    });
+    const r = attendanceService.loadRecap({ db, clock: fixedClock() }, {
+      month: 5,
+      year: 2026,
+    });
+    expect(r.members.map((m) => m.fullName)).not.toContain('Bayi Aisyah');
+  });
+
+  it('attendance rows for ineligible members are NOT returned (defensive)', () => {
+    // Bypass eligibility check on saveBatch by inserting attendance directly
+    // — simulates stale data from before the eligibility rule was added.
+    const child = memberService.addMember({ db }, {
+      ...FAISAL,
+      fullName: 'Bayi Aisyah',
+      lifeStage: 'Balita',
+      maritalStatus: 'Belum Menikah',
+    });
+    saveAt(hasdaId, '2026-05-10', [{ memberId: memberIds.faisal, status: 'H' }]);
+    const session = db.select().from(sessions).get()!;
+    db.insert(attendance).values({
+      memberId: child.id,
+      sessionId: session.id,
+      status: 'H',
+    }).run();
+
+    const r = attendanceService.loadRecap({ db, clock: fixedClock() }, {
+      month: 5,
+      year: 2026,
+    });
+    expect(r.attendance.map((a) => a.memberId)).not.toContain(child.id);
+    expect(r.attendance).toHaveLength(1);
+  });
+
+  it('rejects out-of-range month or year', () => {
+    expect(() =>
+      attendanceService.loadRecap({ db, clock: fixedClock() }, { month: 0, year: 2026 }),
+    ).toThrow(InvalidPeriodError);
+    expect(() =>
+      attendanceService.loadRecap({ db, clock: fixedClock() }, { month: 13, year: 2026 }),
+    ).toThrow(InvalidPeriodError);
+    expect(() =>
+      attendanceService.loadRecap({ db, clock: fixedClock() }, { month: 5, year: 1999 }),
+    ).toThrow(InvalidPeriodError);
   });
 });
 

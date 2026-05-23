@@ -1,46 +1,22 @@
-import { useMemo } from 'react';
 import { clsx } from 'clsx';
 
 import type { RosterRow } from '@shared/attendance';
 
 import { AttendanceRow, type AttendanceRowData } from './AttendanceRow';
 import { COLUMNS, gridTemplate } from './columns';
-import type { GenderFilter } from './FilterBar';
 
 export interface RosterTableProps {
+  /** Pre-filtered rows (search / etc. handled by parent). */
   rows: RosterRow[];
-  search: string;
-  genderFilter: GenderFilter;
   onRowChange: (memberId: number, patch: Partial<AttendanceRowData>) => void;
 }
 
-export function RosterTable({
-  rows,
-  search,
-  genderFilter,
-  onRowChange,
-}: RosterTableProps) {
-  const filtered = useMemo(() => {
-    let out = rows;
-    if (genderFilter !== 'all') {
-      out = out.filter((r) => r.gender === genderFilter);
-    }
-    if (search.trim()) {
-      const q = search.trim().toLowerCase();
-      out = out.filter((r) => r.fullName.toLowerCase().includes(q));
-    }
-    return out;
-  }, [rows, search, genderFilter]);
-
+export function RosterTable({ rows, onRowChange }: RosterTableProps) {
   if (rows.length === 0) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center">
-        <p className="font-mono text-[11px] uppercase tracking-wider text-ink-500">
-          Tidak ada jama'ah aktif
-        </p>
-        <p className="mt-2 max-w-md text-[13px] text-ink-700">
-          Belum ada jama'ah aktif yang dapat dicatat kehadirannya. Tambah jama'ah
-          via menu <b>Jama'ah</b>.
+      <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 text-center">
+        <p className="text-[13px] text-ink-500">
+          Tidak ada jama'ah yang cocok dengan pencarian.
         </p>
       </div>
     );
@@ -70,29 +46,21 @@ export function RosterTable({
         ))}
       </div>
 
-      {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-          <p className="text-[13px] text-ink-500">
-            Tidak ada jama'ah yang cocok dengan pencarian.
-          </p>
-        </div>
-      ) : (
-        filtered.map((r, i) => (
-          <AttendanceRow
-            key={r.memberId}
-            index={i}
-            row={{
-              memberId: r.memberId,
-              fullName: r.fullName,
-              gender: r.gender,
-              status: r.status,
-              arrivalAt: r.arrivalAt,
-              donationAmount: r.donationAmount,
-            }}
-            onChange={(patch) => onRowChange(r.memberId, patch)}
-          />
-        ))
-      )}
+      {rows.map((r, i) => (
+        <AttendanceRow
+          key={r.memberId}
+          index={i}
+          row={{
+            memberId: r.memberId,
+            fullName: r.fullName,
+            gender: r.gender,
+            status: r.status,
+            arrivalAt: r.arrivalAt,
+            donationAmount: r.donationAmount,
+          }}
+          onChange={(patch) => onRowChange(r.memberId, patch)}
+        />
+      ))}
     </div>
   );
 }

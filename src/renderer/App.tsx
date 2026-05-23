@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react';
 import { NavBar, type Screen } from './components/NavBar';
 import { TitleBar } from './components/TitleBar';
 import { ToastProvider } from './components/Toast';
-import { Attendance } from './screens/Attendance';
+import { AttendanceRecap } from './screens/AttendanceRecap';
 import { Members } from './screens/Members';
 import { Settings } from './screens/Settings';
 
 export function App() {
-  const [active, setActive] = useState<Screen>('Absensi');
+  const [active, setActive] = useState<Screen>('Rekap Absensi');
 
   useEffect(() => {
     document.title = `CLApp — ${active}`;
@@ -20,8 +20,8 @@ export function App() {
         <TitleBar subtitle={active} />
         <NavBar active={active} onNavigate={setActive} perluTindakanCount={0} />
         <main className="flex-1 overflow-hidden">
-          {active === 'Absensi' ? (
-            <Attendance />
+          {active === 'Rekap Absensi' ? (
+            <AttendanceRecap />
           ) : active === "Jama'ah" ? (
             <Members />
           ) : active === 'Pengaturan' ? (

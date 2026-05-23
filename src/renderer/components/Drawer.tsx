@@ -9,9 +9,19 @@ export interface DrawerProps {
   /** Mono eyebrow above the title. */
   eyebrow?: string;
   title: ReactNode;
+  /** Sub-line under the title (e.g. session type · date). */
+  subtitle?: ReactNode;
   /** Right-aligned actions in the header (e.g. an Edit button). */
   headerActions?: ReactNode;
   children: ReactNode;
+  /** Sticky-bottom footer (action buttons). */
+  footer?: ReactNode;
+  /**
+   * Body layout: 'scroll' (default — content scrolls inside body),
+   * 'manual' (children manage own layout — the drawer body is just a flex-1
+   * container with min-h-0 so child sticky regions work).
+   */
+  bodyLayout?: 'scroll' | 'manual';
   /** Drawer width in pixels — defaults to 420. */
   width?: number;
 }
@@ -26,8 +36,11 @@ export function Drawer({
   onOpenChange,
   eyebrow,
   title,
+  subtitle,
   headerActions,
   children,
+  footer,
+  bodyLayout = 'scroll',
   width = 420,
 }: DrawerProps) {
   return (
@@ -45,7 +58,7 @@ export function Drawer({
             'data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right',
           )}
         >
-          <header className="flex items-start gap-3 border-b border-rule bg-surface px-5 py-3.5">
+          <header className="flex shrink-0 items-start gap-3 border-b border-rule bg-surface px-5 py-3.5">
             <div className="min-w-0 flex-1">
               {eyebrow && (
                 <p className="mb-0.5 font-mono text-[10.5px] font-medium uppercase tracking-[0.14em] text-ink-500">
@@ -55,6 +68,11 @@ export function Drawer({
               <Dialog.Title className="truncate text-[18px] font-semibold tracking-tight text-ink-900">
                 {title}
               </Dialog.Title>
+              {subtitle && (
+                <p className="mt-0.5 truncate text-[12.5px] text-ink-500">
+                  {subtitle}
+                </p>
+              )}
             </div>
             {headerActions}
             <Dialog.Close asChild>
@@ -67,7 +85,16 @@ export function Drawer({
               </button>
             </Dialog.Close>
           </header>
-          <div className="flex-1 overflow-y-auto">{children}</div>
+          {bodyLayout === 'scroll' ? (
+            <div className="flex-1 overflow-y-auto">{children}</div>
+          ) : (
+            <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+          )}
+          {footer && (
+            <div className="shrink-0 border-t border-rule bg-surface px-5 py-3">
+              {footer}
+            </div>
+          )}
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

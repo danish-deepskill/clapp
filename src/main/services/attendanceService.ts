@@ -1,8 +1,10 @@
 import { and, eq, inArray } from 'drizzle-orm';
 
 import type {
+  LoadRecapInput,
   LoadRosterInput,
   LoadRosterResult,
+  RecapData,
   RosterRow,
   SaveBatchInput,
   SaveBatchResult,
@@ -46,6 +48,13 @@ export class InvalidAttendanceInputError extends Error {
   constructor(message: string) {
     super(message);
     this.name = 'InvalidAttendanceInputError';
+  }
+}
+
+export class InvalidPeriodError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InvalidPeriodError';
   }
 }
 
@@ -245,7 +254,111 @@ function assertSessionType(db: DBLike, sessionTypeId: number): void {
   if (!row) throw new SessionTypeNotFoundError(sessionTypeId);
 }
 
+function periodBounds(month: number, year: number): { start: string; end: string } {
+  if (!Number.isInteger(month) || month < 1 || month > 12) {
+    throw new InvalidPeriodError(`month harus 1–12 (diterima ${month})`);
+  }
+  if (!Number.isInteger(year) || year < 2000 || year > 2100) {
+    throw new InvalidPeriodError(`year tidak valid (diterima ${year})`);
+  }
+  const startMonth = String(month).padStart(2, '0');
+  // First day of next month — used as exclusive upper bound for string compare.
+  const nextMonth = month === 12 ? 1 : month + 1;
+  const nextYear = month === 12 ? year + 1 : year;
+  const endMonth = String(nextMonth).padStart(2, '0');
+  return {
+    start: `${year}-${startMonth}-01`,
+    end: `${nextYear}-${endMonth}-01`,
+  };
+}
+
 export const attendanceService = {
+  /**
+   * Reads-only. Returns the attendance matrix for a month/year period:
+   * sessions in that period (date-ordered), eligible active members
+   * (alphabetical), and the flat list of saved attendance rows. Renderer
+   * pivots into the (member × session) grid + per-row counts + % Hadir.
+   */
+  loadRecap(deps: AttendanceDeps, input: LoadRecapInput): RecapData {
+    const { start, end } = periodBounds(input.month, input.year);
+
+    // Sessions in [start, end) — string-compare works because session_date
+    // is stored as zero-padded YYYY-MM-DD.
+    const sessionRows = deps.db
+      .select({
+        id: sessions.id,
+        sessionDate: sessions.sessionDate,
+        sessionTypeId: sessions.sessionTypeId,
+      })
+      .from(sessions)
+      .all()
+      .filter((s) => s.sessionDate >= start && s.sessionDate < end)
+      .sort((a, b) => a.sessionDate.localeCompare(b.sessionDate));
+
+    const typeMap = new Map(
+      deps.db
+        .select({ id: sessionTypes.id, name: sessionTypes.name })
+        .from(sessionTypes)
+        .all()
+        .map((t) => [t.id, t.name]),
+    );
+
+    const sessionsOut = sessionRows.map((s) => ({
+      id: s.id,
+      sessionDate: s.sessionDate,
+      sessionTypeId: s.sessionTypeId,
+      sessionTypeName: typeMap.get(s.sessionTypeId) ?? `id ${s.sessionTypeId}`,
+    }));
+
+    // Eligible active members — same filter as loadRoster.
+    const membersOut = deps.db
+      .select({
+        id: members.id,
+        fullName: members.fullName,
+        gender: members.gender,
+        lifeStage: members.lifeStage,
+      })
+      .from(members)
+      .where(
+        and(
+          eq(members.isActive, true),
+          inArray(members.lifeStage, [...ATTENDANCE_LIFE_STAGES]),
+        ),
+      )
+      .all()
+      .sort((a, b) => a.fullName.localeCompare(b.fullName, 'id'));
+
+    // Attendance rows for in-period sessions × eligible members only.
+    // The member filter is defensive — old data from before the eligibility
+    // rule may have rows for ineligible members; those shouldn't pollute the
+    // matrix (they'd inflate the numerator without being in the denominator).
+    const sessionIds = sessionsOut.map((s) => s.id);
+    const eligibleMemberIds = membersOut.map((m) => m.id);
+    const attendanceOut =
+      sessionIds.length === 0 || eligibleMemberIds.length === 0
+        ? []
+        : deps.db
+            .select({
+              memberId: attendance.memberId,
+              sessionId: attendance.sessionId,
+              status: attendance.status,
+            })
+            .from(attendance)
+            .where(
+              and(
+                inArray(attendance.sessionId, sessionIds),
+                inArray(attendance.memberId, eligibleMemberIds),
+              ),
+            )
+            .all();
+
+    return {
+      sessions: sessionsOut,
+      members: membersOut,
+      attendance: attendanceOut,
+    };
+  },
+
   /**
    * Reads-only. Returns whatever session exists for that DATE (one-per-day
    * rule — type is metadata on the row), plus one roster entry per active

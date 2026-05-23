@@ -1,7 +1,7 @@
 // Browse-time columns. Golongan Darah + Rhesus are emergency-lookup fields,
 // kept out of the table — they live in the DetailPanel.
 
-export interface JamaahColumn {
+export interface MemberColumn {
   key: string;
   label: string;
   width: number;
@@ -9,7 +9,7 @@ export interface JamaahColumn {
   mono?: boolean;
 }
 
-export const COLUMNS_BASE: readonly JamaahColumn[] = [
+export const COLUMNS_BASE: readonly MemberColumn[] = [
   { key: 'no', label: 'No.', width: 56, align: 'right', mono: true },
   { key: 'nama', label: "Nama Jama'ah", width: 230 },
   { key: 'dapukan', label: 'Dapukan', width: 120 },
@@ -22,7 +22,7 @@ export const COLUMNS_BASE: readonly JamaahColumn[] = [
   { key: 'aksi', label: '', width: 48, align: 'center' },
 ];
 
-export const NO_KK_COLUMN: JamaahColumn = {
+export const NO_KK_COLUMN: MemberColumn = {
   key: 'noKk',
   label: 'No. KK',
   width: 80,
@@ -30,7 +30,7 @@ export const NO_KK_COLUMN: JamaahColumn = {
   mono: true,
 };
 
-export function columnsFor(viewMode: 'grouped' | 'flat'): JamaahColumn[] {
+export function columnsFor(viewMode: 'grouped' | 'flat'): MemberColumn[] {
   if (viewMode === 'grouped') return [...COLUMNS_BASE];
   return [
     COLUMNS_BASE[0]!,
@@ -43,12 +43,12 @@ export function columnsFor(viewMode: 'grouped' | 'flat'): JamaahColumn[] {
 // Inserts a `1fr` spacer right before the last (aksi) column so the chevron
 // pins to the viewport's right edge when the table is narrower than the
 // window. Renderers must skip the spacer position when iterating cells.
-export function gridTemplate(cols: JamaahColumn[]): string {
+export function gridTemplate(cols: MemberColumn[]): string {
   const last = cols.length - 1;
   const fixed = cols.slice(0, last).map((c) => `${c.width}px`);
   return [...fixed, '1fr', `${cols[last]!.width}px`].join(' ');
 }
 
-export function minTableWidth(cols: JamaahColumn[]): number {
+export function minTableWidth(cols: MemberColumn[]): number {
   return cols.reduce((acc, c) => acc + c.width, 0);
 }

@@ -15,6 +15,13 @@ export const LIFE_STAGE = [
 ] as const;
 export type LifeStage = (typeof LIFE_STAGE)[number];
 
+/**
+ * Life stages that attend pengajian. Children/teens are excluded from
+ * Attendance and AttendanceRecap rosters. See project-attendance-eligibility memory.
+ */
+export const ATTENDANCE_LIFE_STAGES = ['Muda-mudi', 'Dewasa'] as const;
+export type AttendanceLifeStage = (typeof ATTENDANCE_LIFE_STAGES)[number];
+
 export const MARITAL_STATUS = [
   'Belum Menikah',
   'Menikah',

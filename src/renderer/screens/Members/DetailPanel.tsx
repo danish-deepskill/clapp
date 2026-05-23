@@ -17,7 +17,7 @@ export interface DetailPanelProps {
   member: Member | null;
   household: HouseholdRow | null;
   onEdit: () => void;
-  onCatatKepindahan: () => void;
+  onRecordMovement: () => void;
 }
 
 export function DetailPanel({
@@ -26,7 +26,7 @@ export function DetailPanel({
   member,
   household,
   onEdit,
-  onCatatKepindahan,
+  onRecordMovement,
 }: DetailPanelProps) {
   if (!member) {
     return (
@@ -104,7 +104,7 @@ export function DetailPanel({
           </p>
           <Button
             variant="danger-ghost"
-            onClick={onCatatKepindahan}
+            onClick={onRecordMovement}
             disabled={!member.isActive}
             className="w-full"
             title={

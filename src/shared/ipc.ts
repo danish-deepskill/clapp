@@ -4,7 +4,12 @@
  * boundary (Electron strips class info from thrown errors).
  */
 
-export type IpcErrorCode = 'DUPLICATE' | 'EMPTY' | 'NOT_FOUND';
+export type IpcErrorCode =
+  | 'DUPLICATE'
+  | 'EMPTY'
+  | 'NOT_FOUND'
+  | 'FUTURE_DATE'
+  | 'INVALID_INPUT';
 
 export type IpcResult<T> =
   | { ok: true; data: T }

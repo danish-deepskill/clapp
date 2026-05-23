@@ -10,7 +10,7 @@ import { Select } from '@renderer/components/Select';
 import { useToast } from '@renderer/components/Toast';
 import type { MemberRow, MovementKind, RecordMovementInput } from '@shared/member';
 
-export interface CatatKepindahanModalProps {
+export interface RecordMovementModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   member: MemberRow | null;
@@ -22,13 +22,13 @@ export interface CatatKepindahanModalProps {
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-export function CatatKepindahanModal({
+export function RecordMovementModal({
   open,
   onOpenChange,
   member,
   householdMembers,
   onSaved,
-}: CatatKepindahanModalProps) {
+}: RecordMovementModalProps) {
   const { showToast } = useToast();
   const [kind, setKind] = useState<MovementKind>('Pindah Sambung');
   const [date, setDate] = useState<string>(today());

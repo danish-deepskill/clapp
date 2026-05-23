@@ -9,12 +9,12 @@ import {
   KepalaBadge,
   RoleBadge,
 } from '@renderer/components/badges';
-import { gridTemplate, type JamaahColumn } from './columns';
+import { gridTemplate, type MemberColumn } from './columns';
 
 export interface MemberRowProps {
   member: Member;
   rowNumber: number;
-  columns: JamaahColumn[];
+  columns: MemberColumn[];
   /** Only present in flat mode — the household number to display. */
   householdNo?: string;
   onSelect: () => void;
@@ -74,7 +74,7 @@ function Cell({
   totalCols,
   children,
 }: {
-  column: JamaahColumn;
+  column: MemberColumn;
   index: number;
   totalCols: number;
   children: React.ReactNode;

@@ -17,7 +17,7 @@ export interface DrawerProps {
 }
 
 /**
- * Right-side overlay panel. Used by Jamaah DetailPanel (CONTEXT §3 — read-only
+ * Right-side overlay panel. Used by Members DetailPanel (CONTEXT §3 — read-only
  * detail view before edit). Slides in from the right; Esc / click-outside
  * dismiss; preserves focus trap via Radix Dialog.
  */

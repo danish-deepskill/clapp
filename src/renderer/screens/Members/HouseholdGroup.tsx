@@ -7,7 +7,7 @@ import type { HouseholdRow } from '@shared/household';
 import type { MemberRow as Member } from '@shared/member';
 
 import { MemberRow } from './MemberRow';
-import type { JamaahColumn } from './columns';
+import type { MemberColumn } from './columns';
 
 export type DropPosition = 'above' | 'below';
 
@@ -15,9 +15,9 @@ export interface HouseholdGroupProps {
   household: HouseholdRow;
   members: Member[];
   startNumber: number;
-  columns: JamaahColumn[];
+  columns: MemberColumn[];
   onMemberSelect: (memberId: number) => void;
-  onEditKK: (householdId: number) => void;
+  onEditHousehold: (householdId: number) => void;
   // Drag-to-reorder
   isDragging: boolean;
   dropIndicator: DropPosition | null;
@@ -33,7 +33,7 @@ export function HouseholdGroup({
   startNumber,
   columns,
   onMemberSelect,
-  onEditKK,
+  onEditHousehold,
   isDragging,
   dropIndicator,
   onDragStart,
@@ -104,7 +104,7 @@ export function HouseholdGroup({
             aria-label={`Edit KK-${household.householdNo}`}
             onClick={(e) => {
               e.stopPropagation();
-              onEditKK(household.id);
+              onEditHousehold(household.id);
             }}
             className="opacity-60 transition-opacity hover:opacity-100"
           >

@@ -113,6 +113,8 @@ if (FORCE && existingCount > 0) {
     DELETE FROM meetings;
     DELETE FROM attendance;
     DELETE FROM sessions;
+    DELETE FROM activity_types;
+    DELETE FROM session_types;
     DELETE FROM member_changes;
     DELETE FROM member_movements;
     DELETE FROM vital_records;
@@ -121,6 +123,39 @@ if (FORCE && existingCount > 0) {
     DELETE FROM members;
     DELETE FROM households;
   `);
+}
+
+// Dev convenience: seed the 5 session_types listed in ERD.html so Absensi works
+// out-of-the-box. Production day-1 starts empty and prompts the operator to
+// seed via Pengaturan (CONTEXT §6.5 keeps the canonical list as open).
+const DEV_SESSION_TYPES = [
+  'Hasda',
+  'Dalil-dalil',
+  'Penerobos Desa',
+  "Qur'an",
+  'Q+K.Zakat',
+];
+const existingTypeCount = db.select().from(schema.sessionTypes).all().length;
+if (existingTypeCount === 0) {
+  db.insert(schema.sessionTypes)
+    .values(DEV_SESSION_TYPES.map((name) => ({ name })))
+    .run();
+  // One linked activity_type so the §8 UPSERT trigger is exercisable in dev.
+  const hasdaId = db
+    .select()
+    .from(schema.sessionTypes)
+    .where(eq(schema.sessionTypes.name, 'Hasda'))
+    .get()?.id;
+  if (hasdaId) {
+    db.insert(schema.activityTypes)
+      .values({
+        name: 'Pengajian Ibu-Ibu Kelompok',
+        sourceKind: 'session',
+        sessionTypeId: hasdaId,
+      })
+      .run();
+  }
+  console.log(`→ Seeded ${DEV_SESSION_TYPES.length} session_types + 1 activity_type.`);
 }
 
 const seed = JSON.parse(readFileSync(SEED_PATH, 'utf-8')) as Seed;

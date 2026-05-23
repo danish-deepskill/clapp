@@ -1,7 +1,7 @@
 import { MasterDataList } from './MasterDataList';
 import { PlaceholderSection } from './PlaceholderSection';
 
-export function Pengaturan() {
+export function Settings() {
   return (
     <div className="flex h-full flex-col bg-paper">
       <header className="border-b border-rule bg-surface px-6 pb-3.5 pt-4">

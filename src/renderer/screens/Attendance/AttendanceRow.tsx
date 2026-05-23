@@ -11,7 +11,7 @@ import { fmtIDR } from '@renderer/lib/format';
 import type { AttendanceStatus, Gender } from '@shared/enums';
 
 import { COLUMNS, gridTemplate } from './columns';
-import { STATUS_PILL_DEFS, StatusPills } from './StatusPills';
+import { StatusPills } from './StatusPills';
 
 export interface AttendanceRowData {
   memberId: number;
@@ -48,23 +48,39 @@ export function AttendanceRow({ index, row, onChange }: AttendanceRowProps) {
     [row.status, onChange],
   );
 
-  const onRowKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLDivElement>) => {
-      if (e.target instanceof HTMLInputElement) return;
-      const k = e.key.toUpperCase();
-      const match = STATUS_PILL_DEFS.find((p) => p.shortcut === k);
-      if (match) {
+  // Up/Down navigate rows; Left/Right navigate within row (pills + inputs).
+  // Arrow keys inside text inputs are passed through so the cursor can move.
+  const onRowKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
+    const inInput = e.target instanceof HTMLInputElement;
+    const vert = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
+    if (vert !== 0 && !inInput) {
+      const rows = Array.from(
+        e.currentTarget.parentElement?.querySelectorAll<HTMLElement>(
+          '[role="row"]',
+        ) ?? [],
+      );
+      const target = rows[rows.indexOf(e.currentTarget) + vert];
+      if (target) {
         e.preventDefault();
-        onStatusChange(match.key);
-      } else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') {
-        if (row.status !== null) {
-          e.preventDefault();
-          onChange({ status: null, arrivalAt: null, donationAmount: null });
-        }
+        target.focus();
+        target.scrollIntoView({ block: 'nearest' });
       }
-    },
-    [onStatusChange, onChange, row.status],
-  );
+      return;
+    }
+    const horiz = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+    if (horiz !== 0 && !inInput) {
+      const focusable = Array.from(
+        e.currentTarget.querySelectorAll<HTMLElement>('button, input'),
+      );
+      const i = focusable.indexOf(document.activeElement as HTMLElement);
+      const next = Math.max(0, Math.min(i + horiz, focusable.length - 1));
+      const target = focusable[next];
+      if (target) {
+        e.preventDefault();
+        target.focus();
+      }
+    }
+  }, []);
 
   return (
     <div
@@ -74,7 +90,10 @@ export function AttendanceRow({ index, row, onChange }: AttendanceRowProps) {
       style={{ gridTemplateColumns: gridTemplate() }}
       className={clsx(
         'grid items-center border-b border-rule bg-surface transition-colors',
-        'hover:bg-surface-2 focus-visible:bg-surface-2 focus-visible:outline-none',
+        'hover:bg-surface-2',
+        // Focus: warm bg tint + 3px left-edge ink bar. Override the global
+        // slate-blue focus-visible ring from globals.css with !ring-0.
+        'focus-visible:outline-none focus-visible:!ring-0 focus-visible:bg-[#FFF8E2] focus-visible:shadow-[inset_3px_0_0_#1B1814]',
         isAlpa && 'text-ink-400',
         isUnmarked && 'bg-paper-2/30',
       )}

@@ -1,8 +1,10 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 import type {
+  LoadRecapInput,
   LoadRosterInput,
   LoadRosterResult,
+  RecapData,
   SaveBatchInput,
   SaveBatchResult,
   SessionRow,
@@ -92,6 +94,8 @@ const api = {
       newSessionTypeId: number;
     }): Promise<IpcResult<SessionRow>> =>
       ipcRenderer.invoke('attendance:session:relabel', input),
+    loadRecap: (input: LoadRecapInput): Promise<IpcResult<RecapData>> =>
+      ipcRenderer.invoke('attendance:recap:load', input),
   },
 } as const;
 

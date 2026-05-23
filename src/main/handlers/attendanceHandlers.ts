@@ -1,8 +1,10 @@
 import { ipcMain } from 'electron';
 
 import type {
+  LoadRecapInput,
   LoadRosterInput,
   LoadRosterResult,
+  RecapData,
   SaveBatchInput,
   SaveBatchResult,
   SessionRow,
@@ -12,6 +14,7 @@ import type { IpcDeps } from '../ipc';
 import {
   FutureDateError,
   InvalidAttendanceInputError,
+  InvalidPeriodError,
   OneSessionPerDateError,
   SessionTypeNotFoundError,
   attendanceService,
@@ -30,7 +33,10 @@ function tryCall<T>(fn: () => T): IpcResult<T> {
     if (e instanceof OneSessionPerDateError) {
       return { ok: false, code: 'DUPLICATE', message: e.message };
     }
-    if (e instanceof InvalidAttendanceInputError) {
+    if (
+      e instanceof InvalidAttendanceInputError ||
+      e instanceof InvalidPeriodError
+    ) {
       return { ok: false, code: 'INVALID_INPUT', message: e.message };
     }
     throw e;
@@ -57,5 +63,11 @@ export function registerAttendanceHandlers(deps: IpcDeps): void {
       input: { sessionId: number; newSessionTypeId: number },
     ): IpcResult<SessionRow> =>
       tryCall(() => attendanceService.relabelSessionType({ db: deps.db }, input)),
+  );
+
+  ipcMain.handle(
+    'attendance:recap:load',
+    (_e, input: LoadRecapInput): IpcResult<RecapData> =>
+      tryCall(() => attendanceService.loadRecap({ db: deps.db }, input)),
   );
 }

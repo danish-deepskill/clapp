@@ -93,5 +93,3 @@ export function StatusPills({ value, onChange, rowLabel }: StatusPillsProps) {
     </div>
   );
 }
-
-export { PILLS as STATUS_PILL_DEFS };

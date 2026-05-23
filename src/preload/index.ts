@@ -1,19 +1,41 @@
-import { contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 
-/**
- * Typed bridge exposed to the renderer as `window.clapp`. Domain namespaces
- * land here as screen PRs add them — see HANDOFF.md §13.2 for the contract.
- * Each call should be `invoke('<domain>:<action>', input)`.
- */
+import type { IpcResult } from '../shared/ipc';
+import type {
+  MasterDataItem,
+  MasterDataKind,
+  RemoveResult,
+} from '../shared/masterData';
+
+interface MasterDataNamespace {
+  list(): Promise<MasterDataItem[]>;
+  create(name: string): Promise<IpcResult<MasterDataItem>>;
+  rename(id: number, name: string): Promise<IpcResult<MasterDataItem>>;
+  setActive(id: number, isActive: boolean): Promise<IpcResult<MasterDataItem>>;
+  remove(id: number): Promise<IpcResult<RemoveResult>>;
+}
+
+function masterDataNamespace(kind: MasterDataKind): MasterDataNamespace {
+  return {
+    list: () => ipcRenderer.invoke(`masterData:${kind}:list`),
+    create: (name) => ipcRenderer.invoke(`masterData:${kind}:create`, name),
+    rename: (id, name) =>
+      ipcRenderer.invoke(`masterData:${kind}:rename`, id, name),
+    setActive: (id, isActive) =>
+      ipcRenderer.invoke(`masterData:${kind}:setActive`, id, isActive),
+    remove: (id) => ipcRenderer.invoke(`masterData:${kind}:remove`, id),
+  };
+}
+
 const api = {
-  // Filled in by screen PRs:
+  masterData: {
+    roles: masterDataNamespace('roles'),
+    sessionTypes: masterDataNamespace('sessionTypes'),
+    activityTypes: masterDataNamespace('activityTypes'),
+  },
+  // Future namespaces land here as PRs add them:
   //   member: { list, create, edit, ... },
   //   attendance: { list, save, ... },
-  //   meeting: { ... },
-  //   report: { ... },
-  //   eventLog: { ... },
-  //   settings: { ... },
-  //   backup: { ... },
 } as const;
 
 contextBridge.exposeInMainWorld('clapp', api);

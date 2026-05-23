@@ -16,6 +16,8 @@ export interface DetailPanelProps {
   onOpenChange: (open: boolean) => void;
   member: Member | null;
   household: HouseholdRow | null;
+  onEdit: () => void;
+  onCatatKepindahan: () => void;
 }
 
 export function DetailPanel({
@@ -23,6 +25,8 @@ export function DetailPanel({
   onOpenChange,
   member,
   household,
+  onEdit,
+  onCatatKepindahan,
 }: DetailPanelProps) {
   if (!member) {
     return (
@@ -49,12 +53,7 @@ export function DetailPanel({
         </span>
       }
       headerActions={
-        <Button
-          variant="ghost"
-          size="sm"
-          disabled
-          title="Edit akan tersedia di pembaruan berikutnya"
-        >
+        <Button variant="ghost" size="sm" onClick={onEdit}>
           Edit
         </Button>
       }
@@ -105,9 +104,14 @@ export function DetailPanel({
           </p>
           <Button
             variant="danger-ghost"
-            disabled
-            title="Catat Kepindahan akan tersedia di pembaruan berikutnya"
+            onClick={onCatatKepindahan}
+            disabled={!member.isActive}
             className="w-full"
+            title={
+              !member.isActive
+                ? 'Jama\'ah sudah dalam status mutasi'
+                : undefined
+            }
           >
             Catat Kepindahan (Pindah / Meninggal)
           </Button>

@@ -9,6 +9,7 @@ import type { IpcDeps } from '../ipc';
 import {
   HouseholdNotFoundError,
   InvalidHeadError,
+  ReorderInputError,
   householdService,
 } from '../services/householdService';
 
@@ -19,7 +20,7 @@ function tryCall<T>(fn: () => T): IpcResult<T> {
     if (e instanceof HouseholdNotFoundError) {
       return { ok: false, code: 'NOT_FOUND', message: e.message };
     }
-    if (e instanceof InvalidHeadError) {
+    if (e instanceof InvalidHeadError || e instanceof ReorderInputError) {
       return { ok: false, code: 'DUPLICATE', message: e.message };
     }
     throw e;
@@ -48,5 +49,14 @@ export function registerHouseholdHandlers(deps: IpcDeps): void {
     'household:suggestNewHead',
     (_e, householdId: number): number | null =>
       householdService.suggestNewHead({ db: deps.db }, householdId),
+  );
+
+  ipcMain.handle(
+    'household:reorder',
+    (_e, orderedIds: number[]): IpcResult<null> =>
+      tryCall(() => {
+        householdService.reorder({ db: deps.db }, orderedIds);
+        return null;
+      }),
   );
 }

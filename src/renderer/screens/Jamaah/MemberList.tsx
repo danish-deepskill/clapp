@@ -1,18 +1,20 @@
-import { useMemo } from 'react';
+import { useMemo, useState, type DragEvent } from 'react';
 import { clsx } from 'clsx';
 
 import type { HouseholdRow } from '@shared/household';
 import type { MemberRow as Member } from '@shared/member';
 
-import { HouseholdGroup } from './HouseholdGroup';
+import { HouseholdGroup, type DropPosition } from './HouseholdGroup';
 import { MemberRow } from './MemberRow';
-import { columnsFor, totalWidth } from './columns';
+import { columnsFor, gridTemplate, minTableWidth } from './columns';
 
 export interface MemberListProps {
   members: Member[];
   households: HouseholdRow[];
   viewMode: 'grouped' | 'flat';
   onMemberSelect: (memberId: number) => void;
+  onEditKK: (householdId: number) => void;
+  onReorderHouseholds: (orderedIds: number[]) => Promise<void>;
 }
 
 export function MemberList({
@@ -20,9 +22,11 @@ export function MemberList({
   households,
   viewMode,
   onMemberSelect,
+  onEditKK,
+  onReorderHouseholds,
 }: MemberListProps) {
   const columns = useMemo(() => columnsFor(viewMode), [viewMode]);
-  const tableWidth = totalWidth(columns);
+  const tableWidth = minTableWidth(columns);
 
   if (members.length === 0) {
     return (
@@ -42,6 +46,8 @@ export function MemberList({
             households={households}
             columns={columns}
             onMemberSelect={onMemberSelect}
+            onEditKK={onEditKK}
+            onReorderHouseholds={onReorderHouseholds}
           />
         ) : (
           <FlatBody
@@ -61,20 +67,19 @@ function Header({
 }: {
   columns: ReturnType<typeof columnsFor>;
 }) {
+  const last = columns.length - 1;
   return (
     <div
       className="sticky top-0 z-[3] grid h-9 items-stretch border-b border-rule-strong bg-paper-2"
-      style={{ gridTemplateColumns: columns.map((c) => `${c.width}px`).join(' ') }}
+      style={{ gridTemplateColumns: gridTemplate(columns) }}
     >
-      {columns.map((col, idx) => {
+      {columns.slice(0, -1).map((col, idx) => {
         const sticky =
           col.key === 'no'
             ? 'sticky left-0 z-[1] bg-paper-2'
             : col.key === 'nama'
               ? 'sticky left-[56px] z-[1] bg-paper-2'
-              : col.key === 'aksi'
-                ? 'sticky right-0 z-[1] bg-paper-2'
-                : '';
+              : '';
         return (
           <div
             key={col.key}
@@ -82,7 +87,7 @@ function Header({
               'flex h-full items-center px-3 font-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-ink-700',
               col.align === 'right' && 'justify-end',
               col.align === 'center' && 'justify-center',
-              idx < columns.length - 1 && 'border-r border-rule',
+              idx < last && 'border-r border-rule',
               sticky,
             )}
           >
@@ -90,6 +95,8 @@ function Header({
           </div>
         );
       })}
+      <div aria-hidden="true" className="bg-paper-2" />
+      <div className="sticky right-0 z-[1] flex h-full items-center justify-center bg-paper-2 px-3" />
     </div>
   );
 }
@@ -99,11 +106,15 @@ function GroupedBody({
   households,
   columns,
   onMemberSelect,
+  onEditKK,
+  onReorderHouseholds,
 }: {
   members: Member[];
   households: HouseholdRow[];
   columns: ReturnType<typeof columnsFor>;
   onMemberSelect: (id: number) => void;
+  onEditKK: (id: number) => void;
+  onReorderHouseholds: (orderedIds: number[]) => Promise<void>;
 }) {
   const byHh = useMemo(() => {
     const map = new Map<number, Member[]>();
@@ -115,12 +126,64 @@ function GroupedBody({
     return map;
   }, [members]);
 
+  const visibleHouseholds = useMemo(
+    () => households.filter((h) => (byHh.get(h.id)?.length ?? 0) > 0),
+    [households, byHh],
+  );
+
+  const [draggingId, setDraggingId] = useState<number | null>(null);
+  const [dropAt, setDropAt] = useState<{
+    id: number;
+    position: DropPosition;
+  } | null>(null);
+
+  const onDragStart = (id: number, e: DragEvent) => {
+    setDraggingId(id);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', String(id));
+  };
+
+  const onDragOver = (overId: number, e: DragEvent) => {
+    e.preventDefault();
+    if (draggingId === null || draggingId === overId) return;
+    const target = e.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    const position: DropPosition =
+      e.clientY < rect.top + rect.height / 2 ? 'above' : 'below';
+    setDropAt((curr) =>
+      curr?.id === overId && curr.position === position
+        ? curr
+        : { id: overId, position },
+    );
+  };
+
+  const onDrop = (e: DragEvent) => {
+    e.preventDefault();
+    if (draggingId === null || !dropAt || dropAt.id === draggingId) {
+      setDraggingId(null);
+      setDropAt(null);
+      return;
+    }
+    const ordered = households.map((h) => h.id).filter((id) => id !== draggingId);
+    const targetIdx = ordered.indexOf(dropAt.id);
+    const insertAt =
+      dropAt.position === 'above' ? targetIdx : targetIdx + 1;
+    ordered.splice(insertAt, 0, draggingId);
+    void onReorderHouseholds(ordered);
+    setDraggingId(null);
+    setDropAt(null);
+  };
+
+  const onDragEnd = () => {
+    setDraggingId(null);
+    setDropAt(null);
+  };
+
   let rowCounter = 0;
   return (
     <>
-      {households.map((hh) => {
+      {visibleHouseholds.map((hh) => {
         const hhMembers = byHh.get(hh.id) ?? [];
-        if (hhMembers.length === 0) return null;
         const startNumber = rowCounter + 1;
         rowCounter += hhMembers.length;
         return (
@@ -131,6 +194,13 @@ function GroupedBody({
             startNumber={startNumber}
             columns={columns}
             onMemberSelect={onMemberSelect}
+            onEditKK={onEditKK}
+            isDragging={draggingId === hh.id}
+            dropIndicator={dropAt?.id === hh.id ? dropAt.position : null}
+            onDragStart={onDragStart}
+            onDragOver={onDragOver}
+            onDrop={onDrop}
+            onDragEnd={onDragEnd}
           />
         );
       })}
@@ -168,4 +238,3 @@ function FlatBody({
     </>
   );
 }
-

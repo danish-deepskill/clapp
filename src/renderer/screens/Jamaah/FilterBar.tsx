@@ -14,7 +14,6 @@ import type { MemberFilter } from '@shared/member';
 
 import { Button } from '@renderer/components/Button';
 import { Checkbox } from '@renderer/components/Checkbox';
-import { Input } from '@renderer/components/Input';
 import { Popover } from '@renderer/components/Popover';
 import { SegmentedControl } from '@renderer/components/SegmentedControl';
 
@@ -29,6 +28,7 @@ export interface FilterBarProps {
   onViewModeChange: (v: ViewMode) => void;
   totalActive: number;
   totalFiltered: number;
+  onAddClick: () => void;
 }
 
 export function FilterBar({
@@ -40,6 +40,7 @@ export function FilterBar({
   onViewModeChange,
   totalActive,
   totalFiltered,
+  onAddClick,
 }: FilterBarProps) {
   const activeFilterCount =
     (filter.lifeStage ? 1 : 0) +
@@ -48,9 +49,9 @@ export function FilterBar({
     (filter.pengurusOnly ? 1 : 0);
 
   return (
-    <div className="flex items-end gap-3 border-b border-rule bg-surface px-6 py-3">
-      <div className="flex flex-col gap-1">
-        <span className="font-mono text-[9.5px] font-semibold uppercase tracking-[0.14em] text-ink-500">
+    <div className="flex items-stretch border-b border-rule bg-surface-2">
+      <div className="flex flex-col justify-center gap-1 border-r border-rule px-4 py-2.5">
+        <span className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-ink-500">
           Tampilan
         </span>
         <SegmentedControl<ViewMode>
@@ -72,66 +73,71 @@ export function FilterBar({
         />
       </div>
 
-      <div className="relative flex-1">
+      <div className="flex flex-1 items-center gap-2.5 border-r border-rule px-4">
         <Search
           size={14}
           strokeWidth={1.6}
-          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-500"
+          className="shrink-0 text-ink-500"
         />
-        <Input
+        <input
+          type="text"
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Cari nama atau nomor jama'ah…"
           aria-label="Cari jama'ah"
-          className="h-9 pl-9"
+          className="h-full w-full appearance-none border-0 bg-transparent font-sans text-sm text-ink-900 outline-none placeholder:text-ink-400 focus-visible:!ring-0 focus-visible:!ring-offset-0"
         />
       </div>
 
-      <Popover
-        align="end"
-        trigger={
-          <button
-            type="button"
-            className={clsx(
-              'inline-flex h-9 items-center gap-2 rounded border border-rule bg-surface px-3 font-sans text-[13px] font-medium text-ink-700 transition-colors',
-              'hover:border-rule-strong hover:bg-surface-2',
-              activeFilterCount > 0 && 'border-ink-900 text-ink-900',
-            )}
-          >
-            <Filter size={14} strokeWidth={1.6} />
-            Filter
-            {activeFilterCount > 0 && (
-              <span className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-sm bg-ink-900 px-1 font-mono text-[10px] font-bold text-surface">
-                {activeFilterCount}
-              </span>
-            )}
-            <ChevronDown
-              size={13}
-              strokeWidth={1.6}
-              className="text-ink-500"
-            />
-          </button>
-        }
-      >
-        <FilterPanel
-          filter={filter}
-          onChange={onFilterChange}
-        />
-      </Popover>
-
-      <div className="ml-1 font-mono text-[11px] text-ink-500">
-        <span className="font-semibold text-ink-900">{totalFiltered}</span>{' '}
-        ditampilkan ·{' '}
-        <span className="font-semibold text-ink-900">{totalActive}</span> aktif
+      <div className="flex items-center border-r border-rule px-4 py-2.5">
+        <Popover
+          align="end"
+          trigger={
+            <button
+              type="button"
+              className={clsx(
+                'inline-flex h-9 items-center gap-2 rounded border border-rule-strong bg-surface px-3 font-sans text-[13px] font-medium text-ink-900 transition-colors',
+                'hover:border-ink-700 hover:bg-[#FFFDF8]',
+                activeFilterCount > 0 && 'border-ink-900',
+              )}
+            >
+              <Filter size={14} strokeWidth={1.6} className="text-ink-500" />
+              Filter
+              {activeFilterCount > 0 && (
+                <span className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-sm bg-ink-900 px-1 font-mono text-[10px] font-bold text-surface">
+                  {activeFilterCount}
+                </span>
+              )}
+              <ChevronDown
+                size={13}
+                strokeWidth={1.6}
+                className="text-ink-500"
+              />
+            </button>
+          }
+        >
+          <FilterPanel filter={filter} onChange={onFilterChange} />
+        </Popover>
       </div>
 
-      <Button
-        icon={<Plus size={13} strokeWidth={1.8} />}
-        disabled
-        title="Tambah Jama'ah akan tersedia di pembaruan berikutnya"
-      >
-        Tambah
-      </Button>
+      <div className="flex items-center border-r border-rule px-4 py-2.5">
+        <span className="font-mono text-[11px] leading-tight text-ink-500">
+          <span className="font-semibold text-ink-900">{totalFiltered}</span>{' '}
+          ditampilkan
+          <br />
+          <span className="font-semibold text-ink-900">{totalActive}</span>{' '}
+          aktif
+        </span>
+      </div>
+
+      <div className="flex items-center px-4 py-2.5">
+        <Button
+          icon={<Plus size={13} strokeWidth={1.8} />}
+          onClick={onAddClick}
+        >
+          Tambah Jama'ah
+        </Button>
+      </div>
     </div>
   );
 }

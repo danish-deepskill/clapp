@@ -9,7 +9,7 @@ import {
   KepalaBadge,
   RoleBadge,
 } from '@renderer/components/badges';
-import type { JamaahColumn } from './columns';
+import { gridTemplate, type JamaahColumn } from './columns';
 
 export interface MemberRowProps {
   member: Member;
@@ -43,13 +43,27 @@ export function MemberRow({
         'group grid h-[38px] cursor-default items-stretch border-b border-rule bg-surface text-[13px] transition-colors hover:bg-surface-2 focus-visible:bg-surface-2',
         dim && 'opacity-65',
       )}
-      style={{ gridTemplateColumns: columns.map((c) => `${c.width}px`).join(' ') }}
+      style={{ gridTemplateColumns: gridTemplate(columns) }}
     >
-      {columns.map((col, idx) => (
+      {columns.slice(0, -1).map((col, idx) => (
         <Cell key={col.key} column={col} index={idx} totalCols={columns.length}>
           {renderCellContent(col.key, member, rowNumber, householdNo)}
         </Cell>
       ))}
+      {/* Flex spacer — fills the gap so the sticky-right aksi cell pins to the viewport edge. */}
+      <div aria-hidden="true" className="bg-surface group-hover:bg-surface-2 group-focus-visible:bg-surface-2" />
+      <Cell
+        column={columns[columns.length - 1]!}
+        index={columns.length - 1}
+        totalCols={columns.length}
+      >
+        {renderCellContent(
+          columns[columns.length - 1]!.key,
+          member,
+          rowNumber,
+          householdNo,
+        )}
+      </Cell>
     </div>
   );
 }

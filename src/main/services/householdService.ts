@@ -26,6 +26,13 @@ export class InvalidHeadError extends Error {
   }
 }
 
+export class ReorderInputError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ReorderInputError';
+  }
+}
+
 function nextHouseholdNo(db: DBLike): string {
   const row = db
     .select({
@@ -141,6 +148,45 @@ export const householdService = {
           .run();
       }
       return getRow(tx, id)!;
+    });
+  },
+
+  /**
+   * Rewrites every household_no to be contiguous "001"..."NNN" in the given
+   * order. Two-pass inside one transaction so the unique constraint on
+   * household_no never trips mid-update.
+   */
+  reorder(deps: HouseholdDeps, orderedIds: number[]): void {
+    deps.db.transaction((tx) => {
+      const existing = tx.select({ id: households.id }).from(households).all();
+      if (orderedIds.length !== existing.length) {
+        throw new ReorderInputError(
+          `orderedIds must include all ${existing.length} households (got ${orderedIds.length})`,
+        );
+      }
+      if (new Set(orderedIds).size !== orderedIds.length) {
+        throw new ReorderInputError('duplicate ids in orderedIds');
+      }
+      const known = new Set(existing.map((h) => h.id));
+      for (const id of orderedIds) {
+        if (!known.has(id)) {
+          throw new ReorderInputError(`unknown household id ${id}`);
+        }
+      }
+      // Pass 1: shift to temporary unique names so pass 2 can rewrite freely.
+      orderedIds.forEach((id, i) => {
+        tx.update(households)
+          .set({ householdNo: `TMP-${i}` })
+          .where(eq(households.id, id))
+          .run();
+      });
+      // Pass 2: final contiguous "001"..."NNN".
+      orderedIds.forEach((id, i) => {
+        tx.update(households)
+          .set({ householdNo: String(i + 1).padStart(3, '0') })
+          .where(eq(households.id, id))
+          .run();
+      });
     });
   },
 

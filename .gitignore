@@ -1,0 +1,33 @@
+node_modules/
+out/
+dist/
+build/
+*.tsbuildinfo
+
+# Drizzle generated metadata kept in repo; only journal exports stay out
+src/main/db/migrations/meta/_journal.json.bak
+
+# SQLite working files
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+userData/
+
+# Logs / env
+*.log
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# Claude Code (per-machine settings; team-shared .claude/settings.json is OK to commit)
+.claude/settings.local.json

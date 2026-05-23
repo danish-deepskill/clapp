@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<title>Dashboard — CLApp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F1E8; --paper-2:#EFE9DC; --surface:#FCFAF5; --surface-2:#F9F5EC;
+    --ink-900:#1B1814; --ink-700:#4A4640; --ink-500:#7A746A;
+    --ink-400:#9C968B; --ink-300:#C8C2B5; --ink-200:#DCD6C8;
+    --rule:#D9D2C2; --rule-strong:#B8B0A0;
+    --hadir:#2E7048; --hadir-ink:#1E4D31; --hadir-bg:#E1ECDC;
+    --alpa:#B23A3A;  --alpa-ink:#7E2828; --alpa-bg:#F4DCD8;
+    --sakit:      #325E8C;  /* slate blue */
+    --sakit-ink:  #234062;
+    --sakit-bg:   #DCE5F0;
+    --izin:       #B17A1F;  /* ochre */
+    --izin-ink:   #7F5614;
+    --izin-bg:    #F2E5C7;
+    --focus:#325E8C;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink-900);
+    font-family:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;font-size:14px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+  .page{max-width:1320px;margin:0 auto;padding:40px 32px 80px}
+  .sec-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);margin:0 0 6px}
+  .sec-title{font-size:22px;font-weight:600;margin:0 0 4px;letter-spacing:-.005em}
+  .sec-sub{font-size:14px;color:var(--ink-700);margin:0 0 24px;max-width:62ch}
+  .dir-note{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-700);
+    background:var(--surface-2);border:1px solid var(--rule);padding:10px 14px;border-radius:3px;margin-bottom:14px}
+  .dir-note b{color:var(--ink-900);font-weight:600}
+
+  .frame-wrap{border:1px solid var(--rule-strong);border-radius:6px;background:#cfc7b4;
+    box-shadow:0 24px 48px -28px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.06)}
+  .frame-chrome{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--rule-strong)}
+  .frame-chrome .dots{display:flex;gap:6px}
+  .frame-chrome .dots i{width:11px;height:11px;border-radius:50%;background:#b3aa97;display:block}
+  .frame-chrome .title{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#4a4640;letter-spacing:.04em;flex:1;text-align:center}
+  .frame-chrome .title b{font-weight:600;color:var(--ink-900)}
+  .frame-stage{background:var(--paper);height:880px;overflow:hidden;display:flex;flex-direction:column;
+    border-radius:0 0 5px 5px;position:relative}
+
+  /* Navbar */
+  .app-top{display:flex;align-items:stretch;background:var(--surface);border-bottom:1px solid var(--rule-strong);position:relative}
+  .app-brand{padding:10px 20px;border-right:1px solid var(--rule);min-width:160px;background:transparent;
+    border-top:0;border-bottom:0;border-left:0;text-align:left;font-family:inherit;color:inherit;
+    cursor:default;display:flex;flex-direction:row;align-items:center;gap:10px;transition:background .12s}
+  .app-brand:hover{background:var(--surface-2)}
+  .app-brand{border-right:1px solid var(--rule) !important}
+  .app-brand .logo-mark{width:30px;height:30px;background:var(--ink-900);color:#FCFAF5;
+    display:inline-flex;align-items:center;justify-content:center;border-radius:3px;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.04em;
+    flex-shrink:0;border:1px solid var(--ink-900)}
+  .app-brand .logo-mark svg{display:block}
+  .app-brand:hover .logo-mark{background:#000;border-color:#000}
+  .app-brand .logo-mark{position:relative}
+  .app-brand .brand-badge{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;
+    padding:0 4px;border-radius:8px;background:var(--izin);color:#FCFAF5;
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:700;letter-spacing:0;
+    display:inline-flex;align-items:center;justify-content:center;line-height:1;
+    border:1.5px solid var(--surface);pointer-events:none}
+  .app-brand:hover .brand-badge{border-color:var(--surface-2)}
+  .app-brand .title{font-size:18px;font-weight:600;margin-top:0;letter-spacing:-.005em;display:flex;align-items:center;gap:6px}
+  .app-brand .title .home-mark{font-size:13px;color:var(--ink-400);transition:color .12s,transform .12s}
+  .app-brand.active .title .home-mark{color:var(--ink-900);transform:rotate(90deg)}
+  .app-nav{display:flex;align-items:stretch;flex:1;min-width:0;position:relative}
+  .app-nav .tab{padding:0 18px;display:flex;align-items:center;justify-content:center;
+    font-size:13.5px;color:var(--ink-700);border-right:1px solid var(--rule);cursor:default;
+    font-weight:500;white-space:nowrap;flex:1 1 auto;min-width:0;text-decoration:none}
+  .app-nav .tab:hover{background:var(--surface-2);color:var(--ink-900)}
+  .app-nav .tab.disabled{color:var(--ink-400);cursor:not-allowed}
+  .app-nav .tab.disabled:hover{background:transparent;color:var(--ink-400)}
+  .coming-badge{display:inline-flex;align-items:center;padding:1px 5px;
+    font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-500);background:var(--ink-200);
+    border-radius:2px;margin-left:6px;line-height:1;white-space:nowrap;flex-shrink:0}
+
+  /* Content scroll */
+  .content{flex:1;overflow-y:auto;padding:24px 28px 32px;background:var(--paper)}
+  .content::-webkit-scrollbar{width:12px}
+  .content::-webkit-scrollbar-thumb{background:var(--ink-200);border-radius:6px;border:3px solid var(--paper)}
+
+  /* Hero banner */
+  .hero{background:var(--surface);border:1px solid var(--rule-strong);border-radius:3px;
+    padding:24px 28px 22px;display:flex;align-items:center;justify-content:space-between;gap:24px;
+    margin-bottom:22px}
+  .hero .hello-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);margin-bottom:4px}
+  .hero .hello-title{font-size:24px;font-weight:700;letter-spacing:-.005em;color:var(--ink-900);line-height:1.15}
+  .hero .hello-sub{font-size:13.5px;color:var(--ink-700);margin-top:6px;font-family:"IBM Plex Sans",sans-serif}
+  .hero .hello-sub b{color:var(--ink-900);font-family:"IBM Plex Mono",monospace}
+  .hero .clock{text-align:right;flex-shrink:0}
+  .hero .clock .day{font-family:"IBM Plex Sans",sans-serif;font-size:13px;color:var(--ink-700);font-weight:500}
+  .hero .clock .date{font-family:"IBM Plex Mono",monospace;font-size:28px;font-weight:700;color:var(--ink-900);
+    margin-top:2px;font-variant-numeric:tabular-nums;line-height:1}
+  .hero .clock .time{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-500);margin-top:4px;font-weight:500}
+
+  /* Section */
+  .sec{margin-bottom:24px}
+  .sec-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+  .sec-h .label{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);font-weight:600}
+  .sec-h .all{font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;font-weight:600;
+    color:var(--ink-700);text-decoration:none;display:inline-flex;align-items:center;gap:4px;cursor:default}
+  .sec-h .all:hover{color:var(--ink-900)}
+  .panel-h .all{font-family:"IBM Plex Sans",sans-serif;font-size:12px;font-weight:600;
+    color:var(--ink-700);text-decoration:none;display:inline-flex;align-items:center;gap:4px;cursor:default;
+    padding:4px 8px;border-radius:2px;letter-spacing:.005em}
+  .panel-h .all:hover{background:var(--ink-200);color:var(--ink-900)}
+
+  /* Stat cards */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .stat-card{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:14px 16px;
+    display:flex;flex-direction:column;gap:4px;transition:background .12s,border-color .12s;cursor:default}
+  .stat-card:hover{background:#FFFDF8;border-color:var(--rule-strong)}
+  .stat-card .k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-500);font-weight:600}
+  .stat-card .v{display:flex;align-items:baseline;gap:6px;margin-top:2px}
+  .stat-card .v b{font-family:"IBM Plex Mono",monospace;font-size:28px;font-weight:700;color:var(--ink-900);
+    font-variant-numeric:tabular-nums;line-height:1;letter-spacing:-.01em}
+  .stat-card .v span{font-family:"IBM Plex Sans",sans-serif;font-size:13px;color:var(--ink-500)}
+  .stat-card .delta{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-500);margin-top:4px;font-weight:500}
+  .stat-card .delta.pos{color:var(--hadir-ink)}
+  .stat-card .delta.neg{color:var(--alpa-ink)}
+
+  /* Quick action cards */
+  .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .action-card{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;
+    background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    text-decoration:none;color:inherit;cursor:default;transition:background .12s,border-color .12s}
+  .action-card:hover{background:#FFFDF8;border-color:var(--ink-700)}
+  .action-card .ico{width:36px;height:36px;border-radius:3px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--ink-900);color:#FCFAF5}
+  .action-card .ico.green{background:var(--hadir);color:#FCFAF5}
+  .action-card .ico.blue{background:var(--sakit);color:#FCFAF5}
+  .action-card .ico.amber{background:var(--izin);color:#FCFAF5}
+  .action-card .ico.brick{background:var(--alpa);color:#FCFAF5}
+  .action-card .body{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+  .action-card .ttl{font-size:14.5px;font-weight:600;color:var(--ink-900);letter-spacing:-.002em}
+  .action-card .sub{font-size:12.5px;color:var(--ink-500);line-height:1.4}
+  .action-card .chev{color:var(--ink-300);align-self:center;flex-shrink:0;font-size:18px;font-family:"IBM Plex Mono",monospace;
+    transition:color .12s,transform .12s}
+  .action-card:hover .chev{color:var(--ink-700);transform:translateX(3px)}
+
+  /* Two-column layout for Today + Recent */
+  .two-col{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;margin-bottom:22px}
+  .panel{background:var(--surface);border:1px solid var(--rule-strong);border-radius:3px;overflow:hidden;
+    display:flex;flex-direction:column}
+  .panel-h{display:flex;align-items:center;gap:10px;padding:11px 16px;background:var(--paper-2);
+    border-bottom:1px solid var(--rule-strong)}
+  .panel-h .label{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-700);font-weight:600}
+  .panel-h .title{font-size:14px;font-weight:500;color:var(--ink-500);letter-spacing:-.002em}
+  .panel-h .grow{flex:1}
+  .panel-h .meta{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-500);font-weight:500;letter-spacing:.02em}
+  .panel-h .meta b{color:var(--ink-900);margin-right:2px}
+  .panel-body{padding:0;flex:1;overflow-y:auto;max-height:340px}
+  .panel-body::-webkit-scrollbar{width:10px}
+  .panel-body::-webkit-scrollbar-thumb{background:var(--ink-200);border-radius:5px;border:2px solid var(--surface);background-clip:content-box}
+
+  /* List rows */
+  .list-row{display:grid;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--rule);
+    transition:background .08s}
+  .list-row:last-child{border-bottom:0}
+  .list-row:hover{background:var(--surface-2);cursor:default}
+  .list-row .tgl{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-700);font-weight:500;
+    font-variant-numeric:tabular-nums}
+  .list-row .tgl .num{color:var(--ink-900);font-weight:600;margin-right:3px}
+  .list-row .jtag{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 7px;border-radius:2px;
+    font-family:"IBM Plex Sans",sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.04em;line-height:1;
+    border:1px solid transparent;width:fit-content;white-space:nowrap}
+  .list-row .jtag .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+  .list-row .jtag.lahir{background:var(--hadir-bg);color:var(--hadir-ink);border-color:var(--hadir)}
+  .list-row .jtag.lahir .dot{background:var(--hadir)}
+  .list-row .jtag.meninggal{background:var(--ink-200);color:var(--ink-900);border-color:var(--ink-300)}
+  .list-row .jtag.meninggal .dot{background:var(--ink-900)}
+  .list-row .jtag.sb{background:var(--sakit-bg);color:var(--sakit-ink);border-color:var(--sakit)}
+  .list-row .jtag.sb .dot{background:var(--sakit)}
+  .list-row .jtag.ps{background:var(--izin-bg);color:var(--izin-ink);border-color:var(--izin)}
+  .list-row .jtag.ps .dot{background:var(--izin)}
+  .list-row .jtag.kel{background:var(--hadir-bg);color:var(--hadir-ink);border-color:var(--hadir)}
+  .list-row .jtag.kel .dot{background:var(--hadir)}
+  .list-row .jtag.un{background:var(--sakit-bg);color:var(--sakit-ink);border-color:var(--sakit)}
+  .list-row .jtag.un .dot{background:var(--sakit)}
+  .list-row .jtag.lain{background:var(--ink-200);color:var(--ink-700);border-color:var(--ink-300)}
+  .list-row .jtag.lain .dot{background:var(--ink-500)}
+  .list-row .nama{font-size:13.5px;font-weight:500;color:var(--ink-900);letter-spacing:-.002em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .list-row .nama .sub{color:var(--ink-500);font-style:italic;font-weight:400;font-size:12.5px;margin-left:6px}
+
+  .peristiwa-grid{grid-template-columns:80px 110px 1fr}
+  .musy-grid{grid-template-columns:80px 90px 1fr 70px}
+  .musy-grid .hadir-count{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-500);font-weight:500;text-align:right}
+  .musy-grid .hadir-count b{color:var(--ink-900);font-weight:600;font-size:12.5px;margin-right:2px}
+
+  .empty{padding:30px 18px;text-align:center;color:var(--ink-500);font-size:13px;font-style:italic}
+
+  /* Attendance recent compact */
+  .att-recent{display:grid;grid-template-columns:90px 1fr 80px 80px;align-items:center;gap:12px;
+    padding:11px 16px;border-bottom:1px solid var(--rule)}
+  .att-recent:last-child{border-bottom:0}
+  .att-recent .tgl{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-900);font-weight:600;
+    font-variant-numeric:tabular-nums}
+  .att-recent .nm{font-size:13.5px;font-weight:500;color:var(--ink-900)}
+  .att-recent .nm .sub{font-size:11.5px;color:var(--ink-500);margin-top:2px;font-family:"IBM Plex Mono",monospace;
+    letter-spacing:.02em}
+  .att-recent .num{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-700);text-align:right;
+    font-variant-numeric:tabular-nums}
+  .att-recent .num b{color:var(--hadir-ink);font-weight:700}
+  .att-recent .num.pct{color:var(--hadir-ink);font-weight:700}
+
+  /* Perlu Tindakan panel */
+  .ta-panel{background:var(--surface);border:1px solid var(--rule-strong);border-radius:3px;
+    overflow:hidden;margin-bottom:22px}
+  .ta-head{display:flex;align-items:center;gap:10px;padding:11px 16px;background:var(--paper-2);
+    border-bottom:1px solid var(--rule-strong)}
+  .ta-head .label{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-700);font-weight:600}
+  .ta-head .title{font-size:14px;font-weight:500;color:var(--ink-500);letter-spacing:-.002em}
+  .ta-head .grow{flex:1}
+  .ta-head .badge{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:2px;
+    background:var(--izin);color:#FCFAF5;font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+    font-weight:700;letter-spacing:.04em;line-height:1}
+  .ta-head .badge.ok{background:var(--hadir)}
+  .ta-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--rule);
+    transition:background .08s;text-decoration:none;color:inherit;cursor:default}
+  .ta-row:last-child{border-bottom:0}
+  .ta-row:hover{background:#FFFDF8}
+  .ta-row .ico{width:28px;height:28px;border-radius:3px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--izin-bg);color:var(--izin-ink);border:1px solid var(--izin)}
+  .ta-row .ico.alpa{background:var(--alpa-bg);color:var(--alpa-ink);border-color:var(--alpa)}
+  .ta-row .body{flex:1;min-width:0}
+  .ta-row .ttl{font-size:13.5px;font-weight:600;color:var(--ink-900);letter-spacing:-.002em}
+  .ta-row .sub{font-size:12px;color:var(--ink-500);margin-top:2px}
+  .ta-row .cta{font-family:"IBM Plex Sans",sans-serif;font-size:12px;font-weight:700;
+    color:var(--ink-700);padding:6px 12px;border:1px solid var(--rule-strong);
+    border-radius:3px;background:var(--surface);white-space:nowrap;cursor:default;
+    display:inline-flex;align-items:center;gap:4px;transition:background .12s,color .12s,border-color .12s;
+    text-decoration:none}
+  .ta-row:hover .cta{background:var(--ink-900);color:#FCFAF5;border-color:var(--ink-900)}
+  .ta-empty{padding:24px 16px;text-align:center;color:var(--hadir-ink);font-size:13.5px;font-weight:600;
+    background:var(--hadir-bg);display:flex;align-items:center;justify-content:center;gap:8px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <section data-screen-label="01 Dashboard">
+    <p class="sec-eyebrow">Layar · Dashboard (CLApp Home)</p>
+    <h2 class="sec-title">Dashboard — Beranda CLApp</h2>
+    <p class="sec-sub">
+      Beranda yang dibuka saat klik <b>CLApp ›</b> brand. Quick stats, jalan pintas tindakan utama,
+      sesi & peristiwa terbaru — agar operator langsung tahu apa yang perlu dilakukan.
+    </p>
+
+    <div class="dir-note">
+      <div>↓</div>
+      <div>
+        Hover <b>Tindakan Cepat</b> cards untuk lihat link tujuan. Sesi Absensi terbaru, Peristiwa,
+        dan Musyawarah mendatang ditampilkan di bawah dengan tanggal dan ringkasan.
+      </div>
+    </div>
+
+    <div class="frame-wrap">
+      <div class="frame-chrome">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="title"><b>CLApp</b> &nbsp;·&nbsp; Dashboard · Desktop · Offline</div>
+        <div style="width:50px"></div>
+      </div>
+      <div class="frame-stage" id="app-root"></div>
+    </div>
+  </section>
+
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" data-presets="react" src="clapp-data.jsx"></script>
+<script type="text/babel" data-presets="react" src="clapp-navbar.jsx"></script>
+<script type="text/babel" data-presets="react">
+
+const TABS = [
+  ["Absensi","Absensi.html"],
+  ["Jama'ah","Jamaah.html"],
+  ["Rekap Absensi","Rekap Absensi.html"],
+  ["Laporan Bulanan","Laporan Bulanan.html"],
+  ["Catatan Peristiwa","Catatan Peristiwa.html"],
+  ["Musyawarah","Musyawarah.html"],
+  ["Serkiler","Serkiler.html"],
+  ["Pengaturan","Pengaturan.html"],
+  ["Qurban", null],
+];
+
+function NavBar() {
+  return (
+    <div className="app-top">
+      <button className="app-brand active" title="Dashboard (di sini)">
+        <span className="logo-mark">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M2.5 3.5L8 5l5.5-1.5v9L8 14l-5.5-1.5v-9z" stroke="#FCFAF5" strokeWidth="1.2" strokeLinejoin="round"/>
+            <path d="M8 5v9" stroke="#FCFAF5" strokeWidth="1.2"/>
+          </svg>
+        </span>
+        <div className="title">CLApp<span className="home-mark">›</span></div>
+      </button>
+      <div className="app-nav">
+        {TABS.map(([name, href]) => {
+          const dis = href === null;
+          return dis ? (
+            <div key={name} className="tab disabled">
+              <span>{name}</span><span className="coming-badge">Coming Soon</span>
+            </div>
+          ) : (
+            <a key={name} className="tab" href={href}>{name}</a>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+const HARI_ID = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+const BULAN_ID = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+const BULAN_SHORT = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agt","Sep","Okt","Nov","Des"];
+
+function fmtDay(iso) {
+  if (!iso) return { num: "", bln: "" };
+  const [y,m,d] = iso.split("-").map(Number);
+  return { num: String(d).padStart(2,"0"), bln: BULAN_SHORT[m-1] };
+}
+
+// ── Sample data (matches the rest of the app) ──────────────────────────────
+const PERISTIWA = [
+  { tgl:"2026-05-22", jenis:"Pindah Sambung", nama:"Rina W.",        catatan:"ke Jogja" },
+  { tgl:"2026-05-20", jenis:"Pindah Sambung", nama:"Andi Pratama",   catatan:"ke Surabaya (mutasi kerja)" },
+  { tgl:"2026-05-18", jenis:"Sambung Baru",   nama:"Budi Santoso",   catatan:"dari Solo" },
+  { tgl:"2026-05-15", jenis:"Sambung Baru",   nama:"Ibu Sumiati",    catatan:"dari Yogya" },
+  { tgl:"2026-05-11", jenis:"Meninggal",      nama:"H. Sukiyat",     catatan:"" },
+  { tgl:"2026-05-07", jenis:"Sambung Baru",   nama:"Andi Hermawan",  catatan:"dari Bandung" },
+  { tgl:"2026-05-03", jenis:"Lahir",          nama:"(bayi) Aisyah",  catatan:"anak dari Pak Faisal" },
+];
+const JENIS_CLS = { "Lahir":"lahir", "Meninggal":"meninggal", "Sambung Baru":"sb", "Pindah Sambung":"ps" };
+
+const MUSYAWARAH = [
+  { tgl:"2026-05-22", jenis:"Kelompok", judul:"Sambung Baru — Bapak Budi Santoso", hadir:7 },
+  { tgl:"2026-05-15", jenis:"Kelompok", judul:"Koordinasi Jadwal Yasin & Tahlil", hadir:10 },
+  { tgl:"2026-05-08", jenis:"5 Unsur",  judul:"Evaluasi April & Rencana Program Mei", hadir:5 },
+  { tgl:"2026-05-03", jenis:"Kelompok", judul:"Persiapan Pengajian Bulanan Mei", hadir:8 },
+];
+const MUSY_CLS = { "Kelompok":"kel", "5 Unsur":"un", "Lainnya":"lain" };
+
+const ABSENSI_RECENT = [
+  { tgl:"2026-05-22", type:"Hasda", hadir:26, total:30, donasi:"495.000" },
+  { tgl:"2026-05-18", type:"Q+K.Zakat", hadir:24, total:30, donasi:"320.000" },
+  { tgl:"2026-05-15", type:"Hasda", hadir:25, total:30, donasi:"410.000" },
+  { tgl:"2026-05-11", type:"Dalil-dalil", hadir:23, total:30, donasi:"280.000" },
+];
+
+const TINDAKAN = [
+  { title:"Laporan April 2026 belum dikunci",
+    sub:"Operator bulan lalu hanya menyimpan sebagai draf. Kunci sebagai Final agar tercatat di arsip.",
+    cta:"Buka", href:"Laporan Bulanan.html",
+    severity:"izin" },
+  { title:"2 kegiatan Mei belum terlaksana",
+    sub:"Pengkoreksian KU Bulanan & Penderesan ASAD belum dicatat. Update statusnya jika sudah dilakukan.",
+    cta:"Buka", href:"Laporan Bulanan.html",
+    severity:"izin" },
+  { title:"Budi Santoso (Sambung Baru) belum ditempatkan di KK",
+    sub:"Tercatat sebagai Sambung Baru pada 18 Mei tapi belum dibuatkan KK-S atau digabungkan ke KK yang ada.",
+    cta:"Perbaiki", href:"Jamaah.html",
+    severity:"alpa" },
+];
+
+function App() {
+  const now = new Date();
+  const dayName = HARI_ID[now.getDay()];
+  const dateStr = `${String(now.getDate()).padStart(2,"0")}/${String(now.getMonth()+1).padStart(2,"0")}/${now.getFullYear()}`;
+  const timeStr = `${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
+  const monthLabel = `${BULAN_ID[4]} 2026`; // hardcoded for sample data context
+
+  return (
+    <>
+      <window.CLAppNavBar isHome />
+
+      <div className="content">
+
+        {/* Hero */}
+        <div className="hero">
+          <div>
+            <div className="hello-eyebrow">SLM Cilandak A</div>
+            <div className="hello-title">Selamat datang, Operator</div>
+            <div className="hello-sub">
+              Periode aktif: <b>{monthLabel}</b> &nbsp;·&nbsp; Total roster: <b>30 jama'ah · 8 KK</b>
+            </div>
+          </div>
+          <div className="clock">
+            <div className="day">{dayName}</div>
+            <div className="date">{dateStr}</div>
+            <div className="time">{timeStr} WIB</div>
+          </div>
+        </div>
+
+        {/* Perlu Tindakan */}
+        <div className="ta-panel">
+          <div className="ta-head">
+            <span className="label">Perlu Tindakan</span>
+            <span className="title">— item yang perlu diselesaikan</span>
+            <span className="grow"></span>
+            {TINDAKAN.length === 0
+              ? <span className="badge ok">✓ BERES</span>
+              : <span className="badge">{TINDAKAN.length} ITEM</span>}
+          </div>
+          {TINDAKAN.length === 0 ? (
+            <div className="ta-empty">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8l3.5 3.5L13 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Semua beres
+            </div>
+          ) : TINDAKAN.map((t, i) => (
+            <a key={i} className="ta-row" href={t.href}>
+              <div className={`ico${t.severity === "alpa" ? " alpa" : ""}`}>
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 2L1.5 13h13L8 2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+                  <path d="M8 6.5V9.5M8 11.5v.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <div className="body">
+                <div className="ttl">{t.title}</div>
+                {t.sub && <div className="sub">{t.sub}</div>}
+              </div>
+              <span className="cta">{t.cta} →</span>
+            </a>
+          ))}
+        </div>
+
+        {/* Stat cards */}
+        <div className="sec">
+          <div className="sec-h">
+            <span className="label">Ringkasan {monthLabel}</span>
+          </div>
+          <div className="stats">
+            <div className="stat-card">
+              <div className="k">Jama'ah Aktif</div>
+              <div className="v"><b>29</b><span>/ 30 jama'ah</span></div>
+              <div className="delta pos">+1 Sambung Baru bulan ini</div>
+            </div>
+            <div className="stat-card">
+              <div className="k">Kehadiran Bulan Ini</div>
+              <div className="v"><b>82</b><span>%</span></div>
+              <div className="delta pos">+5% dari bulan lalu</div>
+            </div>
+            <div className="stat-card">
+              <div className="k">Sesi Tercatat</div>
+              <div className="v"><b>9</b><span>sesi</span></div>
+              <div className="delta">Mei 2026</div>
+            </div>
+            <div className="stat-card">
+              <div className="k">Shodaqoh Terkumpul</div>
+              <div className="v"><b>Rp 1.505k</b></div>
+              <div className="delta pos">+12% dari bulan lalu</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick actions */}
+        <div className="sec">
+          <div className="sec-h">
+            <span className="label">Tindakan Cepat</span>
+          </div>
+          <div className="actions">
+            <a className="action-card" href="Absensi.html">
+              <div className="ico green">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8l3.5 3.5L13 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="body">
+                <div className="ttl">Catat Absensi</div>
+                <div className="sub">Input kehadiran sesi pengajian hari ini</div>
+              </div>
+              <div className="chev">›</div>
+            </a>
+            <a className="action-card" href="Jamaah.html">
+              <div className="ico">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="5.5" r="2.5" stroke="currentColor" strokeWidth="1.5"/>
+                  <path d="M2.5 14c0-2.5 2.4-4.5 5.5-4.5s5.5 2 5.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <div className="body">
+                <div className="ttl">Jama'ah & KK</div>
+                <div className="sub">Daftar 30 jama'ah di 8 keluarga</div>
+              </div>
+              <div className="chev">›</div>
+            </a>
+            <a className="action-card" href="Catatan Peristiwa.html">
+              <div className="ico amber">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+                  <rect x="3" y="3" width="10" height="11" stroke="currentColor" strokeWidth="1.5"/>
+                  <path d="M3 6h10M6 9h4M6 11h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <div className="body">
+                <div className="ttl">Catat Peristiwa</div>
+                <div className="sub">Lahir / Meninggal / Pindah / Sambung Baru</div>
+              </div>
+              <div className="chev">›</div>
+            </a>
+            <a className="action-card" href="Musyawarah.html">
+              <div className="ico blue">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+                  <circle cx="5" cy="6" r="1.8" stroke="currentColor" strokeWidth="1.4"/>
+                  <circle cx="11" cy="6" r="1.8" stroke="currentColor" strokeWidth="1.4"/>
+                  <path d="M2 12c0-1.5 1.3-2.7 3-2.7M14 12c0-1.5-1.3-2.7-3-2.7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <div className="body">
+                <div className="ttl">Musyawarah Baru</div>
+                <div className="sub">Jadwalkan pertemuan + notulen</div>
+              </div>
+              <div className="chev">›</div>
+            </a>
+            <a className="action-card" href="Serkiler.html">
+              <div className="ico brick">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+                  <path d="M4 5V2h8v3M4 11h8v3H4zM2 5h12a1 1 0 011 1v4a1 1 0 01-1 1H2a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="body">
+                <div className="ttl">Cetak Serkiler</div>
+                <div className="sub">Lembar edaran untuk 22 jama'ah roster</div>
+              </div>
+              <div className="chev">›</div>
+            </a>
+            <a className="action-card" href="Laporan Bulanan.html">
+              <div className="ico">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 2h7l3 3v9H3V2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+                  <path d="M5 7h6M5 9.5h6M5 12h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <div className="body">
+                <div className="ttl">Laporan Bulanan</div>
+                <div className="sub">Edit & unduh laporan Mei 2026</div>
+              </div>
+              <div className="chev">›</div>
+            </a>
+          </div>
+        </div>
+
+        {/* Two-column: Absensi recent + Musyawarah */}
+        <div className="two-col">
+          <div className="panel">
+            <div className="panel-h">
+              <span className="label">Sesi Absensi Terbaru</span>
+              <span className="grow"></span>
+              <a className="all" href="Rekap Absensi.html">Lihat Rekap →</a>
+            </div>
+            <div className="panel-body">
+              {ABSENSI_RECENT.map((s, i) => {
+                const d = fmtDay(s.tgl);
+                const pct = Math.round((s.hadir / s.total) * 100);
+                return (
+                  <div key={i} className="att-recent">
+                    <div className="tgl">{d.num} {d.bln}</div>
+                    <div className="nm">
+                      Pengajian {s.type}
+                      <div className="sub">{s.total} jama'ah</div>
+                    </div>
+                    <div className="num"><b>{s.hadir}</b> hadir</div>
+                    <div className="num pct">{pct}%</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="panel">
+            <div className="panel-h">
+              <span className="label">Musyawarah Terbaru</span>
+              <span className="grow"></span>
+              <a className="all" href="Musyawarah.html">Lihat Semua →</a>
+            </div>
+            <div className="panel-body">
+              {MUSYAWARAH.map((m, i) => {
+                const d = fmtDay(m.tgl);
+                return (
+                  <div key={i} className="list-row musy-grid">
+                    <div className="tgl"><span className="num">{d.num}</span>{d.bln}</div>
+                    <span className={`jtag ${MUSY_CLS[m.jenis]}`}>
+                      <span className="dot"></span>{m.jenis}
+                    </span>
+                    <div className="nama">{m.judul}</div>
+                    <div className="hadir-count"><b>{m.hadir}</b>hadir</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Peristiwa terbaru */}
+        <div className="sec">
+          <div className="panel">
+            <div className="panel-h">
+              <span className="label">Peristiwa Bulan Ini</span>
+              <span className="title">— mutasi jama'ah & keluarga</span>
+              <span className="grow"></span>
+              <a className="all" href="Catatan Peristiwa.html">Buka Catatan Peristiwa →</a>
+            </div>
+            <div className="panel-body">
+              {PERISTIWA.map((e, i) => {
+                const d = fmtDay(e.tgl);
+                return (
+                  <div key={i} className="list-row peristiwa-grid">
+                    <div className="tgl"><span className="num">{d.num}</span>{d.bln}</div>
+                    <span className={`jtag ${JENIS_CLS[e.jenis]}`}>
+                      <span className="dot"></span>{e.jenis}
+                    </span>
+                    <div className="nama">
+                      {e.nama}
+                      {e.catatan && <span className="sub">— {e.catatan}</span>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("app-root")).render(<App />);
+</script>
+</body>
+</html>

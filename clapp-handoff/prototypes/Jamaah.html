@@ -1,0 +1,1634 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<title>Jama'ah — SLM Cilandak A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F5F1E8; --paper-2: #EFE9DC;
+    --surface: #FCFAF5; --surface-2: #F9F5EC;
+    --ink-900: #1B1814; --ink-700: #4A4640; --ink-500: #7A746A;
+    --ink-400: #9C968B; --ink-300: #C8C2B5; --ink-200: #DCD6C8;
+    --rule: #D9D2C2; --rule-strong: #B8B0A0;
+    --hadir:#2E7048; --hadir-ink:#1E4D31; --hadir-bg:#E1ECDC;
+    --alpa:#B23A3A;  --alpa-ink:#7E2828; --alpa-bg:#F4DCD8;
+    --izin:#B17A1F; --sakit:#325E8C;
+    --focus:#325E8C;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink-900);
+    font-family:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;font-size:14px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+
+  .page{max-width:1320px;margin:0 auto;padding:40px 32px 80px}
+  .sec-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);margin:0 0 6px}
+  .sec-title{font-size:22px;font-weight:600;margin:0 0 4px;letter-spacing:-.005em}
+  .sec-sub{font-size:14px;color:var(--ink-700);margin:0 0 24px;max-width:62ch}
+  .dir-note{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-700);
+    background:var(--surface-2);border:1px solid var(--rule);padding:10px 14px;border-radius:3px;margin-bottom:14px}
+  .dir-note b{color:var(--ink-900);font-weight:600}
+
+  /* Frame */
+  .frame-wrap{border:1px solid var(--rule-strong);border-radius:6px;background:#cfc7b4;
+    box-shadow:0 24px 48px -28px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.06)}
+  .frame-chrome{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--rule-strong)}
+  .frame-chrome .dots{display:flex;gap:6px}
+  .frame-chrome .dots i{width:11px;height:11px;border-radius:50%;background:#b3aa97;display:block}
+  .frame-chrome .title{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#4a4640;letter-spacing:.04em;flex:1;text-align:center}
+  .frame-chrome .title b{font-weight:600;color:var(--ink-900)}
+  .frame-stage{background:var(--paper);height:780px;overflow:hidden;display:flex;flex-direction:column;
+    border-radius:0 0 5px 5px}
+
+  /* App header (priority-plus navbar) */
+  .app-top{display:flex;align-items:stretch;background:var(--surface);border-bottom:1px solid var(--rule-strong);position:relative}
+  .app-brand{padding:10px 20px;border-right:1px solid var(--rule);min-width:160px;background:transparent;
+    border-top:0;border-bottom:0;border-left:0;text-align:left;font-family:inherit;color:inherit;
+    cursor:default;display:flex;flex-direction:column;justify-content:center;transition:background .12s}
+  .app-brand:hover{background:var(--surface-2)}
+  .app-brand{flex-direction:row !important;align-items:center !important;gap:10px;border-right:1px solid var(--rule) !important}
+  .app-brand .logo-mark{width:30px;height:30px;background:var(--ink-900);color:#FCFAF5;
+    display:inline-flex;align-items:center;justify-content:center;border-radius:3px;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.04em;
+    flex-shrink:0;border:1px solid var(--ink-900)}
+  .app-brand .logo-mark svg{display:block}
+  .app-brand:hover .logo-mark{background:#000;border-color:#000}
+  .app-brand .logo-mark{position:relative}
+  .app-brand .brand-badge{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;
+    padding:0 4px;border-radius:8px;background:var(--izin);color:#FCFAF5;
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:700;letter-spacing:0;
+    display:inline-flex;align-items:center;justify-content:center;line-height:1;
+    border:1.5px solid var(--surface);pointer-events:none}
+  .app-brand:hover .brand-badge{border-color:var(--surface-2)}
+  .app-brand .name{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-500);
+    font-family:"IBM Plex Mono",monospace}
+  .app-brand .title{font-size:18px;font-weight:600;margin-top:0;letter-spacing:-.005em;
+    display:flex;align-items:center;gap:6px}
+  .app-brand .title .home-mark{font-size:13px;color:var(--ink-400);transition:color .12s,transform .12s}
+  .app-brand:hover .title .home-mark{color:var(--ink-700);transform:translateX(2px)}
+  .app-nav{display:flex;align-items:stretch;flex:1;min-width:0;position:relative}
+  .app-nav .tab{padding:0 18px;display:flex;align-items:center;justify-content:center;
+    font-size:13.5px;color:var(--ink-700);border-right:1px solid var(--rule);cursor:default;
+    font-weight:500;white-space:nowrap;flex:1 1 auto;min-width:0}
+  .app-nav .tab:hover{background:var(--surface-2);color:var(--ink-900)}
+  .app-nav .tab.active{background:var(--paper);color:var(--ink-900);position:relative}
+  .app-nav .tab.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--hadir)}
+  .nav-measure{position:absolute;visibility:hidden;pointer-events:none;white-space:nowrap;
+    left:0;top:0;display:flex;height:100%}
+  .nav-measure .tab,.nav-measure .lainnya-trigger{flex:0 0 auto !important}
+  .lainnya-wrap{position:relative;display:flex;align-items:stretch;flex:0 0 auto}
+  .lainnya-trigger{padding:0 16px;display:flex;align-items:center;gap:6px;color:var(--ink-700);
+    border-right:1px solid var(--rule);cursor:default;font-weight:600;
+    font-family:"IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;font-size:11px;
+    background:var(--surface-2);flex:0 0 auto;white-space:nowrap;position:relative}
+  .lainnya-trigger:hover{background:var(--paper-2);color:var(--ink-900)}
+  .lainnya-trigger.open{background:var(--paper);color:var(--ink-900)}
+  .lainnya-trigger svg{transition:transform .15s ease;color:var(--ink-500)}
+  .lainnya-trigger.open svg{transform:rotate(180deg);color:var(--ink-900)}
+  .lainnya-trigger.has-active{color:var(--ink-900)}
+  .lainnya-trigger.has-active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--hadir)}
+  .lainnya-menu{position:absolute;top:100%;right:0;min-width:220px;background:var(--surface);
+    border:1px solid var(--rule-strong);border-top:1px solid var(--rule);
+    box-shadow:0 14px 32px -8px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.06);z-index:50;padding:6px 0}
+  .lainnya-menu .menu-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);padding:8px 16px 6px}
+  .lainnya-menu .menu-item{padding:9px 16px;font-size:13.5px;color:var(--ink-700);cursor:default;
+    display:flex;align-items:center;gap:10px;border-left:2px solid transparent}
+  .lainnya-menu .menu-item:hover{background:var(--surface-2);color:var(--ink-900);border-left-color:var(--hadir)}
+  .lainnya-menu .menu-item.active{background:var(--paper);color:var(--ink-900);border-left-color:var(--hadir);font-weight:600}
+
+  /* Filter / action bar */
+  .filt{display:flex;align-items:stretch;background:var(--surface-2);border-bottom:1px solid var(--rule)}
+  .filt .cell{padding:10px 16px;border-right:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center}
+  .filt .cell .k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500);
+    font-family:"IBM Plex Mono",monospace;margin-bottom:3px}
+  .filt .cell .v{font-size:14.5px;font-weight:600;color:var(--ink-900);display:flex;align-items:center;gap:8px}
+
+  /* Segmented Per KK / Daftar */
+  .seg{display:inline-flex;border:1px solid var(--rule-strong);border-radius:3px;overflow:hidden;background:#fff}
+  .seg button{appearance:none;border:0;background:transparent;color:var(--ink-700);
+    font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.01em;
+    padding:0 14px;height:30px;cursor:default;display:inline-flex;align-items:center;gap:6px;
+    border-right:1px solid var(--rule-strong)}
+  .seg button:last-child{border-right:0}
+  .seg button.on{background:var(--ink-900);color:#FCFAF5}
+  .seg button .ico{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-400)}
+  .seg button.on .ico{color:#9FCBAE}
+
+  /* Search */
+  .filt .search{flex:1;display:flex;align-items:center;padding:0 16px;gap:10px;border-right:1px solid var(--rule);min-width:280px}
+  .filt .search svg{flex-shrink:0;color:var(--ink-500)}
+  .filt .search input{flex:1;border:0;background:transparent;font:inherit;font-size:14px;color:var(--ink-900);
+    outline:none;padding:14px 0;font-family:"IBM Plex Sans",sans-serif}
+  .filt .search input::placeholder{color:var(--ink-400)}
+
+  /* Filter button + popover */
+  .filt .filter-cell{padding:10px 16px;border-right:1px solid var(--rule);display:flex;align-items:center;position:relative}
+  .filter-btn{appearance:none;border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink-900);
+    font-family:"IBM Plex Sans",sans-serif;font-size:13.5px;font-weight:600;letter-spacing:.005em;
+    padding:0 14px;height:36px;border-radius:3px;cursor:default;display:inline-flex;align-items:center;gap:8px;
+    transition:background .12s,border-color .12s}
+  .filter-btn:hover{background:#FFFDF8;border-color:var(--ink-700)}
+  .filter-btn.open{background:var(--paper);border-color:var(--ink-900);box-shadow:0 0 0 3px rgba(27,24,20,.08)}
+  .filter-btn.has-active{border-color:var(--ink-900)}
+  .filter-btn svg{flex-shrink:0;color:var(--ink-500)}
+  .filter-btn .filter-count{display:inline-flex;align-items:center;justify-content:center;
+    min-width:18px;height:18px;padding:0 6px;border-radius:9px;
+    background:var(--ink-900);color:#FCFAF5;font-family:"IBM Plex Mono",monospace;
+    font-size:10.5px;font-weight:700;letter-spacing:0;line-height:1}
+
+  .filter-pop{position:absolute;top:calc(100% + 6px);right:0;left:auto;width:380px;
+    max-width:min(380px, calc(100vw - 48px));
+    background:var(--surface);border:1px solid var(--rule-strong);border-radius:3px;
+    box-shadow:0 14px 32px -8px rgba(0,0,0,.2),0 2px 6px rgba(0,0,0,.08);z-index:60;
+    display:flex;flex-direction:column;max-height:520px}
+  .filter-pop-head{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 14px;background:var(--paper-2);border-bottom:1px solid var(--rule)}
+  .filter-pop-title{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-700);font-weight:600}
+  .reset-link{appearance:none;border:0;background:transparent;color:var(--ink-700);
+    font-family:"IBM Plex Sans",sans-serif;font-size:12px;font-weight:600;
+    padding:4px 8px;border-radius:2px;cursor:default;letter-spacing:.005em}
+  .reset-link:hover{background:var(--ink-200);color:var(--ink-900)}
+  .filter-pop-body{padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+  .filter-group-label{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-500);font-weight:600;margin-bottom:8px}
+  .filter-chips{display:flex;flex-wrap:wrap;gap:6px}
+  .fchip{appearance:none;border:1px solid var(--rule);background:var(--surface);color:var(--ink-700);
+    font-family:"IBM Plex Sans",sans-serif;font-size:12px;font-weight:600;
+    padding:0 11px;height:28px;border-radius:3px;cursor:default;letter-spacing:.005em}
+  .fchip:hover{background:#FFFDF8;border-color:var(--rule-strong);color:var(--ink-900)}
+  .fchip.on{background:var(--ink-900);color:#FCFAF5;border-color:var(--ink-900)}
+  .filter-toggles{border-top:1px solid var(--rule);padding-top:14px;display:flex;flex-direction:column;gap:12px}
+  .filter-toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .filter-toggle-title{font-size:13px;font-weight:600;color:var(--ink-900)}
+  .filter-toggle-sub{font-size:11.5px;color:var(--ink-500);margin-top:2px}
+
+  /* Kelas select (legacy — unused after consolidation but kept for safety) */
+  .filt select{appearance:none;background:transparent;border:0;font:inherit;color:inherit;
+    padding:0 18px 0 0;margin:0;cursor:default;font-weight:600;font-size:14.5px;
+    font-family:"IBM Plex Sans",sans-serif;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%231B1814' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;background-position:right center}
+
+  /* Aktif saja toggle (chip-style switch) */
+  .aktif-chip{display:inline-flex;align-items:center;gap:8px;cursor:default;font-weight:600;font-size:13px;
+    color:var(--ink-700);user-select:none}
+  .aktif-chip .sw{position:relative;width:32px;height:18px;border-radius:999px;background:var(--ink-300);
+    transition:background .15s;display:block;flex-shrink:0}
+  .aktif-chip .sw i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s;display:block}
+  .aktif-chip.on .sw{background:var(--hadir)}
+  .aktif-chip.on .sw i{transform:translateX(14px)}
+  .aktif-chip.on{color:var(--ink-900)}
+
+  /* Tambah button */
+  .filt .action{display:flex;align-items:center;padding:0 16px}
+  .btn{appearance:none;border:1px solid var(--ink-900);background:var(--ink-900);color:#FCFAF5;
+    font-family:"IBM Plex Sans",sans-serif;font-size:13.5px;font-weight:600;letter-spacing:.01em;
+    padding:0 16px;height:34px;border-radius:3px;cursor:default;display:inline-flex;align-items:center;gap:8px}
+  .btn:hover:not(:disabled){background:#000}
+  .btn.ghost{background:transparent;color:var(--ink-900);border-color:var(--rule-strong)}
+  .btn.ghost:hover:not(:disabled){background:var(--surface-2)}
+  .btn:disabled{background:var(--ink-300);border-color:var(--ink-300);color:var(--surface);cursor:not-allowed}
+  .btn.danger{background:transparent;color:var(--alpa);border-color:var(--alpa-bg)}
+  .btn.danger:hover:not(:disabled){background:var(--alpa-bg);border-color:var(--alpa)}
+
+  /* Column header bar */
+  .colhead{display:grid;align-items:center;background:var(--paper-2);border-bottom:1px solid var(--rule-strong);
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-500);padding:0;position:sticky;top:0;z-index:5;height:36px}
+  .colhead > div{padding:0 14px;border-right:1px solid var(--rule);height:100%;display:flex;align-items:center}
+  .colhead > div:last-child{border-right:0}
+  .colhead .c{justify-content:center}
+  .colhead .r{justify-content:flex-end}
+  .colhead .sticky-name{position:sticky;left:0;background:var(--paper-2);z-index:6;
+    border-right:1px solid var(--rule-strong)}
+
+  /* Grid templates — 10 columns total */
+  /* No (sticky) · Nama (sticky) · L/P · Kelas · Status Pernikahan · Gol Darah · Rhesus · Tempat L · Tanggal L · Panggilan · ✏ (sticky-right) */
+  .grouped{grid-template-columns:60px 220px 110px 56px 130px 150px 100px 100px 150px 130px 160px 44px}
+  /* Flat: No (sticky) · Nama (sticky) · No. KK · then same 8 columns · ✏ */
+  .flat   {grid-template-columns:60px 220px 110px 110px 56px 130px 150px 100px 100px 150px 130px 160px 44px}
+
+  .rows{flex:1;overflow:auto;background:var(--surface);position:relative}
+  .rows::-webkit-scrollbar{width:12px;height:12px}
+  .rows::-webkit-scrollbar-track{background:var(--surface)}
+  .rows::-webkit-scrollbar-thumb{background:var(--ink-200);border-radius:6px;border:3px solid var(--surface)}
+
+  .table-inner{min-width:1414px}
+  .table-inner.flat-mode{min-width:1520px}
+
+  /* Household header row (grouped view) — full-width bg, content sticky-left */
+  .kk-header{position:relative;background:var(--surface-2);
+    border-bottom:1px solid var(--rule-strong);border-top:1px solid var(--rule-strong);
+    margin-top:-1px;width:100%;height:42px;transition:opacity .12s}
+  .kk-header.dragging{opacity:.35}
+  .kk-header.drop-above::before, .kk-header.drop-below::after{
+    content:"";position:absolute;left:0;right:0;height:3px;background:var(--ink-900);
+    z-index:20;pointer-events:none}
+  .kk-header.drop-above::before{top:-2px}
+  .kk-header.drop-below::after{bottom:-2px}
+  .kk-header-content{position:sticky;left:0;display:flex;align-items:center;gap:12px;
+    height:100%;padding:0 14px 0 6px;font-family:"IBM Plex Mono",monospace;
+    background:var(--surface-2);width:max-content;z-index:1;
+    border-right:1px solid var(--rule-strong);white-space:nowrap}
+  .kk-header-content:hover{background:#F1ECDD}
+  .drag-handle{display:inline-flex;align-items:center;justify-content:center;
+    width:20px;height:24px;color:var(--ink-300);cursor:grab;flex-shrink:0;
+    transition:color .12s}
+  .kk-header-content:hover .drag-handle{color:var(--ink-500)}
+  .drag-handle:hover{color:var(--ink-900)}
+  .kk-header.dragging .drag-handle{cursor:grabbing}
+  .kk-header .chev{color:var(--ink-500);font-size:10px;width:14px;display:inline-flex;justify-content:center;
+    transition:transform .15s}
+  .kk-header.collapsed .chev{transform:rotate(-90deg)}
+  .kk-header .no{font-size:12px;font-weight:600;color:var(--ink-900);letter-spacing:.04em}
+  .kk-header .type{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:2px;
+    font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    background:var(--ink-900);color:#FCFAF5}
+  .kk-header .type.kks{background:var(--surface);color:var(--ink-700);border:1px solid var(--rule-strong)}
+  .kk-header .head{font-size:13px;color:var(--ink-700);font-family:"IBM Plex Sans",sans-serif;font-weight:500;
+    display:flex;align-items:center;gap:8px}
+  .kk-header .head b{color:var(--ink-900);font-weight:600}
+  .kk-header .head .sep{color:var(--ink-300)}
+  .kk-header .head .count{color:var(--ink-500);font-family:"IBM Plex Mono",monospace;font-size:11.5px}
+  .kk-header .head .count.filtered{color:var(--sakit);font-weight:600}
+  .kk-header .head .head-aside{color:var(--ink-500);font-family:"IBM Plex Sans",sans-serif;font-style:italic;font-weight:400;font-size:12.5px}
+
+  /* Edit-KK pencil — sits at the end of the sticky-left header content */
+  .edit-kk-btn{appearance:none;border:0;background:transparent;
+    width:26px;height:26px;border-radius:3px;
+    display:inline-flex;align-items:center;justify-content:center;
+    cursor:default;color:var(--ink-300);transition:background .1s,color .1s;
+    margin-left:6px;flex-shrink:0}
+  .kk-header-content:hover .edit-kk-btn{color:var(--ink-500)}
+  .edit-kk-btn:hover{background:var(--ink-200);color:var(--ink-900)}
+
+  /* Alamat inline — extends the sticky-left content */
+  .kk-alamat{display:inline-flex;align-items:center;gap:5px;
+    font-family:"IBM Plex Sans",sans-serif;font-style:italic;font-size:12.5px;
+    color:var(--ink-500);font-weight:400;padding-left:8px;margin-left:2px;
+    border-left:1px solid var(--rule);cursor:default}
+  .kk-alamat svg{color:var(--ink-400);flex-shrink:0}
+  .kk-header-content:hover .kk-alamat{color:var(--ink-700)}
+  .kk-header-content:hover .kk-alamat svg{color:var(--ink-500)}
+
+  /* Member row */
+  .member-row{display:grid;align-items:center;border-bottom:1px solid var(--rule);height:38px;
+    background:var(--surface);transition:background .08s ease}
+  .member-row:hover{background:var(--surface-2)}
+  .member-row:hover .sticky-name{background:var(--surface-2)}
+  .member-row:hover .sticky-edit{background:var(--surface-2)}
+  .member-row > div{padding:0 14px;border-right:1px solid var(--rule);height:100%;display:flex;align-items:center;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .member-row > div:last-child{border-right:0}
+  .member-row .sticky-no, .colhead .sticky-no{position:sticky;left:0;background:var(--surface);z-index:2;
+    border-right:1px solid var(--rule)}
+  .colhead .sticky-no{background:var(--paper-2);z-index:6;
+    justify-content:flex-end;padding-right:14px}
+  .member-row:hover .sticky-no{background:var(--surface-2)}
+  .member-row .sticky-name{position:sticky;left:60px;background:var(--surface);z-index:2;
+    border-right:1px solid var(--rule-strong)}
+  .colhead .sticky-name{position:sticky;left:60px;background:var(--paper-2);z-index:6;
+    border-right:1px solid var(--rule-strong)}
+  .member-row .num{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-500);
+    justify-content:flex-end;padding-right:14px}
+  /* Edit affordance: sticky-right pencil cell */
+  .member-row .sticky-edit, .colhead .sticky-edit{
+    position:sticky;right:0;background:var(--surface);z-index:2;
+    border-left:1px solid var(--rule-strong) !important;border-right:0 !important;
+    padding:0 !important;justify-content:center}
+  .colhead .sticky-edit{background:var(--paper-2);z-index:6}
+  .edit-btn{appearance:none;border:0;background:transparent;width:32px;height:32px;
+    border-radius:3px;display:flex;align-items:center;justify-content:center;
+    cursor:default;color:var(--ink-300);transition:background .1s,color .1s}
+  .member-row:hover .edit-btn{color:var(--ink-500)}
+  .edit-btn:hover{background:var(--ink-200);color:var(--ink-900)}
+  .edit-btn:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+  .member-row .name{font-size:14px;font-weight:500;color:var(--ink-900);gap:8px;letter-spacing:-.002em;
+    padding-left:14px}
+  .member-row .name.indented{padding-left:30px}
+  .member-row .name .head-tag{display:inline-flex;align-items:center;justify-content:center;
+    width:18px;height:18px;border-radius:3px;flex-shrink:0;
+    background:var(--hadir-bg);color:var(--hadir-ink);border:1px solid var(--hadir);
+    font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;
+    line-height:1;letter-spacing:0;cursor:default}
+  /* (legacy in-name role-tag — kept for any other reference, unused) */
+  .member-row .name .role-tag{display:none}
+  /* Dapukan column cell */
+  .member-row .dapukan{font-size:12.5px;color:var(--ink-700);justify-content:center}
+  .member-row .dapukan .pill{display:inline-flex;align-items:center;height:20px;padding:0 8px;
+    border-radius:3px;background:var(--sakit-bg);color:var(--sakit-ink);border:1px solid var(--sakit);
+    font-family:"IBM Plex Sans",sans-serif;font-size:11px;font-weight:600;
+    letter-spacing:.03em;line-height:1;cursor:default}
+  .member-row .dapukan.empty{color:var(--ink-300);font-family:"IBM Plex Mono",monospace;font-size:13px}
+  .member-row .name .inactive-tag{display:inline-flex;align-items:center;font-family:"IBM Plex Mono",monospace;
+    font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    padding:2px 6px;border-radius:2px;background:var(--ink-200);color:var(--ink-700);line-height:1}
+  .member-row .kk{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-700);font-weight:500}
+  .member-row .gender{justify-content:center;font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-700);font-weight:600}
+  .member-row .tahap{font-size:12.5px;color:var(--ink-700);font-family:"IBM Plex Mono",monospace}
+  .member-row .nikah{font-size:13px;color:var(--ink-700)}
+  .member-row .darah,.member-row .rhesus,.member-row .lahir-d{
+    font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-700);font-variant-numeric:tabular-nums}
+  .member-row .rhesus.tt,.member-row .darah.tt{color:var(--ink-400)}
+  .member-row .lahir-t{font-size:13px;color:var(--ink-700)}
+  .member-row .panggilan{font-size:13.5px;color:var(--ink-500);font-style:italic}
+  .member-row .nikah.empty, .member-row .lahir-t.empty, .member-row .lahir-d.empty,
+  .member-row .panggilan.empty{color:var(--ink-300);font-family:"IBM Plex Mono",monospace;font-size:13px;font-style:normal}
+  .member-row.inactive .name, .member-row.inactive .panggilan, .member-row.inactive .tahap,
+  .member-row.inactive .gender, .member-row.inactive .kk, .member-row.inactive .nikah,
+  .member-row.inactive .darah, .member-row.inactive .rhesus, .member-row.inactive .lahir-t,
+  .member-row.inactive .lahir-d{color:var(--ink-400)}
+
+  /* Footer */
+  .app-foot{display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--surface);
+    border-top:1px solid var(--rule-strong)}
+  .app-foot .stat{display:flex;align-items:baseline;gap:6px;font-size:12.5px;color:var(--ink-700)}
+  .app-foot .stat b{font-size:18px;color:var(--ink-900);font-family:"IBM Plex Mono",monospace;font-weight:600}
+  .app-foot .stat.lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-500)}
+  .app-foot .grow{flex:1}
+  .app-foot .sec-info{font-size:12px;color:var(--ink-500);font-family:"IBM Plex Mono",monospace}
+
+  /* ─────────── Modal ─────────── */
+  .frame-stage{position:relative}
+  .modal-backdrop{position:absolute;inset:0;background:rgba(27,24,20,.45);
+    display:flex;align-items:center;justify-content:center;z-index:100;
+    backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+    animation:fade .12s ease-out}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{background:var(--paper);border:1px solid var(--rule-strong);border-radius:4px;
+    width:640px;max-width:calc(100% - 48px);max-height:calc(100% - 48px);
+    display:flex;flex-direction:column;
+    box-shadow:0 30px 80px -20px rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.1);
+    animation:pop .14s cubic-bezier(.3,.7,.4,1)}
+  @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+
+  .modal-head{display:flex;align-items:flex-start;justify-content:space-between;
+    padding:18px 22px 16px;border-bottom:1px solid var(--rule);background:var(--surface)}
+  .modal-head .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);margin-bottom:2px}
+  .modal-head .title{font-size:18px;font-weight:600;letter-spacing:-.005em;color:var(--ink-900)}
+  .modal-x{appearance:none;border:0;background:transparent;color:var(--ink-500);
+    width:28px;height:28px;border-radius:3px;cursor:default;font-size:16px;line-height:1;
+    display:flex;align-items:center;justify-content:center}
+  .modal-x:hover{background:var(--surface-2);color:var(--ink-900)}
+
+  .modal-body{flex:1;overflow-y:auto;padding:18px 22px;background:var(--paper)}
+  .modal-body::-webkit-scrollbar{width:10px}
+  .modal-body::-webkit-scrollbar-thumb{background:var(--ink-200);border-radius:5px;border:2px solid var(--paper);background-clip:content-box}
+
+  /* KK decision (radio cards) */
+  .field-section{margin-bottom:22px}
+  .field-section:last-child{margin-bottom:0}
+  .section-label{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);margin-bottom:10px;font-weight:600}
+
+  .radio-stack{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .radio-card{display:flex;flex-direction:column;gap:4px;padding:11px 14px;
+    background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    cursor:default;transition:border-color .12s,background .12s,box-shadow .12s;position:relative}
+  .radio-card:hover{background:#FFFDF8;border-color:var(--rule-strong)}
+  .radio-card.on{background:#fff;border-color:var(--ink-900);
+    box-shadow:inset 0 0 0 1px var(--ink-900)}
+  .radio-card input{position:absolute;opacity:0;pointer-events:none}
+  .radio-card .rc-title{font-size:13.5px;font-weight:600;color:var(--ink-900);display:flex;align-items:center;gap:8px}
+  .radio-card .rc-title::before{content:"";width:14px;height:14px;border-radius:50%;
+    border:1.5px solid var(--ink-300);background:#fff;flex-shrink:0;display:block;transition:border-color .12s,background .12s}
+  .radio-card.on .rc-title::before{border-color:var(--ink-900);
+    background:radial-gradient(circle, var(--ink-900) 0 4px, #fff 4.5px 100%)}
+  .radio-card .rc-sub{font-size:11.5px;color:var(--ink-500);padding-left:22px;line-height:1.4}
+
+  .kk-picker{margin-top:10px}
+  .kk-picker select{width:100%}
+
+  /* Form grid */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+  .field{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .field.full{grid-column:1 / -1}
+  .field label.lbl{font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;
+    color:var(--ink-700);font-weight:500;display:flex;align-items:baseline;gap:6px}
+  .field label.lbl .req{color:var(--alpa);font-weight:600;margin-left:-3px}
+  .field label.lbl .hint{color:var(--ink-400);font-weight:400;font-size:11.5px;letter-spacing:.01em}
+  .field input[type=text], .field input[type=date], .field select{
+    appearance:none;background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    font:inherit;font-size:14px;color:var(--ink-900);
+    padding:0 14px;height:40px;outline:none;width:100%;font-family:"IBM Plex Sans",sans-serif;
+    transition:background .12s,border-color .12s,box-shadow .12s}
+  .field input[type=text]:hover, .field input[type=date]:hover, .field select:hover{
+    background:#FFFDF8;border-color:var(--rule-strong)}
+  .field input[type=text]:focus, .field input[type=date]:focus, .field select:focus{
+    background:#fff;border-color:var(--ink-900);box-shadow:0 0 0 3px rgba(27,24,20,.08)}
+  .field input[type=text]::placeholder{color:var(--ink-400)}
+  .field select{padding-right:32px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%231B1814' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center}
+  .field textarea{
+    appearance:none;background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    font:inherit;font-size:14px;color:var(--ink-900);line-height:1.45;
+    padding:10px 14px;min-height:64px;resize:vertical;outline:none;width:100%;
+    font-family:"IBM Plex Sans",sans-serif;
+    transition:background .12s,border-color .12s,box-shadow .12s}
+  .field textarea:hover{background:#FFFDF8;border-color:var(--rule-strong)}
+  .field textarea:focus{background:#fff;border-color:var(--ink-900);box-shadow:0 0 0 3px rgba(27,24,20,.08)}
+  .field textarea::placeholder{color:var(--ink-400)}
+
+  /* Mini segmented (for L/P, etc inside form) */
+  .seg-sm{display:inline-flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden;
+    background:var(--surface);height:40px;width:fit-content}
+  .seg-sm button{appearance:none;border:0;background:transparent;color:var(--ink-700);
+    font-family:"IBM Plex Sans",sans-serif;font-size:13px;font-weight:600;
+    padding:0 16px;height:100%;cursor:default;border-right:1px solid var(--rule)}
+  .seg-sm button:last-child{border-right:0}
+  .seg-sm button:hover{background:#FFFDF8}
+  .seg-sm button.on{background:var(--ink-900);color:#FCFAF5}
+  .seg-sm button.on:hover{background:#000}
+
+  /* Checkbox row */
+  .checkbox-row{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;
+    background:var(--surface);border:1px solid var(--rule);border-radius:3px;cursor:default;
+    transition:background .12s,border-color .12s}
+  .checkbox-row:hover{background:#FFFDF8;border-color:var(--rule-strong)}
+  .checkbox-row input[type=checkbox]{appearance:none;width:18px;height:18px;flex-shrink:0;
+    border:1.5px solid var(--ink-400);border-radius:3px;background:#fff;cursor:default;
+    margin:0;position:relative;transition:background .1s,border-color .1s}
+  .checkbox-row input[type=checkbox]:checked{background:var(--ink-900);border-color:var(--ink-900)}
+  .checkbox-row input[type=checkbox]:checked::after{content:"";position:absolute;
+    left:5px;top:1px;width:6px;height:11px;border:solid #fff;border-width:0 2px 2px 0;
+    transform:rotate(45deg);display:block}
+  .checkbox-row .ck-title{font-size:13.5px;font-weight:600;color:var(--ink-900);line-height:1.3}
+  .checkbox-row .ck-sub{font-size:12px;color:var(--ink-500);margin-top:2px;line-height:1.4}
+
+  /* Footer of modal */
+  .modal-foot{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--surface);
+    border-top:1px solid var(--rule)}
+  .modal-hint{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-700);
+    font-family:"IBM Plex Sans",sans-serif;padding:6px 12px;background:var(--surface);
+    border:1px solid var(--rule-strong);border-radius:3px}
+  .modal-hint b{color:var(--ink-900);font-weight:600}
+  .modal-hint .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-700);flex-shrink:0}
+
+  /* Danger section inside the form body (replaces footer Hapus) */
+  .danger-section{padding:14px 16px;background:#FCF6F4;border:1px solid #E9CFCB;border-radius:3px;
+    display:flex;align-items:center;gap:14px}
+  .danger-section .dg-text{flex:1}
+  .danger-section .dg-title{font-size:13px;font-weight:600;color:var(--alpa-ink);line-height:1.3}
+  .danger-section .dg-sub{font-size:11.5px;color:var(--ink-500);margin-top:2px;line-height:1.4}
+  .danger-section .btn.danger{flex-shrink:0;height:34px;padding:0 14px;font-size:13px}
+
+  /* Toast */
+  .anggota-toast{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);
+    background:var(--ink-900);color:#FCFAF5;padding:11px 18px;border-radius:3px;
+    font-size:13px;font-weight:500;letter-spacing:.005em;display:flex;align-items:center;gap:9px;
+    box-shadow:0 12px 32px rgba(0,0,0,.3);z-index:90;
+    animation:toastIn .2s cubic-bezier(.3,.7,.4,1)}
+  @keyframes toastIn{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translateX(-50%)}}
+
+  /* Disabled / coming-soon tabs */
+  .app-nav .tab.disabled{color:var(--ink-400);cursor:not-allowed}
+  .app-nav .tab.disabled:hover{background:transparent;color:var(--ink-400)}
+  .lainnya-menu .menu-item.disabled{color:var(--ink-400);cursor:not-allowed}
+  .lainnya-menu .menu-item.disabled:hover{background:transparent;color:var(--ink-400);border-left-color:transparent}
+  .coming-badge{display:inline-flex;align-items:center;padding:1px 5px;
+    font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-500);background:var(--ink-200);
+    border-radius:2px;margin-left:6px;line-height:1;white-space:nowrap;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <section data-screen-label="01 Jama'ah">
+    <p class="sec-eyebrow">Layar · 03 dari beberapa</p>
+    <h2 class="sec-title">Jama'ah — Daftar Jama'ah & KK</h2>
+    <p class="sec-sub">
+      Member directory organized by household (KK). Each household is the primary visual unit — families cluster together,
+      with members nested beneath a header that names the kepala keluarga. Toggle to <b>Daftar</b> for a flat sortable
+      table when you need to scan across households. Same visual system as Absensi: cream paper, Plex Sans/Mono, 38px rows.
+    </p>
+
+    <div class="dir-note">
+      <div>↓</div>
+      <div>
+        Try toggling <b>Per KK ↔ Daftar</b>, click a household header to collapse it, change <b>Kelas</b>,
+        toggle <b>Aktif saja</b> off to reveal inactive members (mutasi). Drag a KK by its grip handle
+        to reorder — numbers auto-renumber.
+      </div>
+    </div>
+
+    <div class="frame-wrap">
+      <div class="frame-chrome">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="title"><b>Absensi Pengajian</b> &nbsp;·&nbsp; Jama'ah · Desktop · Offline</div>
+        <div style="width:50px"></div>
+      </div>
+      <div class="frame-stage" id="app-root"></div>
+    </div>
+  </section>
+
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" data-presets="react" src="clapp-data.jsx"></script>
+<script type="text/babel" data-presets="react" src="clapp-navbar.jsx"></script>
+<script type="text/babel" data-presets="react">
+const PERLU_TINDAKAN_COUNT = 3;
+
+// ─── NavBar (priority-plus / responsive overflow) ────────────────────────────
+const TABS = [
+  "Absensi","Jama'ah","Rekap Absensi","Laporan Bulanan",
+  "Catatan Peristiwa","Musyawarah","Serkiler","Pengaturan","Qurban",
+];
+const DISABLED_TABS = new Set(["Qurban"]);
+function TabLabel({ name }) {
+  return DISABLED_TABS.has(name)
+    ? <><span>{name}</span><span className="coming-badge">Coming Soon</span></>
+    : name;
+}
+function NavBar({ active }) {
+  const navRef = React.useRef(null);
+  const measureRef = React.useRef(null);
+  const wrapRef = React.useRef(null);
+  const [vCount, setVCount] = React.useState(TABS.length);
+  const [open, setOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (!open) return;
+    const onDown = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+  React.useLayoutEffect(() => {
+    const nav = navRef.current, measure = measureRef.current;
+    if (!nav || !measure) return;
+    const compute = () => {
+      const avail = nav.clientWidth;
+      const tabEls = measure.querySelectorAll('[data-mtab]');
+      const widths = Array.from(tabEls).map(el => el.getBoundingClientRect().width);
+      const lainnyaEl = measure.querySelector('[data-mlainnya]');
+      const lainnyaW = lainnyaEl ? lainnyaEl.getBoundingClientRect().width : 110;
+      const total = widths.reduce((a,b) => a+b, 0);
+      if (total <= avail + 0.5) { setVCount(TABS.length); return; }
+      let used = lainnyaW, count = 0;
+      for (const w of widths) {
+        if (used + w > avail) break;
+        used += w; count++;
+      }
+      setVCount(Math.max(1, count));
+    };
+    compute();
+    const ro = new ResizeObserver(compute);
+    ro.observe(nav);
+    return () => ro.disconnect();
+  }, []);
+  const visible = TABS.slice(0, vCount);
+  const overflowItems = TABS.slice(vCount);
+  const showLainnya = overflowItems.length > 0;
+  const activeIsHidden = showLainnya && overflowItems.includes(active);
+  const Caret = (
+    <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
+      <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5"
+            strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+  return (
+    <div className="app-top">
+      <button className="app-brand" title="Kembali ke Dashboard" onClick={() => { window.location.href = "Dashboard.html"; }}>
+        <span className="logo-mark">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M2.5 3.5L8 5l5.5-1.5v9L8 14l-5.5-1.5v-9z" stroke="#FCFAF5" strokeWidth="1.2" strokeLinejoin="round"/>
+            <path d="M8 5v9" stroke="#FCFAF5" strokeWidth="1.2"/>
+          </svg>
+          {typeof PERLU_TINDAKAN_COUNT !== "undefined" && PERLU_TINDAKAN_COUNT > 0 && <span className="brand-badge">{PERLU_TINDAKAN_COUNT}</span>}
+        </span>
+        <div className="title">CLApp<span className="home-mark">›</span></div>
+      </button>
+      <div className="app-nav" ref={navRef}>
+        <div className="nav-measure" ref={measureRef} aria-hidden="true">
+          {TABS.map(t => <div key={t} className={`tab${DISABLED_TABS.has(t) ? " disabled" : ""}`} data-mtab><TabLabel name={t} /></div>)}
+          <div className="lainnya-trigger" data-mlainnya>Lainnya{Caret}</div>
+        </div>
+        {visible.map(t => (
+          <div key={t} className={`tab${t === active ? " active" : ""}${DISABLED_TABS.has(t) ? " disabled" : ""}`}>
+            <TabLabel name={t} />
+          </div>
+        ))}
+        {showLainnya && (
+          <div className="lainnya-wrap" ref={wrapRef}>
+            <div className={`lainnya-trigger${open ? " open" : ""}${activeIsHidden ? " has-active" : ""}`}
+                 onClick={() => setOpen(o => !o)}>Lainnya{Caret}</div>
+            {open && (
+              <div className="lainnya-menu" role="menu">
+                <div className="menu-eyebrow">Modul Lain</div>
+                {overflowItems.map(t => {
+                  const isDis = DISABLED_TABS.has(t);
+                  return (
+                    <div key={t}
+                         className={`menu-item${t === active ? " active" : ""}${isDis ? " disabled" : ""}`}
+                         role="menuitem"
+                         onClick={isDis ? undefined : () => setOpen(false)}>
+                      <TabLabel name={t} />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Edit KK modal ───────────────────────────────────────────────────────────
+function EditKkModal({ household, displayNo, derivedType, onClose, onSave }) {
+  const headIdxInitial = Math.max(0, household.members.findIndex(m => m.head));
+  const [headIdx, setHeadIdx] = React.useState(headIdxInitial);
+  const alamatInitial = household.alamat || "";
+  const [alamat, setAlamat] = React.useState(alamatInitial);
+
+  React.useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const dirty = headIdx !== headIdxInitial || alamat !== alamatInitial;
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" style={{width:520}} onClick={e => e.stopPropagation()}>
+        <div className="modal-head">
+          <div>
+            <div className="eyebrow">Edit Keluarga</div>
+            <div className="title">KK-{displayNo}</div>
+          </div>
+          <button className="modal-x" onClick={onClose} aria-label="Tutup">✕</button>
+        </div>
+
+        <div className="modal-body">
+          <div className="field-section">
+            <div className="section-label">Identitas KK</div>
+            <div className="form-grid">
+              <div className="field">
+                <label className="lbl">No. KK <span className="hint">(otomatis dari urutan)</span></label>
+                <input type="text" value={`KK-${displayNo}`} readOnly
+                       style={{background:"var(--paper)",color:"var(--ink-500)",cursor:"not-allowed",
+                               fontFamily:"IBM Plex Mono, monospace"}} />
+              </div>
+              <div className="field">
+                <label className="lbl">Tipe <span className="hint">(otomatis dari jumlah jama'ah)</span></label>
+                <input type="text" value={derivedType} readOnly
+                       style={{background:"var(--paper)",color:"var(--ink-500)",cursor:"not-allowed",fontWeight:600}} />
+              </div>
+            </div>
+            <div style={{marginTop:10,padding:"10px 12px",background:"var(--surface)",border:"1px solid var(--rule)",
+                         borderRadius:3,fontSize:12,color:"var(--ink-500)",lineHeight:1.5}}>
+              Nomor KK ditentukan oleh urutan di daftar. Geser baris KK di daftar untuk mengubah posisi —
+              nomor akan otomatis menyesuaikan. Tipe <b style={{color:"var(--ink-900)"}}>KK-S</b> berlaku
+              untuk keluarga beranggotakan satu orang.
+            </div>
+          </div>
+
+          <div className="field-section">
+            <div className="section-label">Kepala Keluarga</div>
+            <div className="field">
+              <label className="lbl">Pilih jama'ah sebagai kepala</label>
+              <select value={headIdx} onChange={e => setHeadIdx(parseInt(e.target.value, 10))}>
+                {household.members.map((m, i) => (
+                  <option key={i} value={i}>
+                    {m.name} · {m.gender} · {m.tahap}{m.head ? " (saat ini)" : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="field-section">
+            <div className="section-label">Alamat KK</div>
+            <div className="field">
+              <label className="lbl">Alamat keluarga <span className="hint">(opsional)</span></label>
+              <textarea value={alamat} onChange={e => setAlamat(e.target.value)} rows={2}
+                        placeholder="contoh: Jl. Cilandak KKO No. 42, RT 003/RW 005" />
+            </div>
+          </div>
+        </div>
+
+        <div className="modal-foot">
+          {dirty && (
+            <div className="modal-hint">
+              <span className="dot"></span>
+              Kepala KK akan diubah ke <b>{household.members[headIdx]?.panggilan || household.members[headIdx]?.name}</b>
+            </div>
+          )}
+          <div style={{flex:1}}></div>
+          <button className="btn ghost" onClick={onClose}>Batal</button>
+          <button className="btn" onClick={() => onSave(headIdx, alamat)} disabled={!dirty}>Simpan</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Sample data: 8 households (representative of 48 KK / 192 jama'ah total) ─
+// Each member carries full identity record: gender, tahap, status pernikahan,
+// gol. darah, rhesus, tempat & tanggal lahir, panggilan, head/active flags.
+const HOUSEHOLDS = [
+  { no:"001", type:"KK", alamat:"Jl. Cilandak KKO No. 42, RT 003/RW 005", members:[
+    { name:"Ahmad Faisal Rahman", gender:"L", tahap:"Dewasa",     panggilan:"Pak Faisal",  head:true,  active:true, dapukan:"Imam", nikah:"Menikah",       darah:"A",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"12/03/1978" },
+    { name:"Siti Aminah Putri",   gender:"P", tahap:"Dewasa",     panggilan:"Bu Siti",                 active:true, nikah:"Menikah",       darah:"B",  rhesus:"Positif", lahirT:"Bandung",    lahirD:"22/07/1982" },
+    { name:"Muhammad Yusuf",      gender:"L", tahap:"Muda-mudi",  panggilan:"Yusuf",                   active:true, nikah:"Belum Menikah", darah:"O",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"18/11/2003" },
+    { name:"Fatimah Zahra",       gender:"P", tahap:"Remaja",     panggilan:"Fatimah",                 active:true, nikah:"Belum Menikah", darah:"A",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"05/04/2010" },
+    { name:"Hasan Ali",           gender:"L", tahap:"Cabe Rawit", panggilan:"Hasan",                   active:true, nikah:"Belum Menikah", darah:"A",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"30/09/2016" },
+  ]},
+  { no:"002", type:"KK", alamat:"Jl. Cilandak Tengah Raya No. 18, RT 002/RW 004", members:[
+    { name:"Bambang Hartono",     gender:"L", tahap:"Dewasa",     panggilan:"Pak Bambang", head:true,  active:true, dapukan:"Sekretaris", nikah:"Menikah",       darah:"B",  rhesus:"Positif", lahirT:"Solo",       lahirD:"04/06/1975" },
+    { name:"Rahmah Wati",         gender:"P", tahap:"Dewasa",     panggilan:"Bu Rahmah",               active:true, dapukan:"Bendahara", nikah:"Menikah",       darah:"AB", rhesus:"Positif", lahirT:"Yogyakarta", lahirD:"11/02/1980" },
+    { name:"Bayu Pratama",        gender:"L", tahap:"Muda-mudi",  panggilan:"Bayu",                    active:true, nikah:"Belum Menikah", darah:"B",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"25/08/2001" },
+    { name:"Salma Aulia",         gender:"P", tahap:"Cabe Rawit", panggilan:"Salma",                   active:true, nikah:"Belum Menikah", darah:"B",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"14/12/2015" },
+  ]},
+  { no:"003", type:"KK-S", alamat:"Jl. Margasatwa Raya No. 7, RT 001/RW 003", members:[
+    { name:"Hj. Khadijah Salim",  gender:"P", tahap:"Dewasa",     panggilan:"Hj. Khadijah", head:true, active:true, nikah:"Janda",         darah:"O",  rhesus:"Tidak Tahu", lahirT:"Surabaya",lahirD:"09/05/1958" },
+  ]},
+  { no:"004", type:"KK", alamat:"Jl. Cilandak KKO Gg. Mawar No. 12, RT 004/RW 005", members:[
+    { name:"Abdul Rahman Hidayat", gender:"L", tahap:"Dewasa",     panggilan:"Pak Abdul",  head:true,  active:true, dapukan:"Wakil", nikah:"Menikah",       darah:"O",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"17/01/1973" },
+    { name:"Nurul Hidayah",        gender:"P", tahap:"Dewasa",     panggilan:"Bu Nurul",               active:true, nikah:"Menikah",       darah:"A",  rhesus:"Positif", lahirT:"Bogor",      lahirD:"28/10/1977" },
+    { name:"Rizki Ramadhan",       gender:"L", tahap:"Muda-mudi",  panggilan:"Rizki",                  active:true, nikah:"Belum Menikah", darah:"O",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"02/09/2000" },
+    { name:"Anisa Aulia",          gender:"P", tahap:"Remaja",     panggilan:"Anisa",                  active:true, nikah:"Belum Menikah", darah:"A",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"19/03/2009" },
+    { name:"Hafiz Maulana",        gender:"L", tahap:"Cabe Rawit", panggilan:"Hafiz",                  active:true, nikah:"Belum Menikah", darah:"B",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"07/06/2014" },
+    { name:"Najwa Putri",          gender:"P", tahap:"Balita",     panggilan:"Najwa",                  active:true, nikah:"Belum Menikah", darah:"O",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"23/11/2022" },
+  ]},
+  { no:"005", type:"KK", alamat:"Jl. Cilandak Tengah III No. 8, RT 002/RW 006", members:[
+    { name:"Sutrisno Wijaya",     gender:"L", tahap:"Dewasa",     panggilan:"Pak Sutrisno", head:true, active:true, nikah:"Menikah",       darah:"A",  rhesus:"Positif",    lahirT:"Semarang",  lahirD:"15/04/1979" },
+    { name:"Lestari Indah",       gender:"P", tahap:"Dewasa",     panggilan:"Bu Lestari",              active:true, nikah:"Menikah",       darah:"O",  rhesus:"Positif",    lahirT:"Jakarta",   lahirD:"03/01/1984" },
+    { name:"Putri Salwa",         gender:"P", tahap:"Balita",     panggilan:"Putri",                   active:true, nikah:"Belum Menikah", darah:"Tidak Tahu", rhesus:"Tidak Tahu", lahirT:"Jakarta", lahirD:"26/07/2023" },
+  ]},
+  { no:"006", type:"KK", alamat:"Jl. Pondok Labu Permai Blok C-7, RT 001/RW 007", members:[
+    { name:"Eko Setiawan",        gender:"L", tahap:"Dewasa",     panggilan:"Pak Eko",    head:true,   active:true, nikah:"Menikah",       darah:"B",  rhesus:"Positif", lahirT:"Solo",       lahirD:"09/12/1976" },
+    { name:"Dewi Sari",           gender:"P", tahap:"Dewasa",     panggilan:"Bu Dewi",                 active:true, nikah:"Menikah",       darah:"A",  rhesus:"Positif", lahirT:"Solo",       lahirD:"21/05/1981" },
+    { name:"Aulia Rahmah",        gender:"P", tahap:"Remaja",     panggilan:"Aulia",                   active:true, nikah:"Belum Menikah", darah:"A",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"13/02/2011" },
+    { name:"Reza Firmansyah",     gender:"L", tahap:"Cabe Rawit", panggilan:"Reza",                    active:true, nikah:"Belum Menikah", darah:"AB", rhesus:"Positif", lahirT:"Jakarta",    lahirD:"04/08/2015" },
+    { name:"Hadi Setiawan",       gender:"L", tahap:"Muda-mudi",  panggilan:"Hadi",                    active:false,nikah:"Belum Menikah", darah:"B",  rhesus:"Positif", lahirT:"Solo",       lahirD:"16/06/2002" },
+  ]},
+  { no:"007", type:"KK-S", alamat:"Jl. Fatmawati Raya No. 130, RT 005/RW 002", members:[
+    { name:"H. Mansur Hakim",     gender:"L", tahap:"Dewasa",     panggilan:"H. Mansur",  head:true,   active:true, dapukan:"Penerobos", nikah:"Duda",          darah:"A",  rhesus:"Positif", lahirT:"Medan",      lahirD:"27/08/1962" },
+  ]},
+  { no:"008", type:"KK", alamat:"Jl. Cilandak Barat No. 25, RT 003/RW 008", members:[
+    { name:"Imam Maulana",        gender:"L", tahap:"Dewasa",     panggilan:"Pak Imam",   head:true,   active:true, dapukan:"KU", nikah:"Menikah",       darah:"O",  rhesus:"Positif", lahirT:"Yogyakarta", lahirD:"30/03/1974" },
+    { name:"Hidayah Sakinah",     gender:"P", tahap:"Dewasa",     panggilan:"Bu Hidayah",              active:true, nikah:"Menikah",       darah:"B",  rhesus:"Negatif", lahirT:"Yogyakarta", lahirD:"12/09/1978" },
+    { name:"Iqbal Rifqi",         gender:"L", tahap:"Muda-mudi",  panggilan:"Iqbal",                   active:true, nikah:"Belum Menikah", darah:"O",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"08/04/2002" },
+    { name:"Nabila Safira",       gender:"P", tahap:"Remaja",     panggilan:"Nabila",                  active:true, nikah:"Belum Menikah", darah:"B",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"25/01/2010" },
+    { name:"Hamzah Ridwan",       gender:"L", tahap:"Cabe Rawit", panggilan:"Hamzah",                  active:true, nikah:"Belum Menikah", darah:"A",  rhesus:"Positif", lahirT:"Jakarta",    lahirD:"17/11/2014" },
+  ]},
+];
+
+const TAHAP_LIST = ["Semua","Balita","Cabe Rawit","Remaja","Muda-mudi","Dewasa"];
+
+function HeadTag(){ return <span className="head-tag" title="Kepala Keluarga">K</span>; }
+function InactiveTag(){ return <span className="inactive-tag">Mutasi</span>; }
+function RoleTag({ role }){ return <span className="role-tag" title={`Jabatan: ${role}`}>{role}</span>; }
+
+// ─── Tambah / Edit Jama'ah modal ─────────────────────────────────────────────
+const TAHAP_FORM = ["Balita","AUD","Cabe Rawit","Pra Remaja","Remaja","Muda-mudi","Dewasa"];
+const STATUS_NIKAH = ["Belum Menikah","Menikah","Janda","Duda"];
+// Dapukan options — managed in Pengaturan, hardcoded here for the prototype.
+// "" means no role assigned (most common).
+const DAPUKAN_LIST = ["","Imam","Wakil","Sekretaris","Bendahara","Penerobos","KU","KMM","Aghnia","Muballigh","PJP"];
+const GOLDARAH = ["A","B","AB","O","Tidak Tahu"];
+const RHESUS = ["Positif","Negatif","Tidak Tahu"];
+
+// dd/mm/yyyy ↔ yyyy-mm-dd
+function isoFromDmy(s){ if(!s) return ""; const [d,m,y] = s.split("/"); return `${y}-${m.padStart(2,"0")}-${d.padStart(2,"0")}`; }
+function dmyFromIso(s){ if(!s) return ""; const [y,m,d] = s.split("-"); return `${d}/${m}/${y}`; }
+
+function MemberFormModal({ households, member, currentKk, onClose, onSave, onDelete }) {
+  const isEdit = !!member;
+  // In edit mode, default to "gabung" with the current KK selected so the
+  // form mirrors the member's current household; the user can switch to
+  // "baru" to split them into a new KK-S.
+  const [mode, setMode] = React.useState(isEdit ? "gabung" : "baru");
+  const [kkUid, setKkUid] = React.useState(isEdit ? currentKk?.uid : "");
+  const [name, setName] = React.useState(member?.name || "");
+  const [panggilan, setPanggilan] = React.useState(member?.panggilan || "");
+  const [gender, setGender] = React.useState(member?.gender || "L");
+  const [tahap, setTahap] = React.useState(member?.tahap || "Dewasa");
+  const [statusN, setStatusN] = React.useState(member?.nikah || "Belum Menikah");
+  const [dapukan, setDapukan] = React.useState(member?.dapukan || "");
+  const [darah, setDarah] = React.useState(member?.darah || "Tidak Tahu");
+  const [rhesus, setRhesus] = React.useState(member?.rhesus || "Tidak Tahu");
+  const [tempatLahir, setTempatLahir] = React.useState(member?.lahirT || "");
+  const [tanggalLahir, setTanggalLahir] = React.useState(member ? isoFromDmy(member.lahirD) : "");
+  // Status Keanggotaan: "Aktif" | "Pindah Sambung" | "Meninggal"
+  const [statusKa, setStatusKa] = React.useState(member ? (member.active ? "Aktif" : "Pindah Sambung") : "Aktif");
+  const [mutDate, setMutDate] = React.useState(new Date().toISOString().slice(0,10));
+  const [mutNote, setMutNote] = React.useState("");
+  const aktif = statusKa === "Aktif";
+  // logAs: "Lahir" | "Sambung Baru" | "Tidak dicatat"
+  // Auto-suggest: Balita → Lahir, otherwise → Sambung Baru. Operator can override.
+  const [logAs, setLogAs] = React.useState(() => {
+    if (isEdit) return "Tidak dicatat";
+    const t = member?.tahap || "Dewasa";
+    return t === "Balita" ? "Lahir" : "Sambung Baru";
+  });
+  // Re-suggest logAs when tahap changes (only if user hasn't manually picked "Tidak dicatat")
+  const [logAsTouched, setLogAsTouched] = React.useState(false);
+  React.useEffect(() => {
+    if (isEdit || logAsTouched) return;
+    setLogAs(tahap === "Balita" ? "Lahir" : "Sambung Baru");
+  }, [tahap, isEdit, logAsTouched]);
+
+  React.useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const valid = name.trim().length > 1 && (mode === "baru" || kkUid);
+
+  const movedKK = isEdit && mode === "gabung" && kkUid !== currentKk?.uid;
+  const splitToBaru = isEdit && mode === "baru";
+  const targetKk = households.find(h => h.uid === kkUid);
+
+  const submit = () => {
+    if (!valid) return;
+    onSave({ isEdit, mode, kkUid, name, panggilan, gender, tahap, statusN, dapukan, darah, rhesus,
+             tempatLahir, tanggalLahir: dmyFromIso(tanggalLahir), aktif, statusKa, mutDate, mutNote, logAs,
+             movedKK, splitToBaru,
+             previousKk: currentKk?.displayNo, previousKkUid: currentKk?.uid,
+             targetKkDisplay: targetKk?.displayNo });
+  };
+
+  const askDelete = () => {
+    if (window.confirm(`Hapus "${name}" dari daftar jama'ah?\n\nTindakan ini akan menghapus data jama'ah sepenuhnya. Untuk pencatatan mutasi (pindah/keluar), gunakan toggle "Status Keanggotaan: Mutasi" saja.`)) {
+      onDelete();
+    }
+  };
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-head">
+          <div>
+            <div className="eyebrow">{isEdit ? "Edit Jama'ah" : "Jama'ah · Pendataan"}</div>
+            <div className="title">{isEdit ? member.name : "Tambah Jama'ah Baru"}</div>
+          </div>
+          <button className="modal-x" onClick={onClose} aria-label="Tutup">✕</button>
+        </div>
+
+        <div className="modal-body">
+
+          {/* KK decision */}
+          <div className="field-section">
+            <div className="section-label">Keluarga (KK)</div>
+            <div className="radio-stack">
+              <label className={`radio-card${mode === "baru" ? " on" : ""}`}
+                     onClick={() => setMode("baru")}>
+                <input type="radio" name="kk-mode" checked={mode === "baru"} readOnly />
+                <div className="rc-title">{isEdit ? "Pisah ke KK baru" : "Buat KK baru"}</div>
+                <div className="rc-sub">
+                  {isEdit
+                    ? "Pindahkan jama'ah ini ke KK-S baru terpisah"
+                    : "Jama'ah ini menjadi kepala KK baru (KK-S)"}
+                </div>
+              </label>
+              <label className={`radio-card${mode === "gabung" ? " on" : ""}`}
+                     onClick={() => setMode("gabung")}>
+                <input type="radio" name="kk-mode" checked={mode === "gabung"} readOnly />
+                <div className="rc-title">{isEdit ? "Pindah / tetap di KK" : "Gabung ke KK yang ada"}</div>
+                <div className="rc-sub">Pilih dari daftar KK</div>
+              </label>
+            </div>
+            {mode === "gabung" && (
+              <div className="kk-picker">
+                <div className="field">
+                  <select value={kkUid} onChange={e => setKkUid(e.target.value)}>
+                    <option value="">— Pilih KK —</option>
+                    {households.map(h => {
+                      const head = h.members.find(m => m.head) || h.members[0];
+                      const isCurrent = isEdit && h.uid === currentKk?.uid;
+                      return (
+                        <option key={h.uid} value={h.uid}>
+                          KK-{h.displayNo} · {head.panggilan} · {h.members.length} jama'ah{isCurrent ? " (saat ini)" : ""}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Identitas */}
+          <div className="field-section">
+            <div className="section-label">Identitas</div>
+            <div className="form-grid">
+              <div className="field full">
+                <label className="lbl">Nama Lengkap<span className="req">*</span></label>
+                <input type="text" value={name} onChange={e => setName(e.target.value)}
+                       placeholder="contoh: Ahmad Faisal Rahman" autoFocus={!isEdit} />
+              </div>
+              <div className="field">
+                <label className="lbl">Panggilan</label>
+                <input type="text" value={panggilan} onChange={e => setPanggilan(e.target.value)}
+                       placeholder="contoh: Pak Faisal" />
+              </div>
+              <div className="field">
+                <label className="lbl">Jenis Kelamin</label>
+                <div className="seg-sm">
+                  <button className={gender === "L" ? "on" : ""} onClick={() => setGender("L")}>Laki-Laki</button>
+                  <button className={gender === "P" ? "on" : ""} onClick={() => setGender("P")}>Perempuan</button>
+                </div>
+              </div>
+              <div className="field">
+                <label className="lbl">Kelas</label>
+                <select value={tahap} onChange={e => setTahap(e.target.value)}>
+                  {TAHAP_FORM.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div className="field">
+                <label className="lbl">Status Pernikahan</label>
+                <select value={statusN} onChange={e => setStatusN(e.target.value)}>
+                  {STATUS_NIKAH.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="field">
+                <label className="lbl">Dapukan <span className="hint">(opsional · dikelola di Pengaturan)</span></label>
+                <select value={dapukan} onChange={e => setDapukan(e.target.value)}>
+                  {DAPUKAN_LIST.map(j => <option key={j||"_none"} value={j}>{j || "— Tidak menjabat —"}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Kelahiran & Kesehatan */}
+          <div className="field-section">
+            <div className="section-label">Kelahiran & Kesehatan</div>
+            <div className="form-grid">
+              <div className="field">
+                <label className="lbl">Tempat Lahir</label>
+                <input type="text" value={tempatLahir} onChange={e => setTempatLahir(e.target.value)}
+                       placeholder="contoh: Jakarta" />
+              </div>
+              <div className="field">
+                <label className="lbl">Tanggal Lahir</label>
+                <input type="date" value={tanggalLahir} onChange={e => setTanggalLahir(e.target.value)} />
+              </div>
+              <div className="field">
+                <label className="lbl">Golongan Darah</label>
+                <select value={darah} onChange={e => setDarah(e.target.value)}>
+                  {GOLDARAH.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="field">
+                <label className="lbl">Rhesus</label>
+                <select value={rhesus} onChange={e => setRhesus(e.target.value)}>
+                  {RHESUS.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Edit-only: Status Keanggotaan */}
+          {isEdit && (
+            <div className="field-section">
+              <div className="section-label">Status Keanggotaan</div>
+              <div className="seg-sm" style={{width:"auto",height:40}}>
+                <button className={statusKa === "Aktif" ? "on" : ""}
+                        onClick={() => setStatusKa("Aktif")}>Aktif</button>
+                <button className={statusKa === "Pindah Sambung" ? "on" : ""}
+                        onClick={() => setStatusKa("Pindah Sambung")}>Pindah Sambung</button>
+                <button className={statusKa === "Meninggal" ? "on" : ""}
+                        onClick={() => setStatusKa("Meninggal")}>Meninggal</button>
+              </div>
+              {statusKa !== "Aktif" && (
+                <div className="form-grid" style={{marginTop:12}}>
+                  <div className="field">
+                    <label className="lbl">Tanggal Kejadian</label>
+                    <input type="date" value={mutDate} max={new Date().toISOString().slice(0,10)}
+                           onChange={e => setMutDate(e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <label className="lbl">{statusKa === "Pindah Sambung" ? "Ke (lokasi)" : "Catatan"}
+                      <span className="hint">(opsional)</span></label>
+                    <input type="text" value={mutNote} onChange={e => setMutNote(e.target.value)}
+                           placeholder={statusKa === "Pindah Sambung" ? "contoh: Jogja, mutasi kerja" : "contoh: wafat di RS Fatmawati"} />
+                  </div>
+                </div>
+              )}
+              <div style={{fontSize:11.5,color:"var(--ink-500)",marginTop:8,lineHeight:1.4}}>
+                {statusKa === "Aktif" && <>Jama'ah tetap di daftar aktif.</>}
+                {statusKa === "Pindah Sambung" && <>Akan dicatat sebagai <b style={{color:"var(--sakit-ink)"}}>Pindah Sambung</b> di Catatan Peristiwa &amp; jama'ah ditandai Mutasi.</>}
+                {statusKa === "Meninggal" && <>Akan dicatat sebagai <b style={{color:"var(--ink-900)"}}>Meninggal</b> di Catatan Peristiwa &amp; jama'ah ditandai Mutasi.</>}
+              </div>
+            </div>
+          )}
+
+          {/* Add-only: Catat di Log sebagai… */}
+          {!isEdit && (
+            <div className="field-section">
+              <div className="section-label">Catat di Catatan Peristiwa sebagai</div>
+              <div className="seg-sm" style={{width:"auto",height:40}}>
+                <button className={logAs === "Lahir" ? "on" : ""}
+                        onClick={() => { setLogAs("Lahir"); setLogAsTouched(true); }}>Lahir</button>
+                <button className={logAs === "Sambung Baru" ? "on" : ""}
+                        onClick={() => { setLogAs("Sambung Baru"); setLogAsTouched(true); }}>Sambung Baru</button>
+                <button className={logAs === "Tidak dicatat" ? "on" : ""}
+                        onClick={() => { setLogAs("Tidak dicatat"); setLogAsTouched(true); }}>Tidak dicatat</button>
+              </div>
+              <div style={{fontSize:11.5,color:"var(--ink-500)",marginTop:8,lineHeight:1.4}}>
+                {logAs === "Lahir" && <>Akan dicatat sebagai <b style={{color:"var(--hadir-ink)"}}>Lahir</b> di Catatan Peristiwa — pilih untuk bayi yang baru lahir di keluarga jama'ah.</>}
+                {logAs === "Sambung Baru" && <>Akan dicatat sebagai <b style={{color:"var(--izin-ink)"}}>Sambung Baru</b> — pilih untuk jama'ah pindahan/mutasi masuk dari luar kelompok.</>}
+                {logAs === "Tidak dicatat" && <>Tidak akan membuat entri Catatan Peristiwa — gunakan untuk koreksi data atau import data lama.</>}
+              </div>
+            </div>
+          )}
+
+          {/* Edit-only: Tindakan Lanjutan (destructive) */}
+          {isEdit && onDelete && (
+            <div className="field-section">
+              <div className="section-label">Tindakan Lanjutan</div>
+              <div className="danger-section">
+                <div className="dg-text">
+                  <div className="dg-title">Hapus jama'ah dari daftar</div>
+                  <div className="dg-sub">Tidak dapat dibatalkan. Untuk jama'ah yang pindah/keluar,
+                    gunakan toggle <b>Mutasi</b> di atas.</div>
+                </div>
+                <button className="btn danger" onClick={askDelete}>
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 4h10M6 4V2.5a.5.5 0 01.5-.5h3a.5.5 0 01.5.5V4M5 4l.7 9a1 1 0 001 .9h2.6a1 1 0 001-.9L11 4"
+                          stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  Hapus
+                </button>
+              </div>
+            </div>
+          )}
+
+        </div>
+
+        <div className="modal-foot">
+          {splitToBaru && (
+            <div className="modal-hint">
+              <span className="dot"></span>
+              Akan dibuat <b>KK-S</b> baru dengan jama'ah ini sebagai kepala
+            </div>
+          )}
+          {movedKK && (
+            <div className="modal-hint">
+              <span className="dot"></span>
+              Jama'ah dipindahkan dari <b>KK-{currentKk?.displayNo}</b> ke <b>KK-{targetKk?.displayNo}</b>
+            </div>
+          )}
+          {!isEdit && mode === "baru" && (
+            <div className="modal-hint">
+              <span className="dot"></span>
+              Akan dibuat <b>KK-S</b> baru dengan jama'ah ini sebagai kepala
+            </div>
+          )}
+          <div style={{flex:1}}></div>
+          <button className="btn ghost" onClick={onClose}>Batal</button>
+          <button className="btn" onClick={submit} disabled={!valid}>
+            {isEdit ? "Simpan Perubahan" : "Simpan"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [view, setView] = React.useState("perkk"); // perkk | daftar
+  const [query, setQuery] = React.useState("");
+  const [tahap, setTahap] = React.useState("Semua");
+  const [aktif, setAktif] = React.useState(true);
+  const [pengurus, setPengurus] = React.useState(false);
+  const [gender, setGender] = React.useState("Semua");        // Semua / L / P
+  const [dapukanF, setDapukanF] = React.useState("Semua");    // Semua / <role>
+  const [filterOpen, setFilterOpen] = React.useState(false);
+  const filterRef = React.useRef(null);
+  React.useEffect(() => {
+    if (!filterOpen) return;
+    const onDown = (e) => { if (filterRef.current && !filterRef.current.contains(e.target)) setFilterOpen(false); };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [filterOpen]);
+  // Active filter count (default: aktif=true counts as 1; others when set)
+  const filterCount = (aktif ? 1 : 0)
+    + (pengurus ? 1 : 0)
+    + (gender !== "Semua" ? 1 : 0)
+    + (tahap !== "Semua" ? 1 : 0);
+  const resetFilters = () => {
+    setAktif(true); setPengurus(false); setGender("Semua"); setTahap("Semua");
+  };
+  const [collapsed, setCollapsed] = React.useState(() => new Set());
+  const [showAdd, setShowAdd] = React.useState(false);
+  const [editing, setEditing] = React.useState(null); // member edit: { member, kkUid } | null
+  const [editingKk, setEditingKk] = React.useState(null); // KK edit: kkUid | null
+  const [toast, setToast] = React.useState(null);
+  // Households as state so drag-and-drop can reorder them.
+  // `h.no` stays as a stable internal uid; the displayed number is computed
+  // from each household's index in this array (drag reorder → renumber).
+  // Member `mid` is assigned once at init in data order → stable Nomor
+  // Jama'ah that survives KK reorders and edits.
+  const [households, setHouseholds] = React.useState(() => {
+    let counter = 1;
+    return HOUSEHOLDS.map(h => ({
+      ...h,
+      members: h.members.map(m => ({
+        ...m,
+        mid: String(counter++).padStart(3, "0"),
+      })),
+    }));
+  });
+  // Drag-and-drop bookkeeping
+  const [draggingUid, setDraggingUid] = React.useState(null);
+  const [dropAt, setDropAt] = React.useState(null); // { uid, position: "before"|"after" }
+
+  // Apply filters at the member level
+  const matchesMember = (m) => {
+    if (aktif && !m.active) return false;
+    if (pengurus && !m.dapukan) return false;
+    if (gender !== "Semua" && m.gender !== gender) return false;
+    if (tahap !== "Semua" && m.tahap !== tahap) return false;
+    if (query.trim()) {
+      const q = query.toLowerCase();
+      if (!m.name.toLowerCase().includes(q)
+          && !m.panggilan.toLowerCase().includes(q)
+          && !(m.mid || "").includes(q)) return false;
+    }
+    return true;
+  };
+
+  // Filtered households (drop households with no matching members).
+  // Each carries derived `displayNo` (1-based position) and `derivedType`
+  // (KK-S iff lone member). The data's stored `type` field is ignored.
+  const filtered = households.map((h, idx) => {
+    const members = h.members.filter(matchesMember);
+    return {
+      ...h,
+      members,
+      fullCount: h.members.length,
+      displayNo: String(idx + 1).padStart(3, "0"),
+      derivedType: h.members.length === 1 ? "KK-S" : "KK",
+    };
+  }).filter(h => h.members.length > 0);
+
+  const toggleCollapse = (no) => {
+    setCollapsed(s => {
+      const n = new Set(s);
+      n.has(no) ? n.delete(no) : n.add(no);
+      return n;
+    });
+  };
+
+  // ── Drag-and-drop reorder for KK groups ────────────────────────────────────
+  const onKkDragStart = (e, uid) => {
+    setDraggingUid(uid);
+    e.dataTransfer.effectAllowed = "move";
+    try { e.dataTransfer.setData("text/plain", uid); } catch {}
+  };
+  const onKkDragEnd = () => {
+    setDraggingUid(null);
+    setDropAt(null);
+  };
+  const onKkDragOver = (e, targetUid) => {
+    if (!draggingUid || draggingUid === targetUid) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    const rect = e.currentTarget.getBoundingClientRect();
+    const position = (e.clientY - rect.top) < rect.height / 2 ? "before" : "after";
+    setDropAt(prev => (prev && prev.uid === targetUid && prev.position === position)
+      ? prev : { uid: targetUid, position });
+  };
+  const onKkDragLeave = (e, targetUid) => {
+    // Only clear if leaving the entire header row (not a child element)
+    if (e.currentTarget.contains(e.relatedTarget)) return;
+    setDropAt(prev => prev && prev.uid === targetUid ? null : prev);
+  };
+  const onKkDrop = (e, targetUid) => {
+    e.preventDefault();
+    const sourceUid = draggingUid;
+    const position = dropAt?.position || "before";
+    setDraggingUid(null);
+    setDropAt(null);
+    if (!sourceUid || sourceUid === targetUid) return;
+    setHouseholds(hs => {
+      const src = hs.findIndex(h => h.no === sourceUid);
+      const tgt = hs.findIndex(h => h.no === targetUid);
+      if (src < 0 || tgt < 0) return hs;
+      const item = hs[src];
+      const without = hs.filter((_, i) => i !== src);
+      const tgtAdj = without.findIndex(h => h.no === targetUid);
+      const insertAt = position === "before" ? tgtAdj : tgtAdj + 1;
+      const reordered = [...without.slice(0, insertAt), item, ...without.slice(insertAt)];
+      // Toast: where did it land?
+      const newIdx = reordered.findIndex(h => h.no === sourceUid);
+      setToast(`KK diurutkan ulang \u00b7 sekarang di posisi KK-${String(newIdx + 1).padStart(3, "0")}`);
+      setTimeout(() => setToast(null), 2800);
+      return reordered;
+    });
+  };
+
+  // Reassign kepala / type updates from EditKkModal
+  const onSaveKk = (uid, newHeadIdx, newAlamat) => {
+    setHouseholds(hs => hs.map(h => {
+      if (h.no !== uid) return h;
+      return {
+        ...h,
+        alamat: newAlamat,
+        members: h.members.map((m, i) => ({ ...m, head: i === newHeadIdx })),
+      };
+    }));
+    setEditingKk(null);
+    setToast(`KK diperbarui`);
+    setTimeout(() => setToast(null), 2400);
+  };
+
+  // Flat sortable list
+  const flatRows = React.useMemo(() => {
+    const out = [];
+    let i = 1;
+    for (const h of filtered) {
+      for (const m of h.members) {
+        out.push({ id: String(i).padStart(3,"0"), kkNo: h.displayNo, kkUid: h.no, kkType: h.derivedType, ...m });
+        i++;
+      }
+    }
+    return out;
+  }, [filtered]);
+
+  const totalShownMembers = flatRows.length;
+  const totalShownKK = filtered.length;
+
+  return (
+    <>
+      {/* Header */}
+      <window.CLAppNavBar active="Jama'ah" />
+
+      {/* Filter bar */}
+      <div className="filt">
+        <div className="cell">
+          <div className="k">Tampilan</div>
+          <div className="v">
+            <div className="seg">
+              <button className={view==="perkk" ? "on" : ""} onClick={() => setView("perkk")}>
+                <span className="ico">⊟</span>Per KK
+              </button>
+              <button className={view==="daftar" ? "on" : ""} onClick={() => setView("daftar")}>
+                <span className="ico">≡</span>Daftar
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="search">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.4"/>
+            <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+          </svg>
+          <input placeholder="Cari nama atau nomor jama'ah…" value={query}
+                 onChange={e => setQuery(e.target.value)} />
+        </div>
+        <div className="cell filter-cell" ref={filterRef}>
+          <button className={`filter-btn${filterOpen ? " open" : ""}${filterCount > 0 ? " has-active" : ""}`}
+                  onClick={() => setFilterOpen(o => !o)}>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <path d="M2 3h12l-4.5 6V13l-3 1.5V9L2 3z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+            </svg>
+            Filter
+            {filterCount > 0 && <span className="filter-count">{filterCount}</span>}
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{marginLeft:4}}>
+              <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          {filterOpen && (
+            <div className="filter-pop">
+              <div className="filter-pop-head">
+                <span className="filter-pop-title">Filter Jama'ah</span>
+                <button className="reset-link" onClick={resetFilters}>Reset</button>
+              </div>
+              <div className="filter-pop-body">
+                <div className="filter-group">
+                  <div className="filter-group-label">Kelas</div>
+                  <div className="filter-chips">
+                    {TAHAP_LIST.map(t => (
+                      <button key={t} className={`fchip${tahap === t ? " on" : ""}`}
+                              onClick={() => setTahap(t)}>{t}</button>
+                    ))}
+                  </div>
+                </div>
+                <div className="filter-group">
+                  <div className="filter-group-label">Jenis Kelamin</div>
+                  <div className="filter-chips">
+                    <button className={`fchip${gender === "Semua" ? " on" : ""}`} onClick={() => setGender("Semua")}>Semua</button>
+                    <button className={`fchip${gender === "L" ? " on" : ""}`} onClick={() => setGender("L")}>Laki-Laki</button>
+                    <button className={`fchip${gender === "P" ? " on" : ""}`} onClick={() => setGender("P")}>Perempuan</button>
+                  </div>
+                </div>
+                <div className="filter-group filter-toggles">
+                  <div className="filter-toggle-row">
+                    <div>
+                      <div className="filter-toggle-title">Hanya jama'ah aktif</div>
+                      <div className="filter-toggle-sub">Sembunyikan jama'ah Mutasi</div>
+                    </div>
+                    <button className={`aktif-chip${aktif ? " on" : ""}`} onClick={() => setAktif(a => !a)}>
+                      <span className="sw"><i></i></span>
+                    </button>
+                  </div>
+                  <div className="filter-toggle-row">
+                    <div>
+                      <div className="filter-toggle-title">Hanya pengurus</div>
+                      <div className="filter-toggle-sub">Hanya yang punya Dapukan</div>
+                    </div>
+                    <button className={`aktif-chip${pengurus ? " on" : ""}`} onClick={() => setPengurus(p => !p)}>
+                      <span className="sw"><i></i></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="action">
+          <button className="btn" onClick={() => setShowAdd(true)}>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+            </svg>
+            Tambah Jama'ah
+          </button>
+        </div>
+      </div>
+
+      {/* Rows + colhead (in one scroll container so horizontal scroll syncs) */}
+      <div className="rows">
+        <div className={`table-inner${view === "daftar" ? " flat-mode" : ""}`}>
+
+          {/* Column header */}
+          {view === "perkk" ? (
+            <div className="colhead grouped">
+              <div className="sticky-no r">No.</div>
+              <div className="sticky-name">Nama Jama'ah</div>
+              <div className="c">Dapukan</div>
+              <div className="c">L/P</div>
+              <div>Kelas</div>
+              <div>Status Pernikahan</div>
+              <div>Golongan Darah</div>
+              <div>Rhesus</div>
+              <div>Tempat Lahir</div>
+              <div>Tanggal Lahir</div>
+              <div>Panggilan</div>
+              <div className="sticky-edit"></div>
+            </div>
+          ) : (
+            <div className="colhead flat">
+              <div className="sticky-no r">No.</div>
+              <div className="sticky-name">Nama Jama'ah</div>
+              <div className="c">Dapukan</div>
+              <div>No. KK</div>
+              <div className="c">L/P</div>
+              <div>Kelas</div>
+              <div>Status Pernikahan</div>
+              <div>Golongan Darah</div>
+              <div>Rhesus</div>
+              <div>Tempat Lahir</div>
+              <div>Tanggal Lahir</div>
+              <div>Panggilan</div>
+              <div className="sticky-edit"></div>
+            </div>
+          )}
+
+          {view === "perkk" ? (
+            filtered.length === 0 ? (
+              <div style={{padding:"60px 20px",textAlign:"center",color:"var(--ink-500)",fontSize:13}}>
+                Tidak ada jama'ah yang cocok dengan pencarian.
+              </div>
+            ) : filtered.map(h => {
+              const isCollapsed = collapsed.has(h.no);
+              const head = h.members.find(m => m.head) || h.members[0];
+              const isFiltered = h.members.length < h.fullCount;
+              const isDragging = draggingUid === h.no;
+              const dropClass = dropAt && dropAt.uid === h.no
+                ? (dropAt.position === "before" ? " drop-above" : " drop-below")
+                : "";
+              return (
+                <React.Fragment key={h.no}>
+                  <div className={`kk-header${isCollapsed ? " collapsed" : ""}${isDragging ? " dragging" : ""}${dropClass}`}
+                       draggable={true}
+                       onDragStart={(e) => onKkDragStart(e, h.no)}
+                       onDragEnd={onKkDragEnd}
+                       onDragOver={(e) => onKkDragOver(e, h.no)}
+                       onDragLeave={(e) => onKkDragLeave(e, h.no)}
+                       onDrop={(e) => onKkDrop(e, h.no)}>
+                    <div className="kk-header-content">
+                      <span className="drag-handle" title="Geser untuk mengurutkan ulang KK">
+                        <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor" aria-hidden="true">
+                          <circle cx="2.5" cy="3"  r="1"/>
+                          <circle cx="7.5" cy="3"  r="1"/>
+                          <circle cx="2.5" cy="7"  r="1"/>
+                          <circle cx="7.5" cy="7"  r="1"/>
+                          <circle cx="2.5" cy="11" r="1"/>
+                          <circle cx="7.5" cy="11" r="1"/>
+                        </svg>
+                      </span>
+                      <span className="chev" onClick={() => toggleCollapse(h.no)}>▼</span>
+                      <span className="no" onClick={() => toggleCollapse(h.no)}>KK-{h.displayNo}</span>
+                      <span className={`type${h.derivedType === "KK-S" ? " kks" : ""}`}
+                            onClick={() => toggleCollapse(h.no)}>{h.derivedType}</span>
+                      <span className="head" onClick={() => toggleCollapse(h.no)}>
+                        <b>{head.panggilan}</b>
+                        <span className="sep">·</span>
+                        <span className={`count${isFiltered ? " filtered" : ""}`}>
+                          {isFiltered
+                            ? `${h.members.length} dari ${h.fullCount} jama'ah`
+                            : `${h.fullCount} jama'ah`}
+                        </span>
+                      </span>
+                      <button className="edit-kk-btn" title="Edit KK"
+                              onClick={(e) => { e.stopPropagation(); setEditingKk(h.no); }}>
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                          <path d="M11.5 2.2l2.3 2.3L5 13.3H2.7v-2.3L11.5 2.2z"
+                                stroke="currentColor" strokeWidth="1.4"
+                                strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </button>
+                      {h.alamat && (
+                        <span className="kk-alamat" onClick={() => toggleCollapse(h.no)}
+                              title={h.alamat}>
+                          <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                            <path d="M8 14s5-4.5 5-8.5A5 5 0 003 5.5C3 9.5 8 14 8 14z"
+                                  stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
+                            <circle cx="8" cy="5.5" r="1.6" stroke="currentColor" strokeWidth="1.3"/>
+                          </svg>
+                          {h.alamat}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  {!isCollapsed && h.members.map((m, i) => (
+                    <div key={i} className={`member-row grouped${!m.active ? " inactive" : ""}`}>
+                      <div className="num sticky-no">{m.mid}</div>
+                      <div className="name sticky-name indented">
+                        {m.name}
+                        {m.head && <HeadTag />}
+                        {!m.active && <InactiveTag />}
+                      </div>
+                      <div className={`dapukan${m.dapukan ? "" : " empty"}`}>
+                        {m.dapukan ? <span className="pill">{m.dapukan}</span> : "—"}
+                      </div>
+                      <div className="gender">{m.gender}</div>
+                      <div className="tahap">{m.tahap}</div>
+                      <div className={`nikah${m.nikah ? "" : " empty"}`}>{m.nikah || "—"}</div>
+                      <div className={`darah${m.darah === "Tidak Tahu" || !m.darah ? " tt" : ""}`}>{m.darah || "—"}</div>
+                      <div className={`rhesus${m.rhesus === "Tidak Tahu" || !m.rhesus ? " tt" : ""}`}>{m.rhesus || "—"}</div>
+                      <div className={`lahir-t${m.lahirT ? "" : " empty"}`}>{m.lahirT || "—"}</div>
+                      <div className={`lahir-d${m.lahirD ? "" : " empty"}`}>{m.lahirD || "—"}</div>
+                      <div className={`panggilan${m.panggilan ? "" : " empty"}`}>{m.panggilan || "—"}</div>
+                      <div className="sticky-edit">
+                        <button className="edit-btn" title="Edit jama'ah"
+                                onClick={() => setEditing({ member: m, kkUid: h.no })}>
+                          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                            <path d="M11.5 2.2l2.3 2.3L5 13.3H2.7v-2.3L11.5 2.2z"
+                                  stroke="currentColor" strokeWidth="1.4"
+                                  strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </React.Fragment>
+              );
+            })
+          ) : (
+            flatRows.length === 0 ? (
+              <div style={{padding:"60px 20px",textAlign:"center",color:"var(--ink-500)",fontSize:13}}>
+                Tidak ada jama'ah yang cocok dengan pencarian.
+              </div>
+            ) : flatRows.map(m => (
+              <div key={m.id} className={`member-row flat${!m.active ? " inactive" : ""}`}>
+                <div className="num sticky-no">{m.mid}</div>
+                <div className="name sticky-name">
+                  {m.name}
+                  {m.head && <HeadTag />}
+                  {!m.active && <InactiveTag />}
+                </div>
+                <div className={`dapukan${m.dapukan ? "" : " empty"}`}>
+                  {m.dapukan ? <span className="pill">{m.dapukan}</span> : "—"}
+                </div>
+                <div className="kk">KK-{m.kkNo}{m.kkType === "KK-S" ? " ·S" : ""}</div>
+                <div className="gender">{m.gender}</div>
+                <div className="tahap">{m.tahap}</div>
+                <div className={`nikah${m.nikah ? "" : " empty"}`}>{m.nikah || "—"}</div>
+                <div className={`darah${m.darah === "Tidak Tahu" || !m.darah ? " tt" : ""}`}>{m.darah || "—"}</div>
+                <div className={`rhesus${m.rhesus === "Tidak Tahu" || !m.rhesus ? " tt" : ""}`}>{m.rhesus || "—"}</div>
+                <div className={`lahir-t${m.lahirT ? "" : " empty"}`}>{m.lahirT || "—"}</div>
+                <div className={`lahir-d${m.lahirD ? "" : " empty"}`}>{m.lahirD || "—"}</div>
+                <div className={`panggilan${m.panggilan ? "" : " empty"}`}>{m.panggilan || "—"}</div>
+                <div className="sticky-edit">
+                  <button className="edit-btn" title="Edit jama'ah"
+                          onClick={() => setEditing({ member: m, kkUid: m.kkUid })}>
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <path d="M11.5 2.2l2.3 2.3L5 13.3H2.7v-2.3L11.5 2.2z"
+                            stroke="currentColor" strokeWidth="1.4"
+                            strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="app-foot">
+        <div className="stat lab">Total Roster</div>
+        <div className="stat">
+          <b>{households.reduce((sum, h) => sum + h.members.length, 0)}</b> jama'ah
+        </div>
+        <div className="stat"><b>{households.length}</b> KK</div>
+        <div className="grow"></div>
+      </div>
+
+      {(showAdd || editing) && (() => {
+        // Build the households list the modal expects (with displayNo + uid)
+        const modalHouseholds = households.map((h, idx) => ({
+          uid: h.no,
+          displayNo: String(idx + 1).padStart(3, "0"),
+          members: h.members,
+        }));
+        const currentKk = editing ? modalHouseholds.find(h => h.uid === editing.kkUid) : null;
+        return (
+        <MemberFormModal
+          households={modalHouseholds}
+          member={editing?.member}
+          currentKk={currentKk}
+          onClose={() => { setShowAdd(false); setEditing(null); }}
+          onSave={(data) => {
+            setShowAdd(false); setEditing(null);
+            if (data.isEdit) {
+              const where = data.splitToBaru
+                ? "KK-S baru"
+                : data.movedKK
+                  ? `KK-${data.targetKkDisplay} (dipindahkan dari KK-${data.previousKk})`
+                  : `KK-${data.targetKkDisplay}`;
+              setToast(`Perubahan disimpan untuk "${data.name}" · ${where}${!data.aktif ? " · status Mutasi" : ""}`);
+            } else {
+              const where = data.mode === "baru" ? "KK baru (KK-S)" : `KK-${data.targetKkDisplay}`;
+              setToast(`Jama'ah "${data.name}" disimpan ke ${where}${data.logAs !== "Tidak dicatat" ? ` · dicatat sebagai ${data.logAs}` : ""}`);
+            }
+            setTimeout(() => setToast(null), 3600);
+          }}
+          onDelete={editing ? () => {
+            const removed = editing.member.name;
+            setEditing(null);
+            setToast(`Jama'ah "${removed}" dihapus dari daftar`);
+            setTimeout(() => setToast(null), 3600);
+          } : null}
+        />
+        );
+      })()}
+
+      {/* Edit KK modal */}
+      {editingKk && (() => {
+        const idx = households.findIndex(h => h.no === editingKk);
+        if (idx < 0) return null;
+        const h = households[idx];
+        const displayNo = String(idx + 1).padStart(3, "0");
+        const derivedType = h.members.length === 1 ? "KK-S" : "KK";
+        return (
+          <EditKkModal
+            household={h}
+            displayNo={displayNo}
+            derivedType={derivedType}
+            onClose={() => setEditingKk(null)}
+            onSave={(newHeadIdx) => onSaveKk(h.no, newHeadIdx)}
+          />
+        );
+      })()}
+
+      {toast && (
+        <div className="anggota-toast">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8l3.5 3.5L13 5" stroke="#9FCBAE" strokeWidth="1.8"
+                  strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          {toast}
+        </div>
+      )}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("app-root")).render(<App />);
+</script>
+</body>
+</html>

@@ -1,0 +1,1299 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<title>Laporan Bulanan — SLM Cilandak A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F1E8; --paper-2:#EFE9DC; --surface:#FCFAF5; --surface-2:#F9F5EC;
+    --ink-900:#1B1814; --ink-700:#4A4640; --ink-500:#7A746A;
+    --ink-400:#9C968B; --ink-300:#C8C2B5; --ink-200:#DCD6C8;
+    --rule:#D9D2C2; --rule-strong:#B8B0A0;
+    --hadir:#2E7048; --hadir-ink:#1E4D31; --hadir-bg:#E1ECDC;
+    --alpa:#B23A3A;  --alpa-ink:#7E2828; --alpa-bg:#F4DCD8;
+    --izin:#B17A1F; --izin-ink:#7F5614; --izin-bg:#F2E5C7;
+    --sakit:#325E8C;  --sakit-ink:#234062;  --sakit-bg:#DCE5F0;
+    --focus:#325E8C;
+    --readonly-bg:#EAE3D2;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink-900);
+    font-family:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;font-size:14px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+  .page{max-width:1320px;margin:0 auto;padding:40px 32px 80px}
+  .sec-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);margin:0 0 6px}
+  .sec-title{font-size:22px;font-weight:600;margin:0 0 4px;letter-spacing:-.005em}
+  .sec-sub{font-size:14px;color:var(--ink-700);margin:0 0 24px;max-width:62ch}
+  .dir-note{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-700);
+    background:var(--surface-2);border:1px solid var(--rule);padding:10px 14px;border-radius:3px;margin-bottom:14px}
+  .dir-note b{color:var(--ink-900);font-weight:600}
+
+  /* Frame */
+  .frame-wrap{border:1px solid var(--rule-strong);border-radius:6px;background:#cfc7b4;
+    box-shadow:0 24px 48px -28px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.06)}
+  .frame-chrome{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--rule-strong)}
+  .frame-chrome .dots{display:flex;gap:6px}
+  .frame-chrome .dots i{width:11px;height:11px;border-radius:50%;background:#b3aa97;display:block}
+  .frame-chrome .title{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#4a4640;letter-spacing:.04em;flex:1;text-align:center}
+  .frame-chrome .title b{font-weight:600;color:var(--ink-900)}
+  .frame-stage{background:var(--paper);height:820px;overflow:hidden;display:flex;flex-direction:column;
+    border-radius:0 0 5px 5px;position:relative}
+
+  /* Navbar */
+  .app-top{display:flex;align-items:stretch;background:var(--surface);border-bottom:1px solid var(--rule-strong);position:relative}
+  .app-brand{padding:10px 20px;border-right:1px solid var(--rule);min-width:160px;background:transparent;
+    border-top:0;border-bottom:0;border-left:0;text-align:left;font-family:inherit;color:inherit;cursor:default;
+    display:flex;flex-direction:column;justify-content:center;transition:background .12s}
+  .app-brand:hover{background:var(--surface-2)}
+  .app-brand{flex-direction:row !important;align-items:center !important;gap:10px;border-right:1px solid var(--rule) !important}
+  .app-brand .logo-mark{width:30px;height:30px;background:var(--ink-900);color:#FCFAF5;
+    display:inline-flex;align-items:center;justify-content:center;border-radius:3px;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.04em;
+    flex-shrink:0;border:1px solid var(--ink-900)}
+  .app-brand .logo-mark svg{display:block}
+  .app-brand:hover .logo-mark{background:#000;border-color:#000}
+  .app-brand .logo-mark{position:relative}
+  .app-brand .brand-badge{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;
+    padding:0 4px;border-radius:8px;background:var(--izin);color:#FCFAF5;
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:700;letter-spacing:0;
+    display:inline-flex;align-items:center;justify-content:center;line-height:1;
+    border:1.5px solid var(--surface);pointer-events:none}
+  .app-brand:hover .brand-badge{border-color:var(--surface-2)}
+  .app-brand .name{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-500);
+    font-family:"IBM Plex Mono",monospace}
+  .app-brand .title{font-size:18px;font-weight:600;margin-top:1px;letter-spacing:-.005em;display:flex;align-items:center;gap:6px}
+  .app-brand .title .home-mark{font-size:13px;color:var(--ink-400);transition:color .12s,transform .12s}
+  .app-brand:hover .title .home-mark{color:var(--ink-700);transform:translateX(2px)}
+  .app-nav{display:flex;align-items:stretch;flex:1;min-width:0;position:relative}
+  .app-nav .tab{padding:0 18px;display:flex;align-items:center;justify-content:center;
+    font-size:13.5px;color:var(--ink-700);border-right:1px solid var(--rule);cursor:default;
+    font-weight:500;white-space:nowrap;flex:1 1 auto;min-width:0}
+  .app-nav .tab:hover{background:var(--surface-2);color:var(--ink-900)}
+  .app-nav .tab.active{background:var(--paper);color:var(--ink-900);position:relative}
+  .app-nav .tab.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--hadir)}
+  .app-nav .tab.disabled{color:var(--ink-400);cursor:not-allowed}
+  .app-nav .tab.disabled:hover{background:transparent;color:var(--ink-400)}
+  .nav-measure{position:absolute;visibility:hidden;pointer-events:none;white-space:nowrap;
+    left:0;top:0;display:flex;height:100%}
+  .nav-measure .tab,.nav-measure .lainnya-trigger{flex:0 0 auto !important}
+  .lainnya-wrap{position:relative;display:flex;align-items:stretch;flex:0 0 auto}
+  .lainnya-trigger{padding:0 16px;display:flex;align-items:center;gap:6px;color:var(--ink-700);
+    border-right:1px solid var(--rule);cursor:default;font-weight:600;
+    font-family:"IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;font-size:11px;
+    background:var(--surface-2);flex:0 0 auto;white-space:nowrap;position:relative}
+  .lainnya-trigger:hover{background:var(--paper-2);color:var(--ink-900)}
+  .lainnya-trigger.open{background:var(--paper);color:var(--ink-900)}
+  .lainnya-trigger svg{transition:transform .15s ease;color:var(--ink-500)}
+  .lainnya-trigger.open svg{transform:rotate(180deg);color:var(--ink-900)}
+  .lainnya-trigger.has-active{color:var(--ink-900)}
+  .lainnya-trigger.has-active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--hadir)}
+  .lainnya-menu{position:absolute;top:100%;right:0;min-width:220px;background:var(--surface);
+    border:1px solid var(--rule-strong);border-top:1px solid var(--rule);
+    box-shadow:0 14px 32px -8px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.06);z-index:50;padding:6px 0}
+  .lainnya-menu .menu-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);padding:8px 16px 6px}
+  .lainnya-menu .menu-item{padding:9px 16px;font-size:13.5px;color:var(--ink-700);cursor:default;
+    display:flex;align-items:center;gap:10px;border-left:2px solid transparent}
+  .lainnya-menu .menu-item:hover{background:var(--surface-2);color:var(--ink-900);border-left-color:var(--hadir)}
+  .lainnya-menu .menu-item.active{background:var(--paper);color:var(--ink-900);border-left-color:var(--hadir);font-weight:600}
+  .lainnya-menu .menu-item.disabled{color:var(--ink-400);cursor:not-allowed}
+  .lainnya-menu .menu-item.disabled:hover{background:transparent;color:var(--ink-400);border-left-color:transparent}
+  .coming-badge{display:inline-flex;align-items:center;padding:1px 5px;
+    font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-500);background:var(--ink-200);
+    border-radius:2px;margin-left:6px;line-height:1;white-space:nowrap;flex-shrink:0}
+
+  /* Top action bar */
+  .filt{display:flex;align-items:stretch;background:var(--surface-2);border-bottom:1px solid var(--rule)}
+  .filt .cell{padding:10px 16px;border-right:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center}
+  .filt .cell .k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500);
+    font-family:"IBM Plex Mono",monospace;margin-bottom:3px}
+  .filt .cell .v{font-size:14.5px;font-weight:600;color:var(--ink-900);display:flex;align-items:center;gap:8px}
+  .filt select{appearance:none;background:transparent;border:0;font:inherit;color:inherit;
+    padding:0 20px 0 0;margin:0;cursor:default;font-weight:600;font-size:14.5px;
+    font-family:"IBM Plex Sans",sans-serif;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%231B1814' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;background-position:right center}
+  .filt .grow{flex:1;border-right:1px solid var(--rule)}
+  .filt .status-cell{padding:0 16px;display:flex;align-items:center;border-right:1px solid var(--rule)}
+  .filt .actions{display:flex;align-items:center;gap:8px;padding:0 16px}
+
+  .lock-pill{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:2px;
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.06em;
+    text-transform:uppercase;line-height:1}
+  .lock-pill.draft{background:var(--sakit-bg);color:var(--sakit-ink);border:1px solid var(--sakit)}
+  .lock-pill.final{background:var(--ink-900);color:#FCFAF5;border:1px solid var(--ink-900)}
+
+  .btn{appearance:none;border:1px solid var(--ink-900);background:var(--ink-900);color:#FCFAF5;
+    font-family:"IBM Plex Sans",sans-serif;font-size:13.5px;font-weight:600;letter-spacing:.01em;
+    padding:0 14px;height:34px;border-radius:3px;cursor:default;display:inline-flex;align-items:center;
+    justify-content:center;gap:7px}
+  .btn:hover:not(:disabled){background:#000}
+  .btn.ghost{background:transparent;color:var(--ink-900);border-color:var(--rule-strong)}
+  .btn.ghost:hover:not(:disabled){background:var(--surface-2)}
+  .btn:disabled{background:var(--ink-300);border-color:var(--ink-300);color:var(--surface);cursor:not-allowed}
+  .btn.sm{height:30px;padding:0 11px;font-size:12.5px}
+  .btn.danger-ghost{background:transparent;color:var(--alpa-ink);border-color:var(--alpa-bg)}
+  .btn.danger-ghost:hover:not(:disabled){background:var(--alpa-bg);border-color:var(--alpa)}
+  .btn.lock{background:var(--ink-900);color:#FCFAF5;border-color:var(--ink-900)}
+  .btn.lock.locked{background:var(--surface);color:var(--ink-900);border-color:var(--rule-strong)}
+
+  /* Page banner (letterhead) */
+  .page-banner{background:var(--surface);border:1px solid var(--rule-strong);border-radius:3px;
+    padding:22px 24px 20px;text-align:center}
+  .page-banner .crest{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);margin-bottom:6px}
+  .page-banner .org-name{font-size:24px;font-weight:700;letter-spacing:-.005em;color:var(--ink-900);
+    margin:0;line-height:1.15}
+  .page-banner .org-sub{font-size:13px;color:var(--ink-700);margin-top:6px;
+    font-family:"IBM Plex Mono",monospace;letter-spacing:.04em}
+  .page-banner .org-sub b{color:var(--ink-900);font-weight:600;text-transform:capitalize}
+  .page-banner .rule{width:48px;height:2px;background:var(--ink-900);margin:14px auto 0}
+
+  /* Content scroll */
+  .content{flex:1;overflow-y:auto;padding:24px 24px 32px;background:var(--paper)}
+  .content::-webkit-scrollbar{width:12px}
+  .content::-webkit-scrollbar-thumb{background:var(--ink-200);border-radius:6px;border:3px solid var(--paper)}
+  .content-inner{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+
+  /* Section card */
+  .sec-card{background:var(--surface);border:1px solid var(--rule-strong);border-radius:3px;overflow:hidden}
+  .sec-head{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--paper-2);
+    border-bottom:1px solid var(--rule-strong);cursor:default}
+  .sec-head:hover{background:#EAE3D2}
+  .sec-card.collapsed .sec-head{border-bottom:0}
+  .sec-head .chev{color:var(--ink-700);font-size:10px;width:14px;display:inline-flex;justify-content:center;
+    transition:transform .15s}
+  .sec-card.collapsed .sec-head .chev{transform:rotate(-90deg)}
+  .sec-head .label{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-700);font-weight:600}
+  .sec-head .title{font-size:14px;font-weight:500;color:var(--ink-500);letter-spacing:-.002em}
+  .sec-head .grow{flex:1}
+  .sec-head .meta{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-500);font-weight:500;letter-spacing:.02em}
+
+  .sec-body{background:var(--surface)}
+  .sec-card.collapsed .sec-body{display:none}
+  .sec-body-pad{padding:18px 20px}
+
+  /* Read-only section variant — distinguish via header band + badge, NOT
+     body bg, so inner tables can keep the standard paper-2 header + surface
+     body pattern used in Absensi / Rekap. */
+  .sec-card.readonly{background:var(--surface);border-color:var(--rule-strong)}
+  .sec-card.readonly .sec-head{background:var(--readonly-bg);
+    background-image:repeating-linear-gradient(135deg,transparent 0,transparent 8px,rgba(122,116,106,.05) 8px,rgba(122,116,106,.05) 16px)}
+  .sec-card.readonly .sec-head:hover{background:#DFD7C0}
+  .sec-card.readonly .sec-body{background:var(--surface)}
+  .otomatis-badge{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 7px;border-radius:2px;
+    background:var(--ink-700);color:#FCFAF5;font-family:"IBM Plex Mono",monospace;font-size:9.5px;
+    font-weight:600;letter-spacing:.1em;text-transform:uppercase;line-height:1}
+
+  /* Demografi grid */
+  .demo-grid{display:grid;grid-template-columns:1fr 70px 70px 90px;
+    border:1px solid var(--rule-strong);background:#fff;
+    box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .demo-cell{padding:9px 14px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
+    display:flex;align-items:center}
+  .demo-cell:nth-child(4n){border-right:0}
+  .demo-cell.head{background:var(--paper-2);font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500);font-weight:600;justify-content:center}
+  .demo-cell.head:first-child{justify-content:flex-start}
+  .demo-cell.tahap{font-size:13.5px;font-weight:500;color:var(--ink-900)}
+  .demo-cell.num{justify-content:flex-end;font-family:"IBM Plex Mono",monospace;font-size:13.5px;
+    color:var(--ink-900);font-variant-numeric:tabular-nums;font-weight:500}
+  .demo-cell.total-col{background:var(--surface-2);font-weight:600}
+  .demo-cell.special{font-style:italic;color:var(--ink-700)}
+  .demo-cell.special-span{grid-column:2 / span 2;justify-content:center;color:var(--ink-500);
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
+  .demo-cell.grand{background:var(--paper-2);color:var(--ink-900);border-bottom:0}
+  .demo-cell.grand:first-child{justify-content:flex-start;font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:13px}
+  .demo-cell.grand.num{font-size:15px;font-weight:700;background:var(--paper-2);color:var(--ink-900);border-right:0}
+
+  /* Lima Bab — read-only bucket grid */
+  .lb-bucket-grid{display:grid;grid-template-columns:repeat(4,1fr);
+    border:1px solid var(--rule-strong);background:#fff;
+    box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .lb-bucket{padding:14px 16px;border-right:1px solid var(--rule);
+    display:flex;flex-direction:column;gap:4px;min-width:0}
+  .lb-bucket:last-child{border-right:0}
+  .lb-bucket-label{font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;font-weight:700;
+    color:var(--ink-900);letter-spacing:.04em;text-transform:uppercase}
+  .lb-bucket-range{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-500);
+    letter-spacing:.04em;margin-bottom:6px}
+  .lb-bucket-count{display:flex;align-items:baseline;gap:6px;font-family:"IBM Plex Mono",monospace;
+    margin-top:4px;color:var(--ink-700)}
+  .lb-bucket-count b{font-size:22px;color:var(--ink-900);font-weight:700;font-variant-numeric:tabular-nums}
+  .lb-bucket-count span{font-size:12px;color:var(--ink-500)}
+  .lb-bucket-pct{font-family:"IBM Plex Mono",monospace;font-size:13.5px;color:var(--ink-700);
+    font-weight:600;letter-spacing:.02em;margin-top:2px}
+  .lb-bucket.lb-lancar .lb-bucket-pct{color:var(--hadir-ink)}
+  .lb-bucket.lb-kurangLancar .lb-bucket-pct{color:var(--sakit-ink)}
+  .lb-bucket.lb-kurangSambung .lb-bucket-pct{color:var(--alpa-ink)}
+  .lb-bucket.lb-tabayyun{background:var(--alpa-bg)}
+  .lb-bucket.lb-tabayyun .lb-bucket-pct{color:var(--alpa-ink)}
+  .lb-bucket.lb-tabayyun .lb-bucket-label{color:var(--alpa-ink)}
+
+  /* (legacy) Lima Bab editable grid — kept for any other use */
+  .lb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .lb-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .lb-field label{font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;font-weight:500;color:var(--ink-700)}
+  .lb-field .pct-input{display:flex;align-items:stretch;border:1px solid var(--rule);border-radius:3px;
+    background:var(--surface);transition:background .12s,border-color .12s,box-shadow .12s;overflow:hidden;height:40px}
+  .lb-field .pct-input:hover{background:#FFFDF8;border-color:var(--rule-strong)}
+  .lb-field .pct-input:focus-within{background:#fff;border-color:var(--ink-900);box-shadow:0 0 0 3px rgba(27,24,20,.08)}
+  .lb-field input{appearance:none;border:0;background:transparent;outline:none;flex:1;min-width:0;
+    font:inherit;font-family:"IBM Plex Mono",monospace;font-size:14px;
+    padding:0 12px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-900)}
+  .lb-field input[disabled]{color:var(--ink-500);cursor:not-allowed}
+  .lb-field .pct-suffix{display:flex;align-items:center;padding:0 12px;background:var(--paper-2);
+    font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-500);font-weight:600;
+    border-left:1px solid var(--rule)}
+  .lb-total{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-500);margin-top:10px;
+    letter-spacing:.02em;text-align:right}
+  .lb-total b{color:var(--ink-900);font-size:14px;margin-right:2px}
+  .lb-total.warn b{color:var(--alpa-ink)}
+
+  /* Kegiatan rows */
+  .keg-row{display:grid;grid-template-columns:1fr 170px 130px 90px 1fr;
+    align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--rule)}
+  .keg-row:last-child{border-bottom:0}
+  .keg-row .name{font-size:13.5px;font-weight:500;color:var(--ink-900);letter-spacing:-.002em}
+  .keg-row .status-seg{display:inline-flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden;
+    background:var(--surface);height:34px}
+  .keg-row .status-seg button{appearance:none;border:0;background:transparent;color:var(--ink-700);
+    font-family:"IBM Plex Sans",sans-serif;font-size:12px;font-weight:600;
+    padding:0 12px;height:100%;cursor:default;border-right:1px solid var(--rule);white-space:nowrap}
+  .keg-row .status-seg button:last-child{border-right:0}
+  .keg-row .status-seg button.on.terlaksana{background:var(--hadir);color:#fff;border-color:var(--hadir)}
+  .keg-row .status-seg button.on.belum{background:var(--ink-700);color:#fff}
+
+  /* Generic input style */
+  .ipt, .ta {
+    appearance:none;background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    font:inherit;font-size:13.5px;color:var(--ink-900);
+    padding:0 12px;height:34px;outline:none;width:100%;font-family:"IBM Plex Sans",sans-serif;
+    transition:background .12s,border-color .12s,box-shadow .12s}
+  .ipt.mono{font-family:"IBM Plex Mono",monospace;font-size:13px;font-variant-numeric:tabular-nums}
+  .ipt:hover, .ta:hover{background:#FFFDF8;border-color:var(--rule-strong)}
+  .ipt:focus, .ta:focus{background:#fff;border-color:var(--ink-900);box-shadow:0 0 0 3px rgba(27,24,20,.08)}
+  .ipt::placeholder, .ta::placeholder{color:var(--ink-400)}
+  .ipt:disabled, .ta:disabled, select.ipt:disabled{color:var(--ink-500);background:var(--paper-2);cursor:not-allowed}
+  .ta{padding:8px 12px;min-height:80px;resize:vertical;line-height:1.5;height:auto}
+  select.ipt{padding-right:30px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%231B1814' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 12px center}
+
+  /* Mini-table for editable lists (Keluarga Dikunjungi, Jama'ah Sakit, etc) */
+  .mt-row{display:grid;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule)}
+  .mt-row:last-of-type{border-bottom:0}
+  .mt-row.kk{grid-template-columns:220px 1fr 36px}
+  .mt-row.sakit{grid-template-columns:1fr 1fr 36px}
+  .mt-row.kunjungan{grid-template-columns:140px 180px 1fr 36px}
+  .mt-row.pembangunan{grid-template-columns:1.4fr 1fr 90px 130px 36px}
+  .mt-empty{padding:12px 0;color:var(--ink-500);font-size:13px;font-style:italic;text-align:center}
+  .mt-head{display:grid;align-items:center;gap:8px;padding:6px 0 8px;
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-500);font-weight:600;border-bottom:1px solid var(--rule-strong)}
+  .mt-head.kk{grid-template-columns:220px 1fr 36px}
+  .mt-head.sakit{grid-template-columns:1fr 1fr 36px}
+  .mt-head.kunjungan{grid-template-columns:140px 180px 1fr 36px}
+  .mt-head.pembangunan{grid-template-columns:1.4fr 1fr 90px 130px 36px}
+
+  .remove-btn{appearance:none;border:0;background:transparent;color:var(--ink-300);
+    width:32px;height:32px;border-radius:3px;cursor:default;
+    display:flex;align-items:center;justify-content:center;transition:background .08s,color .08s}
+  .mt-row:hover .remove-btn{color:var(--ink-500)}
+  .remove-btn:hover{background:var(--alpa-bg);color:var(--alpa-ink)}
+  .remove-btn:disabled{color:var(--ink-200);cursor:not-allowed}
+  .remove-btn:disabled:hover{background:transparent;color:var(--ink-200)}
+
+  .add-btn-row{padding-top:10px;display:flex}
+
+  /* Single-field section body */
+  .single-field{max-width:360px;display:flex;flex-direction:column;gap:6px}
+  .single-field .hint-line{font-size:12px;color:var(--ink-500);font-style:italic;margin-top:2px;line-height:1.4}
+
+  /* Peristiwa tabular format (matches the printed Laporan layout) */
+  /* Tabular Peristiwa — matches demo-grid hairline style */
+  .pt-grid{width:100%;border-collapse:collapse;border:1px solid var(--rule-strong);
+    background:#fff;font-family:"IBM Plex Sans",sans-serif;
+    font-size:13px;color:var(--ink-900);
+    box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .pt-grid th,.pt-grid td{border:1px solid var(--rule);padding:8px 10px;
+    text-align:center;vertical-align:middle;line-height:1.35}
+  .pt-grid th{background:var(--paper-2);font-family:"IBM Plex Mono",monospace;
+    font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500)}
+  .pt-grid td.no{font-family:"IBM Plex Mono",monospace;width:38px;font-weight:600;color:var(--ink-500)}
+  .pt-grid td.nama{text-align:left;font-weight:500;font-size:13.5px;color:var(--ink-900);
+    letter-spacing:-.002em;padding-left:14px}
+  .pt-grid td.cell-num{font-family:"IBM Plex Mono",monospace;width:44px;color:var(--ink-900);
+    font-weight:600;font-variant-numeric:tabular-nums}
+  .pt-grid td.cell-num.empty{color:var(--ink-300)}
+  .pt-grid td.ket{text-align:left;color:var(--ink-700);font-size:13px;padding-left:14px;font-style:italic}
+  .pt-grid tr.total-row td{background:var(--paper-2);color:var(--ink-900);font-weight:700;
+    border-top:1px solid var(--rule-strong)}
+  .pt-grid tr.total-row td.cell-num{color:var(--ink-900)}
+  .pt-grid tr.total-row td.label{text-align:right;letter-spacing:.04em;
+    font-family:"IBM Plex Mono",monospace;text-transform:uppercase;font-size:10.5px;color:var(--ink-500);
+    padding-right:14px}
+
+  /* Saran read-only table */
+  .saran-grid{width:100%;border-collapse:collapse;border:1px solid var(--rule-strong);
+    background:#fff;font-family:"IBM Plex Sans",sans-serif;font-size:13.5px;color:var(--ink-900);
+    box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .saran-grid th,.saran-grid td{border:1px solid var(--rule-strong);padding:8px 12px;
+    vertical-align:top;line-height:1.5}
+  .saran-grid th{background:var(--paper-2);font-family:"IBM Plex Mono",monospace;
+    font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500);text-align:left}
+  .saran-grid th.c{text-align:center}
+  .saran-grid td.no{font-family:"IBM Plex Mono",monospace;width:48px;text-align:center;
+    color:var(--ink-700);font-weight:600;vertical-align:top}
+
+  /* Inline nav-link (to other prototype screens) */
+  .nav-link{display:inline-flex;align-items:center;gap:6px;
+    font-family:"IBM Plex Sans",sans-serif;font-size:12px;font-weight:600;
+    color:var(--ink-900);text-decoration:none;
+    padding:5px 10px;border:1px solid var(--rule-strong);border-radius:3px;
+    background:var(--surface);cursor:default}
+  .nav-link:hover{background:var(--surface-2);border-color:var(--ink-700)}
+  .nav-link svg{color:var(--ink-500)}
+
+  /* Peristiwa pills */
+  .peristiwa-list{display:flex;flex-direction:column;gap:8px}
+  .pe-row{display:grid;grid-template-columns:90px 150px 1fr;align-items:center;gap:14px;
+    padding:10px 12px;background:var(--surface);border:1px solid var(--rule);border-radius:3px}
+  .pe-row .pe-tgl{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-900);font-weight:600}
+  .pe-row .pe-tgl .num{margin-right:4px}
+  .pe-row .pe-jenis{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;
+    border-radius:2px;font-family:"IBM Plex Sans",sans-serif;font-size:11px;font-weight:600;
+    letter-spacing:.02em;line-height:1;border:1px solid transparent;width:fit-content}
+  .pe-row .pe-jenis .dot{width:6px;height:6px;border-radius:50%}
+  .pe-row .pe-jenis.lahir{background:var(--hadir-bg);color:var(--hadir-ink);border-color:var(--hadir)}
+  .pe-row .pe-jenis.lahir .dot{background:var(--hadir)}
+  .pe-row .pe-jenis.meninggal{background:var(--ink-200);color:var(--ink-900);border-color:var(--ink-300)}
+  .pe-row .pe-jenis.meninggal .dot{background:var(--ink-900)}
+  .pe-row .pe-jenis.sb{background:var(--izin-bg);color:var(--izin-ink);border-color:var(--izin)}
+  .pe-row .pe-jenis.sb .dot{background:var(--izin)}
+  .pe-row .pe-jenis.ps{background:var(--sakit-bg);color:var(--sakit-ink);border-color:var(--sakit)}
+  .pe-row .pe-jenis.ps .dot{background:var(--sakit)}
+  .pe-row .pe-info{font-size:13.5px;color:var(--ink-900)}
+  .pe-row .pe-info .nama{font-weight:500}
+  .pe-row .pe-info .catatan{color:var(--ink-500);margin-left:8px;font-style:italic}
+
+  .pe-note{font-size:12px;color:var(--ink-500);margin-top:10px;padding:8px 12px;background:var(--surface);
+    border:1px dashed var(--rule);border-radius:3px;display:flex;align-items:center;gap:8px}
+  .pe-note b{color:var(--ink-900);font-weight:600}
+
+  /* Toast */
+  .toast{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink-900);
+    color:#FCFAF5;padding:11px 18px;border-radius:3px;font-size:13px;font-weight:500;
+    display:flex;align-items:center;gap:9px;
+    box-shadow:0 12px 32px rgba(0,0,0,.3);z-index:80;
+    animation:toastIn .2s cubic-bezier(.3,.7,.4,1)}
+  @keyframes toastIn{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translateX(-50%)}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <section data-screen-label="01 Laporan Bulanan">
+    <p class="sec-eyebrow">Layar · Laporan Bulanan</p>
+    <h2 class="sec-title">Laporan Bulanan — Editor + Unduh Dokumen</h2>
+    <p class="sec-sub">
+      Sectioned editor untuk satu bulan. Editor mengedit datanya; <b>⬇ Unduh</b> mengeluarkan dokumen formal.
+      <b>Demografi</b> &amp; <b>Peristiwa Bulan Ini</b> read-only (computed / pulled). <b>Kunci</b> finalize laporan.
+    </p>
+
+    <div class="dir-note">
+      <div>↓</div>
+      <div>
+        Toggle section header to collapse/expand. Pilih <b>Bulan ▾ / Tahun ▾</b> di atas.
+        Klik <b>Kunci</b> untuk final — semua input akan disabled.
+      </div>
+    </div>
+
+    <div class="frame-wrap">
+      <div class="frame-chrome">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="title"><b>CLApp</b> &nbsp;·&nbsp; Laporan Bulanan · Desktop · Offline</div>
+        <div style="width:50px"></div>
+      </div>
+      <div class="frame-stage" id="app-root"></div>
+    </div>
+  </section>
+
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" data-presets="react" src="clapp-data.jsx"></script>
+<script type="text/babel" data-presets="react" src="clapp-navbar.jsx"></script>
+<script type="text/babel" data-presets="react">
+const PERLU_TINDAKAN_COUNT = 3;
+
+
+// ─── NavBar (priority-plus) ──────────────────────────────────────────────────
+const TABS = [
+  "Absensi","Jama'ah","Rekap Absensi","Laporan Bulanan",
+  "Catatan Peristiwa","Musyawarah","Serkiler","Pengaturan","Qurban",
+];
+const DISABLED_TABS = new Set(["Qurban"]);
+function TabLabel({ name }) {
+  return DISABLED_TABS.has(name)
+    ? <><span>{name}</span><span className="coming-badge">Coming Soon</span></>
+    : name;
+}
+function NavBar({ active }) {
+  const navRef = React.useRef(null);
+  const measureRef = React.useRef(null);
+  const wrapRef = React.useRef(null);
+  const [vCount, setVCount] = React.useState(TABS.length);
+  const [open, setOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (!open) return;
+    const onDown = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+  React.useLayoutEffect(() => {
+    const nav = navRef.current, measure = measureRef.current;
+    if (!nav || !measure) return;
+    const compute = () => {
+      const avail = nav.clientWidth;
+      const tabEls = measure.querySelectorAll('[data-mtab]');
+      const widths = Array.from(tabEls).map(el => el.getBoundingClientRect().width);
+      const lainnyaEl = measure.querySelector('[data-mlainnya]');
+      const lainnyaW = lainnyaEl ? lainnyaEl.getBoundingClientRect().width : 110;
+      const total = widths.reduce((a,b) => a+b, 0);
+      if (total <= avail + 0.5) { setVCount(TABS.length); return; }
+      let used = lainnyaW, count = 0;
+      for (const w of widths) {
+        if (used + w > avail) break;
+        used += w; count++;
+      }
+      setVCount(Math.max(1, count));
+    };
+    compute();
+    const ro = new ResizeObserver(compute);
+    ro.observe(nav);
+    return () => ro.disconnect();
+  }, []);
+  const visible = TABS.slice(0, vCount);
+  const overflowItems = TABS.slice(vCount);
+  const showLainnya = overflowItems.length > 0;
+  const activeIsHidden = showLainnya && overflowItems.includes(active);
+  const Caret = (
+    <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
+      <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5"
+            strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+  return (
+    <div className="app-top">
+      <button className="app-brand" title="Kembali ke Dashboard" onClick={() => { window.location.href = "Dashboard.html"; }}>
+        <span className="logo-mark">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M2.5 3.5L8 5l5.5-1.5v9L8 14l-5.5-1.5v-9z" stroke="#FCFAF5" strokeWidth="1.2" strokeLinejoin="round"/>
+            <path d="M8 5v9" stroke="#FCFAF5" strokeWidth="1.2"/>
+          </svg>
+          {typeof PERLU_TINDAKAN_COUNT !== "undefined" && PERLU_TINDAKAN_COUNT > 0 && <span className="brand-badge">{PERLU_TINDAKAN_COUNT}</span>}
+        </span>
+        <div className="title">CLApp<span className="home-mark">›</span></div>
+      </button>
+      <div className="app-nav" ref={navRef}>
+        <div className="nav-measure" ref={measureRef} aria-hidden="true">
+          {TABS.map(t => <div key={t} className={`tab${DISABLED_TABS.has(t) ? " disabled" : ""}`} data-mtab><TabLabel name={t} /></div>)}
+          <div className="lainnya-trigger" data-mlainnya>Lainnya{Caret}</div>
+        </div>
+        {visible.map(t => (
+          <div key={t} className={`tab${t === active ? " active" : ""}${DISABLED_TABS.has(t) ? " disabled" : ""}`}>
+            <TabLabel name={t} />
+          </div>
+        ))}
+        {showLainnya && (
+          <div className="lainnya-wrap" ref={wrapRef}>
+            <div className={`lainnya-trigger${open ? " open" : ""}${activeIsHidden ? " has-active" : ""}`}
+                 onClick={() => setOpen(o => !o)}>Lainnya{Caret}</div>
+            {open && (
+              <div className="lainnya-menu" role="menu">
+                <div className="menu-eyebrow">Modul Lain</div>
+                {overflowItems.map(t => {
+                  const isDis = DISABLED_TABS.has(t);
+                  return (
+                    <div key={t}
+                         className={`menu-item${t === active ? " active" : ""}${isDis ? " disabled" : ""}`}
+                         role="menuitem"
+                         onClick={isDis ? undefined : () => setOpen(false)}>
+                      <TabLabel name={t} />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Date helpers ────────────────────────────────────────────────────────────
+const TODAY = new Date();
+const CURRENT_YEAR = TODAY.getFullYear();
+const CURRENT_MONTH = TODAY.getMonth() + 1;
+const BULAN_ID = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+const BULAN_SHORT = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agt","Sep","Okt","Nov","Des"];
+const YEAR_LIST = (() => {
+  const out = [];
+  const start = 2020;
+  const end = Math.max(CURRENT_YEAR, 2026);
+  for (let y = start; y <= end; y++) out.push(y);
+  return out;
+})();
+function fmtDayMonth(iso) {
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-").map(Number);
+  return { day: String(d).padStart(2,"0"), bln: BULAN_SHORT[m-1] };
+}
+
+// ─── Member roster ───────────────────────────────────────────────────────────
+const ROSTER = window.CLAPP_ROSTER;
+const memberByMid = window.memberByMid;
+
+// ─── Household list (from Jama'ah) ───────────────────────────────────────────
+const KK_LIST = [
+  { uid:"001", label:"KK-001 · Pak Faisal" },
+  { uid:"002", label:"KK-002 · Pak Bambang" },
+  { uid:"003", label:"KK-003 · Hj. Khadijah (KK-S)" },
+  { uid:"004", label:"KK-004 · Pak Abdul" },
+  { uid:"005", label:"KK-005 · Pak Sutrisno" },
+  { uid:"006", label:"KK-006 · Pak Eko" },
+  { uid:"007", label:"KK-007 · H. Mansur (KK-S)" },
+  { uid:"008", label:"KK-008 · Pak Imam" },
+];
+
+// ─── Demografi — computed from window.CLAPP_ROSTER (single source of truth) ──
+const DEMOGRAFI = window.CLAPP_DEMOGRAFI;
+const demoTotal = window.CLAPP_ROSTER.length;
+
+// ─── Sample events (from Catatan Peristiwa, Mei 2026) ────────────────────────────
+const EVENTS = window.CLAPP_EVENTS;
+// Saran aggregated from Musyawarah meetings this period (read-only) — one
+// row per musyawarah (4 meetings in May 2026 → 4 rows).
+const SARAN_FROM_MUSYAWARAH = [
+  { source:"03 Mei · Persiapan Pengajian Bulanan Mei",
+    saran:"• Tambah anggaran konsumsi snack sekitar +50%\n• Undangan dibagikan paling lambat H-3" },
+  { source:"08 Mei · Evaluasi April & Rencana Program Mei",
+    saran:"• Perlu pencatatan donasi yang lebih rapi via CLApp" },
+  { source:"15 Mei · Koordinasi Jadwal Yasin & Tahlil",
+    saran:"• Dibuat jadwal tetap 3 bulan ke depan\n• Diumumkan via Serkiler tiap awal bulan" },
+  { source:"22 Mei · Sambung Baru — Bapak Budi Santoso",
+    saran:"• Kunjungan silaturahmi oleh perangkat dalam pekan ini\n• Penambahan ke daftar Jama'ah oleh sekretaris" },
+];
+const JENIS_CLS = { "Lahir":"lahir", "Meninggal":"meninggal", "Sambung Baru":"sb", "Pindah Sambung":"ps" };
+
+// ─── Section card wrapper ────────────────────────────────────────────────────
+function SectionCard({ label, title, meta, readOnly = false, children, defaultOpen = true }) {
+  const [collapsed, setCollapsed] = React.useState(!defaultOpen);
+  return (
+    <div className={`sec-card${readOnly ? " readonly" : ""}${collapsed ? " collapsed" : ""}`}>
+      <div className="sec-head" onClick={() => setCollapsed(c => !c)}>
+        <span className="chev">▼</span>
+        <span className="label">{label}</span>
+        {title && <span className="title">{title}</span>}
+        <span className="grow"></span>
+        {readOnly && <span className="otomatis-badge">⌬ Otomatis</span>}
+        {meta && <span className="meta">{meta}</span>}
+      </div>
+      <div className="sec-body">{children}</div>
+    </div>
+  );
+}
+
+// ─── Demografi (read-only) ───────────────────────────────────────────────────
+function DemografiSection() {
+  return (
+    <SectionCard label="Demografi" title="(otomatis dari data Jama'ah)" readOnly meta={`Total ${demoTotal}`}>
+      <div className="sec-body-pad">
+        <div className="demo-grid">
+          <div className="demo-cell head">Kelas</div>
+          <div className="demo-cell head">L</div>
+          <div className="demo-cell head">P</div>
+          <div className="demo-cell head">Total</div>
+          {DEMOGRAFI.tahap.map(t => (
+            <React.Fragment key={t.name}>
+              <div className="demo-cell tahap">{t.name}</div>
+              <div className="demo-cell num">{t.L}</div>
+              <div className="demo-cell num">{t.P}</div>
+              <div className="demo-cell num total-col">{t.L + t.P}</div>
+            </React.Fragment>
+          ))}
+          <div className="demo-cell tahap special">Janda</div>
+          <div className="demo-cell special-span">(P)</div>
+          <div className="demo-cell num total-col">{DEMOGRAFI.janda}</div>
+          <div className="demo-cell tahap special">Duda</div>
+          <div className="demo-cell special-span">(L)</div>
+          <div className="demo-cell num total-col">{DEMOGRAFI.duda}</div>
+          <div className="demo-cell grand">TOTAL Jama'ah</div>
+          <div className="demo-cell grand special-span" style={{background:"var(--paper-2)"}}></div>
+          <div className="demo-cell grand num">{demoTotal}</div>
+        </div>
+      </div>
+    </SectionCard>
+  );
+}
+
+// ─── Lima Bab (read-only, computed from Rekap Absensi) ──────────────────────
+// Bucketing rule: kehadiran % = (H + S + I) / total sesi (Alpa NOT counted).
+//   Lancar         > 60%
+//   Kurang Lancar  20–60%
+//   Kurang Sambung < 20%
+//   Tabayyun       0%  — perlu ditindaklanjuti
+// Sample distribution (192 jama'ah) approximating realistic kelompok pattern,
+// includes members with many Alpa landing in Kurang Sambung / Tabayyun.
+// ─── Lima Bab — sample bucket counts; total wired to roster size ──────────
+const LIMA_BAB_DATA = {
+  total: window.CLAPP_ROSTER.length,
+  buckets: [
+    { key:"lancar",        label:"Lancar",         range:"> 60 %",   count:21 },
+    { key:"kurangLancar",  label:"Kurang Lancar",  range:"20 – 60 %", count:6  },
+    { key:"kurangSambung", label:"Krg Sambung",    range:"< 20 %",    count:2  },
+    { key:"tabayyun",      label:"Tabayyun",       range:"0 %",       count:1   },
+  ],
+};
+
+function LimaBabSection() {
+  const total = LIMA_BAB_DATA.total;
+  return (
+    <SectionCard label="Lima Bab" title="(otomatis dari Rekap Absensi · H+S+I ÷ total sesi)" readOnly meta={`${total} jama'ah`}>
+      <div className="sec-body-pad">
+        <div className="lb-bucket-grid">
+          {LIMA_BAB_DATA.buckets.map(b => {
+            const pct = total > 0 ? Math.round((b.count / total) * 100) : 0;
+            return (
+              <div key={b.key} className={`lb-bucket lb-${b.key}`}>
+                <div className="lb-bucket-label">{b.label}</div>
+                <div className="lb-bucket-range">{b.range}</div>
+                <div className="lb-bucket-count"><b>{b.count}</b><span>jama'ah</span></div>
+                <div className="lb-bucket-pct">{pct}%</div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="pe-note" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,marginTop:12}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" style={{color:"var(--ink-500)",flexShrink:0}}>
+              <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.3"/>
+              <path d="M8 5v3.5M8 11v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+            <div>Dihitung dari kehadiran sesi: <b>(H + S + I) ÷ total sesi</b>. Alpa tidak dihitung sebagai hadir.</div>
+          </div>
+          <a className="nav-link" href="Absensi.html#rekap-root" target="_top">
+            Buka di Rekap Absensi
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+              <path d="M3 6h6M6 3l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </SectionCard>
+  );
+}
+
+// ─── Kegiatan Kelompok ───────────────────────────────────────────────────────
+function KegiatanSection({ kegiatan, setKegiatan, locked }) {
+  const upd = (id, patch) => setKegiatan(arr => arr.map(k => k.id === id ? { ...k, ...patch } : k));
+  const doneCount = kegiatan.filter(k => k.status === "Terlaksana").length;
+  return (
+    <SectionCard label="Kegiatan Kelompok" title="(rekap rutinitas bulan ini)" meta={`${doneCount}/${kegiatan.length} terlaksana`}>
+      <div className="sec-body-pad">
+        <div style={{display:"grid",gridTemplateColumns:"1fr 170px 130px 90px 1fr",gap:10,
+                     fontFamily:"IBM Plex Mono, monospace",fontSize:10,letterSpacing:".12em",
+                     textTransform:"uppercase",color:"var(--ink-500)",fontWeight:600,
+                     paddingBottom:8,borderBottom:"1px solid var(--rule-strong)"}}>
+          <div>Kegiatan</div><div>Status</div><div>Tanggal</div><div>Jumlah</div><div>Tempat</div>
+        </div>
+        {kegiatan.map(k => (
+          <div key={k.id} className="keg-row">
+            <div className="name">{k.name}</div>
+            <div className="status-seg">
+              <button className={k.status === "Belum" ? "on belum" : ""}
+                      disabled={locked} onClick={() => upd(k.id, {status:"Belum"})}>Belum</button>
+              <button className={k.status === "Terlaksana" ? "on terlaksana" : ""}
+                      disabled={locked} onClick={() => upd(k.id, {status:"Terlaksana"})}>Terlaksana</button>
+            </div>
+            <input className="ipt mono" type="date" disabled={locked || k.status !== "Terlaksana"}
+                   value={k.date || ""} onChange={e => upd(k.id, {date:e.target.value})} />
+            <input className="ipt mono" type="text" disabled={locked || k.status !== "Terlaksana"}
+                   value={k.jumlah || ""} placeholder="0"
+                   onChange={e => upd(k.id, {jumlah: e.target.value.replace(/\D/g,"")})} />
+            <input className="ipt" type="text" disabled={locked || k.status !== "Terlaksana"}
+                   value={k.tempat || ""} placeholder="contoh: Rumah Pak Faisal"
+                   onChange={e => upd(k.id, {tempat: e.target.value})} />
+          </div>
+        ))}
+      </div>
+    </SectionCard>
+  );
+}
+
+// ─── Mini-table (generic add/remove rows) ────────────────────────────────────
+function MiniTable({ rows, setRows, columns, klass, blankRow, locked, emptyText, addLabel }) {
+  const addRow = () => {
+    const newId = `r${Date.now()}`;
+    setRows(arr => [...arr, { id: newId, ...blankRow }]);
+  };
+  const removeRow = (id) => setRows(arr => arr.filter(r => r.id !== id));
+  const updateRow = (id, patch) => setRows(arr => arr.map(r => r.id === id ? { ...r, ...patch } : r));
+  return (
+    <>
+      <div className={`mt-head ${klass}`}>
+        {columns.map(c => <div key={c.key}>{c.label}</div>)}
+        <div></div>
+      </div>
+      {rows.length === 0 ? (
+        <div className="mt-empty">{emptyText}</div>
+      ) : rows.map(r => (
+        <div key={r.id} className={`mt-row ${klass}`}>
+          {columns.map(c => {
+            if (c.kind === "select") {
+              return (
+                <select key={c.key} className="ipt" disabled={locked}
+                        value={r[c.key] || ""} onChange={e => updateRow(r.id, {[c.key]: e.target.value})}>
+                  <option value="">{c.placeholder || "— Pilih —"}</option>
+                  {c.options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                </select>
+              );
+            }
+            return (
+              <input key={c.key} className={`ipt${c.mono ? " mono" : ""}`} type={c.kind || "text"}
+                     disabled={locked} value={r[c.key] || ""}
+                     placeholder={c.placeholder || ""}
+                     onChange={e => updateRow(r.id, {[c.key]: e.target.value})} />
+            );
+          })}
+          <button className="remove-btn" disabled={locked} onClick={() => removeRow(r.id)} title="Hapus baris">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+            </svg>
+          </button>
+        </div>
+      ))}
+      <div className="add-btn-row">
+        <button className="btn ghost sm" disabled={locked} onClick={addRow}>
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+            <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+          </svg>
+          {addLabel}
+        </button>
+      </div>
+    </>
+  );
+}
+
+// ─── Peristiwa Bulan Ini (read-only) — split into two sections ───────────────
+function PeristiwaLahirMeninggalSection() {
+  const t1 = EVENTS.filter(e => e.jenis === "Lahir" || e.jenis === "Meninggal");
+  const c = { lahirL:0, lahirP:0, meninggalL:0, meninggalP:0 };
+  t1.forEach(e => {
+    if (e.jenis === "Lahir")     c[e.gender === "L" ? "lahirL" : "lahirP"]++;
+    if (e.jenis === "Meninggal") c[e.gender === "L" ? "meninggalL" : "meninggalP"]++;
+  });
+  return (
+    <SectionCard label="Peristiwa · Lahir & Meninggal" title="(otomatis dari Catatan Peristiwa)" readOnly meta={`${t1.length} peristiwa`}>
+      <div className="sec-body-pad">
+        <table className="pt-grid">
+          <thead>
+            <tr>
+              <th rowSpan="2">No</th>
+              <th rowSpan="2" style={{textAlign:"left",paddingLeft:14}}>Nama</th>
+              <th colSpan="2">Melahirkan</th>
+              <th colSpan="2">Meninggal</th>
+              <th rowSpan="2" style={{textAlign:"left",paddingLeft:14}}>Keterangan</th>
+            </tr>
+            <tr>
+              <th>L</th><th>P</th><th>L</th><th>P</th>
+            </tr>
+          </thead>
+          <tbody>
+            {t1.length === 0 ? (
+              <tr><td colSpan="7" style={{padding:"16px",color:"var(--ink-500)",fontStyle:"italic"}}>Tidak ada data kelahiran / kematian bulan ini.</td></tr>
+            ) : t1.map((e, i) => {
+              const isLahir = e.jenis === "Lahir";
+              const isMeninggal = e.jenis === "Meninggal";
+              const isL = e.gender === "L"; const isP = e.gender === "P";
+              return (
+                <tr key={i}>
+                  <td className="no">{i+1}</td>
+                  <td className="nama">{e.nama}</td>
+                  <td className={`cell-num${isLahir && isL ? "" : " empty"}`}>{isLahir && isL ? 1 : ""}</td>
+                  <td className={`cell-num${isLahir && isP ? "" : " empty"}`}>{isLahir && isP ? 1 : ""}</td>
+                  <td className={`cell-num${isMeninggal && isL ? "" : " empty"}`}>{isMeninggal && isL ? 1 : ""}</td>
+                  <td className={`cell-num${isMeninggal && isP ? "" : " empty"}`}>{isMeninggal && isP ? 1 : ""}</td>
+                  <td className="ket">{e.catatan || ""}</td>
+                </tr>
+              );
+            })}
+            <tr className="total-row">
+              <td colSpan="2" className="label">Jumlah</td>
+              <td className="cell-num">{c.lahirL || ""}</td>
+              <td className="cell-num">{c.lahirP || ""}</td>
+              <td className="cell-num">{c.meninggalL || ""}</td>
+              <td className="cell-num">{c.meninggalP || ""}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+        <div className="pe-note" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,marginTop:12}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" style={{color:"var(--ink-500)",flexShrink:0}}>
+              <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.3"/>
+              <path d="M8 5v3.5M8 11v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+            <div>Diedit di <b>Catatan Peristiwa</b> · tampil di sini saat laporan ditarik.</div>
+          </div>
+          <a className="nav-link" href="Catatan Peristiwa.html" target="_top">
+            Buka di Catatan Peristiwa
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+              <path d="M3 6h6M6 3l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </SectionCard>
+  );
+}
+
+function PeristiwaMutasiSection() {
+  const t2 = EVENTS.filter(e => e.jenis === "Pindah Sambung" || e.jenis === "Sambung Baru");
+  const c = { psL:0, psP:0, sbL:0, sbP:0 };
+  t2.forEach(e => {
+    if (e.jenis === "Pindah Sambung") c[e.gender === "L" ? "psL" : "psP"]++;
+    if (e.jenis === "Sambung Baru")   c[e.gender === "L" ? "sbL" : "sbP"]++;
+  });
+  return (
+    <SectionCard label="Peristiwa · Pindah & Sambung Baru" title="(otomatis dari Catatan Peristiwa)" readOnly meta={`${t2.length} peristiwa`}>
+      <div className="sec-body-pad">
+        <table className="pt-grid">
+          <thead>
+            <tr>
+              <th rowSpan="2">No</th>
+              <th rowSpan="2" style={{textAlign:"left",paddingLeft:14}}>Nama</th>
+              <th colSpan="2">Pindah Sambung</th>
+              <th colSpan="2">Sambung Baru</th>
+              <th rowSpan="2" style={{textAlign:"left",paddingLeft:14}}>Keterangan</th>
+            </tr>
+            <tr>
+              <th>L</th><th>P</th><th>L</th><th>P</th>
+            </tr>
+          </thead>
+          <tbody>
+            {t2.length === 0 ? (
+              <tr><td colSpan="7" style={{padding:"16px",color:"var(--ink-500)",fontStyle:"italic"}}>Tidak ada mutasi bulan ini.</td></tr>
+            ) : t2.map((e, i) => {
+              const isPS = e.jenis === "Pindah Sambung";
+              const isSB = e.jenis === "Sambung Baru";
+              const isL = e.gender === "L"; const isP = e.gender === "P";
+              return (
+                <tr key={i}>
+                  <td className="no">{i+1}</td>
+                  <td className="nama">{e.nama}</td>
+                  <td className={`cell-num${isPS && isL ? "" : " empty"}`}>{isPS && isL ? 1 : ""}</td>
+                  <td className={`cell-num${isPS && isP ? "" : " empty"}`}>{isPS && isP ? 1 : ""}</td>
+                  <td className={`cell-num${isSB && isL ? "" : " empty"}`}>{isSB && isL ? 1 : ""}</td>
+                  <td className={`cell-num${isSB && isP ? "" : " empty"}`}>{isSB && isP ? 1 : ""}</td>
+                  <td className="ket">{e.catatan || ""}</td>
+                </tr>
+              );
+            })}
+            <tr className="total-row">
+              <td colSpan="2" className="label">Jumlah</td>
+              <td className="cell-num">{c.psL || ""}</td>
+              <td className="cell-num">{c.psP || ""}</td>
+              <td className="cell-num">{c.sbL || ""}</td>
+              <td className="cell-num">{c.sbP || ""}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+        <div className="pe-note" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,marginTop:12}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" style={{color:"var(--ink-500)",flexShrink:0}}>
+              <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.3"/>
+              <path d="M8 5v3.5M8 11v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+            <div>Diedit di <b>Catatan Peristiwa</b> · tampil di sini saat laporan ditarik.</div>
+          </div>
+          <a className="nav-link" href="Catatan Peristiwa.html" target="_top">
+            Buka di Catatan Peristiwa
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+              <path d="M3 6h6M6 3l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </SectionCard>
+  );
+}
+
+// ─── Saran (read-only, pulled from Musyawarah) ───────────────────────────────
+function SaranSection() {
+  return (
+    <SectionCard label="Saran dan Masukan" title="(otomatis dari Musyawarah)" readOnly meta={`${SARAN_FROM_MUSYAWARAH.length} musyawarah`}>
+      <div className="sec-body-pad">
+        <table className="saran-grid">
+          <thead>
+            <tr>
+              <th className="c" style={{width:48}}>No</th>
+              <th>Saran dan Masukan</th>
+            </tr>
+          </thead>
+          <tbody>
+            {SARAN_FROM_MUSYAWARAH.length === 0 ? (
+              <tr><td colSpan="2" style={{padding:"14px",color:"var(--ink-500)",fontStyle:"italic",textAlign:"center"}}>Belum ada saran tercatat dari Musyawarah bulan ini.</td></tr>
+            ) : SARAN_FROM_MUSYAWARAH.map((s, i) => (
+              <tr key={i}>
+                <td className="no">{i+1}</td>
+                <td>
+                  <div style={{fontFamily:"IBM Plex Mono, monospace",fontSize:11,
+                              letterSpacing:".04em",textTransform:"uppercase",
+                              color:"var(--ink-500)",marginBottom:4,fontWeight:600}}>
+                    {s.source}
+                  </div>
+                  <div style={{whiteSpace:"pre-line",lineHeight:1.6,color:"var(--ink-900)"}}>
+                    {s.saran}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="pe-note" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,marginTop:12}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" style={{color:"var(--ink-500)",flexShrink:0}}>
+              <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.3"/>
+              <path d="M8 5v3.5M8 11v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+            <div>Diedit di <b>Musyawarah</b> · tampil di sini saat laporan ditarik.</div>
+          </div>
+          <a className="nav-link" href="Musyawarah.html" target="_top">
+            Buka di Musyawarah
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+              <path d="M3 6h6M6 3l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </SectionCard>
+  );
+}
+
+// ─── Main App ────────────────────────────────────────────────────────────────
+const KEGIATAN_INIT = [
+  { id:"kg1", name:"Musyawarah Kelompok",        status:"Terlaksana", date:"2026-05-18", jumlah:"14", tempat:"Rumah Pak Faisal" },
+  { id:"kg2", name:"Penderesan ASAD",            status:"Terlaksana", date:"2026-05-22", jumlah:"22", tempat:"Masjid Cilandak" },
+  { id:"kg3", name:"Musyawarah 5 Unsur",         status:"Terlaksana", date:"2026-05-08", jumlah:"5",  tempat:"Rumah Pak Eko" },
+  { id:"kg4", name:"Pengkoreksian KU Bulanan",   status:"Belum",      date:"",            jumlah:"",   tempat:"" },
+  { id:"kg5", name:"Pertemuan 5 Unsur",          status:"Terlaksana", date:"2026-05-15", jumlah:"5",  tempat:"Masjid Cilandak" },
+  { id:"kg6", name:"Pengajian Ibu-Ibu Kelompok", status:"Terlaksana", date:"2026-05-20", jumlah:"18", tempat:"Rumah Bu Khadijah" },
+];
+const KK_INIT = [
+  { id:"kk1", keluarga:"007", catatan:"Silaturahmi pasca operasi" },
+  { id:"kk2", keluarga:"003", catatan:"Kunjungan rutin sesepuh kelompok" },
+];
+const SAKIT_INIT = [
+  { id:"sk1", memberMid:"005", catatan:"Flu, sedang istirahat di rumah" },
+  { id:"sk2", memberMid:"022", catatan:"DBD, sudah pulang dari RS, masa pemulihan" },
+];
+const KUNJUNGAN_INIT = [
+  { id:"rk1", waktu:"Sabtu 30 Mei", tempat:"Rumah Pak Bambang (KK-002)", agenda:"Silaturahmi rutin perangkat" },
+];
+const BANGUN_INIT = [
+  { id:"bg1", jenis:"Renovasi Mushola", tujuan:"Perbaikan atap & cat ulang", volume:"1 unit", dana:"Rp 5.000.000" },
+];
+
+function App() {
+  const [bulan, setBulan] = React.useState(5);
+  const [tahun, setTahun] = React.useState(2026);
+  const [locked, setLocked] = React.useState(false);
+  const [toast, setToast] = React.useState(null);
+
+  const [limaBab, setLimaBab] = React.useState({ lancar:65, kurangLancar:20, kurangSambung:10, tabayyun:5 });
+  const [kegiatan, setKegiatan] = React.useState(KEGIATAN_INIT);
+  const [kkRows, setKkRows] = React.useState(KK_INIT);
+  const [sakitRows, setSakitRows] = React.useState(SAKIT_INIT);
+  const [kunjunganRows, setKunjunganRows] = React.useState(KUNJUNGAN_INIT);
+  const [bangunRows, setBangunRows] = React.useState(BANGUN_INIT);
+  const [lainLain, setLainLain] = React.useState({
+    rencanaBece:"Rp 250.000", berasJimpitan:"12 kg", fotocopyDalil:"50 lembar",
+    catatan:"## Catatan Lain\n- Kebutuhan tausiah remaja meningkat\n- Usul kegiatan donor darah bulan depan",
+  });
+
+  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 2800); };
+
+  const onSimpan = () => showToast(`Laporan ${BULAN_ID[bulan-1]} ${tahun} disimpan (draf)`);
+  const onUnduh = () => showToast(`Dokumen Laporan Bulanan ${BULAN_ID[bulan-1]} ${tahun}.pdf akan diunduh`);
+  const onKunci = () => {
+    if (locked) {
+      if (window.confirm("Buka kunci laporan ini? Setelah dibuka, laporan bisa diedit lagi.")) {
+        setLocked(false);
+        showToast("Laporan dibuka kembali untuk edit");
+      }
+      return;
+    }
+    if (window.confirm(`Kunci laporan ${BULAN_ID[bulan-1]} ${tahun} sebagai FINAL?\n\nSetelah dikunci, semua input akan disabled. Laporan masih bisa diunduh / dilihat, tapi tidak bisa diedit kecuali kunci dibuka kembali.`)) {
+      setLocked(true);
+      showToast(`Laporan ${BULAN_ID[bulan-1]} ${tahun} dikunci sebagai FINAL`);
+    }
+  };
+
+  const updLain = (k, v) => setLainLain(prev => ({ ...prev, [k]: v }));
+
+  return (
+    <>
+      <window.CLAppNavBar active="Laporan Bulanan" />
+
+      {/* Top bar */}
+      <div className="filt">
+        <div className="cell" style={{minWidth:130}}>
+          <div className="k">Bulan</div>
+          <div className="v">
+            <select value={bulan} onChange={e => setBulan(parseInt(e.target.value, 10))}>
+              {BULAN_ID.map((name, i) => {
+                const m = i + 1;
+                const isFuture = tahun === CURRENT_YEAR && m > CURRENT_MONTH;
+                return <option key={m} value={m} disabled={isFuture}>{name}</option>;
+              })}
+            </select>
+          </div>
+        </div>
+        <div className="cell" style={{minWidth:110}}>
+          <div className="k">Tahun</div>
+          <div className="v">
+            <select value={tahun} onChange={e => {
+              const y = parseInt(e.target.value, 10);
+              setTahun(y);
+              if (y === CURRENT_YEAR && bulan > CURRENT_MONTH) setBulan(CURRENT_MONTH);
+            }}>
+              {YEAR_LIST.map(y => <option key={y} value={y}>{y}</option>)}
+            </select>
+          </div>
+        </div>
+        <div className="grow"></div>
+        <div className="status-cell">
+          <span className={`lock-pill ${locked ? "final" : "draft"}`}>
+            {locked ? "● Final · Terkunci" : "○ Draf"}
+          </span>
+        </div>
+        <div className="actions">
+          <button className="btn ghost" disabled={locked} onClick={onSimpan}>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+              <path d="M3 3h8l2 2v8H3V3z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+              <path d="M5 3v3h5V3M5 9h6v4H5z" stroke="currentColor" strokeWidth="1.3"/>
+            </svg>
+            Simpan
+          </button>
+          <button className="btn ghost" onClick={onUnduh}>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+              <path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="currentColor" strokeWidth="1.6"
+                    strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Unduh
+          </button>
+          <button className={`btn lock${locked ? " locked" : ""}`} onClick={onKunci}>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+              {locked ? (
+                <>
+                  <rect x="3" y="7" width="10" height="7" stroke="currentColor" strokeWidth="1.4"/>
+                  <path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                </>
+              ) : (
+                <>
+                  <rect x="3" y="7" width="10" height="7" stroke="currentColor" strokeWidth="1.4"/>
+                  <path d="M5 7V5a3 3 0 015.5-1.7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                </>
+              )}
+            </svg>
+            {locked ? "Buka Kunci" : "Kunci"}
+          </button>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="content">
+        <div className="content-inner">
+
+          <div className="page-banner">
+            <div className="crest">Pengajian Kelompok</div>
+            <h1 className="org-name">SLM Cilandak A</h1>
+            <div className="org-sub">Laporan Bulanan · <b>{BULAN_ID[bulan-1]} {tahun}</b></div>
+            <div className="rule"></div>
+          </div>
+
+          {/* 1. Demografi */}
+          <DemografiSection />
+
+          {/* 2a. Peristiwa Lahir & Meninggal */}
+          <PeristiwaLahirMeninggalSection />
+
+          {/* 2b. Peristiwa Mutasi (Pindah Sambung & Sambung Baru) */}
+          <PeristiwaMutasiSection />
+
+          {/* 3. Jama'ah Sakit */}
+          <SectionCard label="Jama'ah Sakit" title="(yang sedang dalam pemulihan)" meta={`${sakitRows.length} jama'ah`}>
+            <div className="sec-body-pad">
+              <MiniTable
+                rows={sakitRows} setRows={setSakitRows} locked={locked} klass="sakit"
+                columns={[
+                  { key:"memberMid", label:"Jama'ah", kind:"select",
+                    placeholder:"— Pilih jama'ah —",
+                    options: ROSTER.map(m => ({ value:m.mid, label:`${m.mid} · ${m.name}` })) },
+                  { key:"catatan",   label:"Catatan", placeholder:"contoh: dirawat di RS, dalam pemulihan" },
+                ]}
+                blankRow={{ memberMid:"", catatan:"" }}
+                emptyText="Tidak ada jama'ah sakit tercatat bulan ini."
+                addLabel="Tambah Jama'ah Sakit"
+              />
+            </div>
+          </SectionCard>
+
+          {/* 4. Kegiatan Kelompok */}
+          <KegiatanSection kegiatan={kegiatan} setKegiatan={setKegiatan} locked={locked} />
+
+          {/* 5. Keluarga Dikunjungi */}
+          <SectionCard label="Keluarga Dikunjungi" title="(silaturahmi / takziah bulan ini)" meta={`${kkRows.length} keluarga`}>
+            <div className="sec-body-pad">
+              <MiniTable
+                rows={kkRows} setRows={setKkRows} locked={locked} klass="kk"
+                columns={[
+                  { key:"keluarga", label:"Keluarga", kind:"select",
+                    placeholder:"— Pilih KK —",
+                    options: KK_LIST.map(k => ({ value:k.uid, label:k.label })) },
+                  { key:"catatan",  label:"Catatan",  placeholder:"contoh: silaturahmi pasca operasi" },
+                ]}
+                blankRow={{ keluarga:"", catatan:"" }}
+                emptyText="Belum ada kunjungan keluarga di bulan ini."
+                addLabel="Tambah Keluarga"
+              />
+            </div>
+          </SectionCard>
+
+          {/* 6. Lima Bab (%) */}
+          <LimaBabSection />
+
+          {/* 7. Anjangsana (renamed from Rencana Kunjungan) */}
+          <SectionCard label="Anjangsana" title="(rencana kunjungan bulan depan)" meta={`${kunjunganRows.length} rencana`}>
+            <div className="sec-body-pad">
+              <MiniTable
+                rows={kunjunganRows} setRows={setKunjunganRows} locked={locked} klass="kunjungan"
+                columns={[
+                  { key:"waktu",  label:"Waktu",  placeholder:"contoh: Sabtu 30 Mei" },
+                  { key:"tempat", label:"Tempat", placeholder:"contoh: Rumah Pak Bambang" },
+                  { key:"agenda", label:"Agenda", placeholder:"contoh: silaturahmi rutin" },
+                ]}
+                blankRow={{ waktu:"", tempat:"", agenda:"" }}
+                emptyText="Belum ada rencana anjangsana."
+                addLabel="Tambah Anjangsana"
+              />
+            </div>
+          </SectionCard>
+
+          {/* 8. Pembangunan */}
+          <SectionCard label="Pembangunan" title="(rencana / progres pembangunan)" meta={`${bangunRows.length} item`}>
+            <div className="sec-body-pad">
+              <MiniTable
+                rows={bangunRows} setRows={setBangunRows} locked={locked} klass="pembangunan"
+                columns={[
+                  { key:"jenis",  label:"Jenis Pembangunan", placeholder:"contoh: Renovasi mushola" },
+                  { key:"tujuan", label:"Tujuan",            placeholder:"contoh: Perbaikan atap" },
+                  { key:"volume", label:"Volume",            placeholder:"1 unit" },
+                  { key:"dana",   label:"Dana",              placeholder:"Rp 0" },
+                ]}
+                blankRow={{ jenis:"", tujuan:"", volume:"", dana:"" }}
+                emptyText="Belum ada rencana pembangunan."
+                addLabel="Tambah Pembangunan"
+              />
+            </div>
+          </SectionCard>
+
+          {/* 9. Rencana Bece */}
+          <SectionCard label="Rencana Bece" title="(anggaran bulan ini)">
+            <div className="sec-body-pad">
+              <div className="single-field">
+                <label className="lbl" style={{fontFamily:"IBM Plex Sans, sans-serif",fontSize:12.5,fontWeight:500,color:"var(--ink-700)"}}>Jumlah</label>
+                <input className="ipt mono" disabled={locked} value={lainLain.rencanaBece}
+                       onChange={e => updLain("rencanaBece", e.target.value)} placeholder="Rp 0" />
+                <div className="hint-line">Rencana anggaran "Bece" yang akan dijalankan bulan ini.</div>
+              </div>
+            </div>
+          </SectionCard>
+
+          {/* 10. Beras Jimpitan */}
+          <SectionCard label="Beras Jimpitan" title="(pengumpulan jimpitan)">
+            <div className="sec-body-pad">
+              <div className="single-field">
+                <label className="lbl" style={{fontFamily:"IBM Plex Sans, sans-serif",fontSize:12.5,fontWeight:500,color:"var(--ink-700)"}}>Jumlah Terkumpul</label>
+                <input className="ipt mono" disabled={locked} value={lainLain.berasJimpitan}
+                       onChange={e => updLain("berasJimpitan", e.target.value)} placeholder="0 kg" />
+                <div className="hint-line">Total beras jimpitan terkumpul dari jama'ah bulan ini.</div>
+              </div>
+            </div>
+          </SectionCard>
+
+          {/* 11. Fotocopy Dalil */}
+          <SectionCard label="Fotocopy Dalil" title="(materi pengajian)">
+            <div className="sec-body-pad">
+              <div className="single-field">
+                <label className="lbl" style={{fontFamily:"IBM Plex Sans, sans-serif",fontSize:12.5,fontWeight:500,color:"var(--ink-700)"}}>Jumlah</label>
+                <input className="ipt mono" disabled={locked} value={lainLain.fotocopyDalil}
+                       onChange={e => updLain("fotocopyDalil", e.target.value)} placeholder="0 lembar" />
+                <div className="hint-line">Jumlah lembar fotocopy dalil yang dibagikan / dibutuhkan.</div>
+              </div>
+            </div>
+          </SectionCard>
+
+          {/* 12. Saran dan Masukan (read-only, dari Musyawarah) */}
+          <SaranSection />
+
+          {/* 13. Lain-lain */}
+          <SectionCard label="Lain-lain" title="(catatan bebas operator)">
+            <div className="sec-body-pad">
+              <div className="lb-field">
+                <label style={{fontFamily:"IBM Plex Sans, sans-serif",fontSize:12.5,fontWeight:500,color:"var(--ink-700)"}}>
+                  Catatan tambahan
+                  <span style={{color:"var(--ink-400)",fontWeight:400,fontSize:11.5,marginLeft:6}}>— Markdown didukung</span>
+                </label>
+                <textarea className="ta" disabled={locked} value={lainLain.catatan}
+                          onChange={e => updLain("catatan", e.target.value)}
+                          placeholder={"## Catatan bebas\n- hal lain yang perlu dicatat\n- ..."} />
+              </div>
+            </div>
+          </SectionCard>
+
+        </div>
+      </div>
+
+      {toast && (
+        <div className="toast">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8l3.5 3.5L13 5" stroke="#9FCBAE" strokeWidth="1.8"
+                  strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          {toast}
+        </div>
+      )}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("app-root")).render(<App />);
+</script>
+</body>
+</html>

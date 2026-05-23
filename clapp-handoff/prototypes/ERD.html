@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<title>ERD — CLApp Data Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F1E8; --paper-2:#EFE9DC; --surface:#FCFAF5; --surface-2:#F9F5EC;
+    --ink-900:#1B1814; --ink-700:#4A4640; --ink-500:#7A746A;
+    --ink-400:#9C968B; --ink-300:#C8C2B5; --ink-200:#DCD6C8;
+    --rule:#D9D2C2; --rule-strong:#B8B0A0;
+    --hadir:#2E7048; --hadir-ink:#1E4D31; --hadir-bg:#E1ECDC;
+    --alpa:#B23A3A;  --alpa-ink:#7E2828; --alpa-bg:#F4DCD8;
+    --sakit:#325E8C; --sakit-ink:#234062; --sakit-bg:#DCE5F0;
+    --izin:#B17A1F;  --izin-ink:#7F5614;  --izin-bg:#F2E5C7;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink-900);
+    font-family:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;font-size:14px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .page{max-width:1320px;margin:0 auto;padding:40px 32px 80px}
+  .sec-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);margin:0 0 6px}
+  .sec-title{font-size:22px;font-weight:600;margin:0 0 4px;letter-spacing:-.005em}
+  .sec-sub{font-size:14px;color:var(--ink-700);margin:0 0 24px;max-width:72ch}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;padding:12px 16px;background:var(--surface-2);
+    border:1px solid var(--rule);border-radius:3px;margin-bottom:24px;font-size:12.5px}
+  .legend .lg{display:inline-flex;align-items:center;gap:6px}
+  .legend .lg i{width:14px;height:14px;border-radius:2px;display:inline-block}
+  .legend .lg .new{background:var(--hadir);border:1px solid var(--hadir-ink)}
+  .legend .lg .mod{background:var(--izin);border:1px solid var(--izin-ink)}
+  .legend .lg .star{color:var(--alpa-ink);font-weight:700}
+  .legend code{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-700)}
+
+  /* Section group */
+  .group{margin-bottom:32px}
+  .group-h{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-700);font-weight:700;padding:8px 0;
+    border-bottom:1px solid var(--rule-strong);margin-bottom:14px}
+
+  /* Table grid */
+  .tables{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
+  .entity{background:var(--surface);border:1px solid var(--rule-strong);border-radius:3px;overflow:hidden;
+    display:flex;flex-direction:column}
+  .entity.new{border-color:var(--hadir);box-shadow:inset 3px 0 0 var(--hadir)}
+  .entity.modified{border-color:var(--izin);box-shadow:inset 3px 0 0 var(--izin)}
+  .entity.starred{box-shadow:0 0 0 1px var(--alpa)}
+  .entity-h{padding:10px 14px;background:var(--paper-2);border-bottom:1px solid var(--rule-strong);
+    display:flex;flex-direction:column;gap:2px}
+  .entity-h .table-name{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:700;
+    color:var(--ink-900);letter-spacing:.01em;display:flex;align-items:center;gap:6px}
+  .entity-h .table-name .star{color:var(--alpa);font-weight:700}
+  .entity-h .table-name .badge{display:inline-flex;align-items:center;height:18px;padding:0 6px;
+    border-radius:2px;font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:700;
+    letter-spacing:.08em;text-transform:uppercase;line-height:1;margin-left:auto}
+  .entity-h .table-name .badge.new{background:var(--hadir-bg);color:var(--hadir-ink);border:1px solid var(--hadir)}
+  .entity-h .table-name .badge.mod{background:var(--izin-bg);color:var(--izin-ink);border:1px solid var(--izin)}
+  .entity-h .indo{font-family:"IBM Plex Sans",sans-serif;font-size:11.5px;color:var(--ink-500);
+    font-style:italic}
+  .entity-fields{padding:8px 0;flex:1}
+  .field{display:grid;grid-template-columns:22px 1fr auto;align-items:center;
+    padding:5px 14px;font-size:12.5px;font-family:"IBM Plex Mono",monospace;
+    color:var(--ink-900);border-bottom:1px solid var(--rule);gap:8px}
+  .field:last-child{border-bottom:0}
+  .field.new-field{background:var(--hadir-bg)}
+  .field.modified-field{background:var(--izin-bg)}
+  .field .key{font-size:10px;font-weight:700;color:var(--ink-500);text-align:right;letter-spacing:.04em}
+  .field.pk .key{color:var(--alpa-ink)}
+  .field.fk .key{color:var(--sakit-ink)}
+  .field.nfk .key{color:var(--ink-400)}
+  .field .name{font-weight:600}
+  .field .name .type{font-family:"IBM Plex Mono",monospace;color:var(--ink-500);font-weight:400;margin-left:4px;font-size:11px}
+  .field .meta{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-500);font-weight:500;text-align:right;
+    white-space:nowrap}
+  .field .meta .new-pill{display:inline-block;padding:0 5px;height:14px;line-height:14px;
+    background:var(--hadir);color:#FCFAF5;border-radius:2px;font-size:8.5px;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;margin-left:4px}
+  .field .meta .mod-pill{display:inline-block;padding:0 5px;height:14px;line-height:14px;
+    background:var(--izin);color:#FCFAF5;border-radius:2px;font-size:8.5px;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;margin-left:4px}
+  .field-note{padding:6px 14px;background:var(--surface-2);font-size:11px;color:var(--ink-500);font-style:italic;
+    line-height:1.45;border-top:1px solid var(--rule)}
+  .field-note b{color:var(--ink-900);font-weight:600;font-style:normal}
+
+  /* Enum reference table */
+  .enums{background:var(--surface);border:1px solid var(--rule-strong);border-radius:3px;overflow:hidden}
+  .enum-row{display:grid;grid-template-columns:280px 1fr;align-items:center;
+    padding:8px 14px;border-bottom:1px solid var(--rule);font-size:12.5px}
+  .enum-row:last-child{border-bottom:0}
+  .enum-row .field-name{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-900)}
+  .enum-row .vals{font-family:"IBM Plex Mono",monospace;color:var(--ink-700);font-size:12px}
+  .enum-row.new-row{background:var(--hadir-bg)}
+  .enum-row.mod-row{background:var(--izin-bg)}
+  .enum-row .vals .new-val{background:var(--hadir);color:#FCFAF5;padding:1px 5px;border-radius:2px;
+    font-size:11px;font-weight:600;margin-right:2px}
+
+  /* Change summary */
+  .changes{background:var(--hadir-bg);border:1px solid var(--hadir);border-radius:3px;padding:16px 18px;margin-bottom:24px}
+  .changes h3{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--hadir-ink);margin:0 0 10px;font-weight:700}
+  .changes ul{margin:0;padding-left:18px;font-size:13px;color:var(--ink-900);line-height:1.6}
+  .changes ul li{margin-bottom:5px}
+  .changes ul li b{font-family:"IBM Plex Mono",monospace;font-weight:700;background:var(--surface);
+    padding:1px 5px;border-radius:2px;font-size:12px;border:1px solid var(--rule)}
+
+  /* Relationship summary */
+  .rels{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:12px}
+  .rel{padding:12px 14px;background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    font-size:13px;line-height:1.5}
+  .rel .arrow{font-family:"IBM Plex Mono",monospace;font-weight:700;color:var(--ink-700);margin:0 6px}
+  .rel code{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-900);background:var(--paper-2);
+    padding:1px 5px;border-radius:2px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <p class="sec-eyebrow">Data Model</p>
+  <h2 class="sec-title">CLApp ERD — Visual Reference</h2>
+  <p class="sec-sub">
+    Entity-relationship diagram for CLApp's local SQLite schema. English table/column names,
+    Indonesian enum values.
+  </p>
+
+  <div class="legend">
+    <span class="lg"><span class="star">★</span> Critical (high-traffic)</span>
+    <span class="lg"><code>──→</code> Required FK</span>
+    <span class="lg"><code>┄┄→</code> Nullable FK</span>
+  </div>
+
+  <!-- ─────────────── GROUP 1: Identity ─────────────── -->
+  <div class="group">
+    <div class="group-h">Identity — household + member directory</div>
+    <div class="tables">
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">households</div>
+          <div class="indo">Keluarga / KK</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field"><span class="key"></span><span class="name">household_no</span><span class="meta">auto MAX+1</span></div>
+          <div class="field"><span class="key"></span><span class="name">type</span><span class="meta">enum</span></div>
+          <div class="field nfk"><span class="key">┄FK</span><span class="name">head_member_id</span><span class="meta">→ members</span></div>
+          <div class="field"><span class="key"></span><span class="name">address</span><span class="meta">text</span></div>
+        </div>
+        <div class="field-note">Cycle break: <b>head_member_id</b> nullable. KK address added for letterhead/Serkiler printing.</div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">members <span class="star">★</span></div>
+          <div class="indo">Jama'ah / Anggota</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field fk"><span class="key">FK</span><span class="name">household_id</span><span class="meta">→ households</span></div>
+          <div class="field"><span class="key"></span><span class="name">full_name</span><span class="meta">text</span></div>
+          <div class="field"><span class="key"></span><span class="name">nickname</span><span class="meta">text</span></div>
+          <div class="field"><span class="key"></span><span class="name">gender</span><span class="meta">enum</span></div>
+          <div class="field"><span class="key"></span><span class="name">life_stage</span><span class="meta">enum (Kelas)</span></div>
+          <div class="field"><span class="key"></span><span class="name">marital_status</span><span class="meta">enum</span></div>
+          <div class="field"><span class="key"></span><span class="name">blood_type</span><span class="meta">enum</span></div>
+          <div class="field"><span class="key"></span><span class="name">rhesus</span><span class="meta">enum</span></div>
+          <div class="field"><span class="key"></span><span class="name">birth_place</span><span class="meta">text</span></div>
+          <div class="field"><span class="key"></span><span class="name">birth_date</span><span class="meta">date · nullable</span></div>
+          <div class="field nfk"><span class="key">┄FK</span><span class="name">role_id</span><span class="meta">→ roles</span></div>
+          <div class="field"><span class="key"></span><span class="name">is_active</span><span class="meta">bool</span></div>
+          <div class="field"><span class="key"></span><span class="name">created_at, updated_at</span><span class="meta">ts</span></div>
+        </div>
+        <div class="field-note">Hub of the schema. New: <b>role_id</b> for organizational role (most rows null).</div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">roles</div>
+          <div class="indo">Master peran organisasi</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field"><span class="key"></span><span class="name">name</span><span class="meta">text unique</span></div>
+          <div class="field"><span class="key"></span><span class="name">is_active</span><span class="meta">bool (soft-retire)</span></div>
+        </div>
+        <div class="field-note">Edited in Pengaturan. Seed: Imam, Wakil, Sekretaris, Bendahara, Penerobos, KU, KMM, Aghnia, Muballigh, PJP.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────────── GROUP 2: Attendance ─────────────── -->
+  <div class="group">
+    <div class="group-h">Attendance — sessions + per-member status</div>
+    <div class="tables">
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">session_types</div>
+          <div class="indo">Jenis Pertemuan (master)</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field"><span class="key"></span><span class="name">name</span><span class="meta">text</span></div>
+          <div class="field"><span class="key"></span><span class="name">is_active</span><span class="meta">bool</span></div>
+        </div>
+        <div class="field-note">Seed: Hasda, Dalil-dalil, Penerobos Desa, Qur'an, Q+K.Zakat. Edited in Pengaturan.</div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">sessions</div>
+          <div class="indo">Pertemuan / Pengajian</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field"><span class="key"></span><span class="name">session_date</span><span class="meta">date</span></div>
+          <div class="field fk"><span class="key">FK</span><span class="name">session_type_id</span><span class="meta">→ session_types</span></div>
+        </div>
+        <div class="field-note"><b>UNIQUE(session_type_id, session_date)</b>. Created on-the-fly at attendance entry; back-dating OK, future blocked.</div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">attendance <span class="star">★</span></div>
+          <div class="indo">Absensi</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field fk"><span class="key">FK</span><span class="name">member_id</span><span class="meta">→ members</span></div>
+          <div class="field fk"><span class="key">FK</span><span class="name">session_id</span><span class="meta">→ sessions</span></div>
+          <div class="field"><span class="key"></span><span class="name">status</span><span class="meta">'H'|'A'|'S'|'I'</span></div>
+          <div class="field"><span class="key"></span><span class="name">arrival_at</span><span class="meta">ts · nullable</span></div>
+          <div class="field"><span class="key"></span><span class="name">donation_amount</span><span class="meta">int · nullable (Shodaqoh)</span></div>
+          <div class="field"><span class="key"></span><span class="name">created_at, updated_at</span><span class="meta">ts</span></div>
+        </div>
+        <div class="field-note"><b>UNIQUE(member_id, session_id)</b>. Written on save (no row ≠ absent). Pre-displays all as 'H' for fast entry.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────────── GROUP 3: Meetings + Roster ─────────────── -->
+  <div class="group">
+    <div class="group-h">Musyawarah + Serkiler</div>
+    <div class="tables">
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">meetings</div>
+          <div class="indo">Musyawarah</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field"><span class="key"></span><span class="name">meeting_date</span><span class="meta">date</span></div>
+          <div class="field"><span class="key"></span><span class="name">type</span><span class="meta">enum</span></div>
+          <div class="field"><span class="key"></span><span class="name">title</span><span class="meta">text</span></div>
+          <div class="field"><span class="key"></span><span class="name">result_notes</span><span class="meta">markdown (Hasil)</span></div>
+          <div class="field"><span class="key"></span><span class="name">suggestions</span><span class="meta">markdown (Saran)</span></div>
+        </div>
+        <div class="field-note">Per latest design: Hasil &amp; Saran split into 2 fields (was 1 in v1). Both Markdown.</div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">meeting_attendees</div>
+          <div class="indo">Junction</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field fk"><span class="key">FK</span><span class="name">meeting_id</span><span class="meta">→ meetings</span></div>
+          <div class="field fk"><span class="key">FK</span><span class="name">member_id</span><span class="meta">→ members</span></div>
+        </div>
+        <div class="field-note"><b>UNIQUE(meeting_id, member_id)</b>. UI filters to Pengurus only (members.role_id IS NOT NULL).</div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">circular_roster</div>
+          <div class="indo">Serkiler</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field fk"><span class="key">FK</span><span class="name">member_id</span><span class="meta">→ members</span></div>
+          <div class="field"><span class="key"></span><span class="name">period</span><span class="meta">month (ts)</span></div>
+          <div class="field"><span class="key"></span><span class="name">paraf</span><span class="meta">bool (signed?)</span></div>
+          <div class="field"><span class="key"></span><span class="name">circulation_amount</span><span class="meta">int · iuran</span></div>
+        </div>
+        <div class="field-note">Added <b>circulation_amount</b> for iuran tracking (visible in the Serkiler grid column "Serkiler").</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────────── GROUP 4: Event Log ─────────────── -->
+  <div class="group">
+    <div class="group-h">Event Logs — Catatan Peristiwa</div>
+    <div class="tables">
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">vital_records</div>
+          <div class="indo">Lahir / Meninggal</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field"><span class="key"></span><span class="name">event_type</span><span class="meta">'Lahir' | 'Meninggal'</span></div>
+          <div class="field"><span class="key"></span><span class="name">event_date</span><span class="meta">date</span></div>
+          <div class="field nfk"><span class="key">┄FK</span><span class="name">member_id</span><span class="meta">→ members</span></div>
+          <div class="field"><span class="key"></span><span class="name">name</span><span class="meta">text (fallback)</span></div>
+          <div class="field"><span class="key"></span><span class="name">gender</span><span class="meta">enum</span></div>
+          <div class="field"><span class="key"></span><span class="name">notes</span><span class="meta">markdown</span></div>
+        </div>
+        <div class="field-note">Per ERD update: bayi (Lahir) <b>always</b> creates a member at Kelas=Balita; member_id mostly NOT NULL now.</div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">member_movements</div>
+          <div class="indo">Pindah Sambung / Sambung Baru</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field"><span class="key"></span><span class="name">movement_type</span><span class="meta">'Pindah Sambung'|'Sambung Baru'</span></div>
+          <div class="field"><span class="key"></span><span class="name">movement_date</span><span class="meta">date</span></div>
+          <div class="field fk"><span class="key">FK</span><span class="name">member_id</span><span class="meta">→ members</span></div>
+          <div class="field"><span class="key"></span><span class="name">notes</span><span class="meta">markdown</span></div>
+        </div>
+        <div class="field-note">Pindah Sambung also flips <b>members.is_active = false</b>. Sambung Baru creates a fresh member + KK-S household if no existing KK.</div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">member_changes</div>
+          <div class="indo">Perubahan Status</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field"><span class="key"></span><span class="name">change_type</span><span class="meta">enum (3 nilai)</span></div>
+          <div class="field"><span class="key"></span><span class="name">change_date</span><span class="meta">date</span></div>
+          <div class="field fk"><span class="key">FK</span><span class="name">member_id</span><span class="meta">→ members</span></div>
+          <div class="field"><span class="key"></span><span class="name">old_value</span><span class="meta">text</span></div>
+          <div class="field"><span class="key"></span><span class="name">new_value</span><span class="meta">text</span></div>
+          <div class="field"><span class="key"></span><span class="name">created_at</span><span class="meta">ts</span></div>
+        </div>
+        <div class="field-note">Auto-logged from Edit Jama'ah when <b>marital_status</b>, <b>life_stage</b>, or <b>role_id</b> changes. Format: "Lama → Baru". Enables Catatan Peristiwa to show "Menikah / Perubahan Kelas / Perubahan Dapukan" event rows.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────────── GROUP 5: Monthly Report ─────────────── -->
+  <div class="group">
+    <div class="group-h">Monthly Report — Laporan Bulanan</div>
+    <div class="tables">
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">monthly_reports</div>
+          <div class="indo">Laporan Bulanan</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field"><span class="key"></span><span class="name">month, year</span><span class="meta">UNIQUE pair</span></div>
+          <div class="field"><span class="key"></span><span class="name">lima_bab_lancar</span><span class="meta">% (derived)</span></div>
+          <div class="field"><span class="key"></span><span class="name">lima_bab_kurang_lancar</span><span class="meta">% (derived)</span></div>
+          <div class="field"><span class="key"></span><span class="name">lima_bab_kurang_sambung</span><span class="meta">% (derived)</span></div>
+          <div class="field"><span class="key"></span><span class="name">lima_bab_tabayyun</span><span class="meta">% (derived)</span></div>
+          <div class="field"><span class="key"></span><span class="name">rencana_bece</span><span class="meta">text</span></div>
+          <div class="field"><span class="key"></span><span class="name">beras_jimpitan</span><span class="meta">text</span></div>
+          <div class="field"><span class="key"></span><span class="name">fotocopy_dalil</span><span class="meta">text</span></div>
+          <div class="field"><span class="key"></span><span class="name">other_notes</span><span class="meta">markdown ("Lain-lain")</span></div>
+          <div class="field"><span class="key"></span><span class="name">visit_plans</span><span class="meta">JSON (Anjangsana)</span></div>
+          <div class="field"><span class="key"></span><span class="name">construction_projects</span><span class="meta">JSON (Pembangunan)</span></div>
+          <div class="field"><span class="key"></span><span class="name">finalized_at</span><span class="meta">ts · null=draft</span></div>
+          <div class="field"><span class="key"></span><span class="name">demographics_snapshot</span><span class="meta">JSON · null=live</span></div>
+        </div>
+        <div class="field-note">Lima Bab % now <b>computed from attendance buckets</b> (H+S+I÷total ÷ ranges), cached only at finalize. Demografi remains computed live until finalize.</div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">family_visits</div>
+          <div class="indo">Keluarga Dikunjungi</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field fk"><span class="key">FK</span><span class="name">report_id</span><span class="meta">→ monthly_reports</span></div>
+          <div class="field nfk"><span class="key">┄FK</span><span class="name">household_id</span><span class="meta">→ households</span></div>
+          <div class="field"><span class="key"></span><span class="name">family_name</span><span class="meta">text (fallback)</span></div>
+          <div class="field"><span class="key"></span><span class="name">notes</span><span class="meta">markdown</span></div>
+        </div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">sick_records</div>
+          <div class="indo">Sakit</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field fk"><span class="key">FK</span><span class="name">report_id</span><span class="meta">→ monthly_reports</span></div>
+          <div class="field fk"><span class="key">FK</span><span class="name">member_id</span><span class="meta">→ members (required)</span></div>
+          <div class="field"><span class="key"></span><span class="name">notes</span><span class="meta">markdown</span></div>
+          <div class="field"><span class="key"></span><span class="name">created_at</span><span class="meta">ts</span></div>
+        </div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">activity_types</div>
+          <div class="indo">Master Jenis Kegiatan</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field"><span class="key"></span><span class="name">name</span><span class="meta">text</span></div>
+          <div class="field"><span class="key"></span><span class="name">source_kind</span><span class="meta">enum (auto-fill source)</span></div>
+          <div class="field"><span class="key"></span><span class="name">meeting_type</span><span class="meta">enum · nullable</span></div>
+          <div class="field nfk"><span class="key">┄FK</span><span class="name">session_type_id</span><span class="meta">→ session_types · nullable</span></div>
+          <div class="field"><span class="key"></span><span class="name">is_active</span><span class="meta">bool</span></div>
+        </div>
+        <div class="field-note">Discriminator decides auto-fill source per row: <b>manual</b> (operator types), <b>meeting</b> (look up meetings.type), <b>session</b> (look up sessions of session_type_id). Seed pairs each of the 6 activities to its source.</div>
+      </div>
+
+      <div class="entity">
+        <div class="entity-h">
+          <div class="table-name">activity_records</div>
+          <div class="indo">Per-bulan status kegiatan</div>
+        </div>
+        <div class="entity-fields">
+          <div class="field pk"><span class="key">PK</span><span class="name">id</span><span class="meta">int</span></div>
+          <div class="field fk"><span class="key">FK</span><span class="name">report_id</span><span class="meta">→ monthly_reports</span></div>
+          <div class="field fk"><span class="key">FK</span><span class="name">activity_type_id</span><span class="meta">→ activity_types</span></div>
+          <div class="field"><span class="key"></span><span class="name">status</span><span class="meta">'Belum'|'Terlaksana'</span></div>
+          <div class="field"><span class="key"></span><span class="name">executed_date</span><span class="meta">date · nullable</span></div>
+          <div class="field"><span class="key"></span><span class="name">attendee_count</span><span class="meta">int · nullable</span></div>
+          <div class="field"><span class="key"></span><span class="name">location</span><span class="meta">text · nullable</span></div>
+          <div class="field nfk"><span class="key">┄FK</span><span class="name">source_meeting_id</span><span class="meta">→ meetings</span></div>
+        </div>
+        <div class="field-note"><b>UNIQUE(report_id, activity_type_id)</b>. Auto-fill depends on parent <b>activity_types.source_kind</b>: <i>meeting</i> sources fill from meetings table, <i>session</i> sources fill from sessions (≥1 attendance for the month). <b>source_meeting_id</b> tracks the meeting if relevant. Operator can override.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────────── Enum Reference ─────────────── -->
+  <div class="group">
+    <div class="group-h">Enum values (Indonesian codes)</div>
+    <div class="enums">
+      <div class="enum-row"><span class="field-name">households.type</span><span class="vals">KK · KK-S</span></div>
+      <div class="enum-row"><span class="field-name">members.gender</span><span class="vals">Laki-Laki · Perempuan</span></div>
+      <div class="enum-row"><span class="field-name">members.life_stage</span><span class="vals">Balita · AUD · Cabe Rawit · Pra Remaja · Remaja · Muda-mudi · Dewasa</span></div>
+      <div class="enum-row"><span class="field-name">members.marital_status</span><span class="vals">Belum Menikah · Menikah · Janda · Duda</span></div>
+      <div class="enum-row"><span class="field-name">members.blood_type</span><span class="vals">A · B · AB · O · Tidak Tahu</span></div>
+      <div class="enum-row"><span class="field-name">members.rhesus</span><span class="vals">Positif · Negatif · Tidak Tahu</span></div>
+      <div class="enum-row"><span class="field-name">attendance.status</span><span class="vals">H · A · S · I &nbsp;<span style="color:var(--ink-500)">(Hadir · Absen/Alpa · Sakit · Izin)</span></span></div>
+      <div class="enum-row"><span class="field-name">meetings.type</span><span class="vals">Musyawarah Kelompok · Musyawarah 5 Unsur · Pengkoreksian KU Bulanan · Lainnya</span></div>
+      <div class="enum-row"><span class="field-name">vital_records.event_type</span><span class="vals">Lahir · Meninggal</span></div>
+      <div class="enum-row"><span class="field-name">member_movements.movement_type</span><span class="vals">Pindah Sambung · Sambung Baru</span></div>
+      <div class="enum-row"><span class="field-name">member_changes.change_type</span><span class="vals">Menikah Perubahan Kelas Perubahan Dapukan</span></div>
+      <div class="enum-row"><span class="field-name">roles.name (seed)</span><span class="vals">Imam · Wakil · Sekretaris · Bendahara · Penerobos · KU · KMM · Aghnia · Muballigh · PJP</span></div>
+      <div class="enum-row"><span class="field-name">activity_types.source_kind</span><span class="vals">manual · meeting · session &nbsp;<span style="color:var(--ink-500)">(controls auto-fill)</span></span></div>
+      <div class="enum-row"><span class="field-name">activity_records.status</span><span class="vals">Belum · Terlaksana</span></div>
+    </div>
+  </div>
+
+  <!-- ─────────────── Relationships ─────────────── -->
+  <div class="group">
+    <div class="group-h">Key relationships</div>
+    <div class="rels">
+      <div class="rel"><code>households</code> <span class="arrow">1 ─ N</span> <code>members</code> &nbsp; (one KK has many anggota)</div>
+      <div class="rel"><code>households.head_member_id</code> <span class="arrow">N ─ 1</span> <code>members</code> &nbsp; (KK's kepala)</div>
+      <div class="rel"><code>members</code> <span class="arrow">N ─ 1</span> <code>roles</code></div>
+      <div class="rel"><code>sessions</code> <span class="arrow">N ─ 1</span> <code>session_types</code></div>
+      <div class="rel"><code>attendance</code> <span class="arrow">N ─ 1</span> <code>sessions</code> + <code>members</code> &nbsp; (junction)</div>
+      <div class="rel"><code>meetings</code> <span class="arrow">M ─ N</span> <code>members</code> &nbsp; via <code>meeting_attendees</code></div>
+      <div class="rel"><code>circular_roster</code> <span class="arrow">N ─ 1</span> <code>members</code></div>
+      <div class="rel"><code>vital_records</code> <span class="arrow">N ─ 1</span> <code>members</code> (nullable for unregistered)</div>
+      <div class="rel"><code>member_movements</code> <span class="arrow">N ─ 1</span> <code>members</code></div>
+      <div class="rel"><code>member_changes</code> <span class="arrow">N ─ 1</span> <code>members</code></div>
+      <div class="rel"><code>monthly_reports</code> <span class="arrow">1 ─ N</span> <code>family_visits</code>, <code>sick_records</code>, <code>activity_records</code></div>
+      <div class="rel"><code>activity_records</code> <span class="arrow">N ─ 1</span> <code>activity_types</code></div>
+      <div class="rel"><code>activity_records.source_meeting_id</code> <span class="arrow">N ─ 1</span> <code>meetings</code> &nbsp; (when source_kind=meeting)</div>
+      <div class="rel"><code>activity_types.session_type_id</code> <span class="arrow">N ─ 1</span> <code>session_types</code> &nbsp; (when source_kind=session)</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

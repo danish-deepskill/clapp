@@ -1,0 +1,485 @@
+{
+  "version": "1.0.0",
+  "kelompok": {
+    "name": "Cilandak A",
+    "region": "SLM"
+  },
+  "households": [
+    {
+      "household_no": "001",
+      "type": "KK",
+      "address": "Jl. Cilandak KKO No. 42, RT 003/RW 005",
+      "members": [
+        {
+          "full_name": "Ahmad Faisal Rahman",
+          "nickname": "Pak Faisal",
+          "gender": "Laki-Laki",
+          "life_stage": "Dewasa",
+          "marital_status": "Menikah",
+          "blood_type": "A",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "1978-03-12",
+          "is_head": true,
+          "is_active": true,
+          "role": "Imam"
+        },
+        {
+          "full_name": "Siti Aminah Putri",
+          "nickname": "Bu Siti",
+          "gender": "Perempuan",
+          "life_stage": "Dewasa",
+          "marital_status": "Menikah",
+          "blood_type": "B",
+          "rhesus": "Positif",
+          "birth_place": "Bandung",
+          "birth_date": "1982-07-22",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        },
+        {
+          "full_name": "Muhammad Yusuf",
+          "nickname": "Yusuf",
+          "gender": "Laki-Laki",
+          "life_stage": "Muda-mudi",
+          "marital_status": "Belum Menikah",
+          "blood_type": "O",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "2003-11-18",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        },
+        {
+          "full_name": "Fatimah Zahra",
+          "nickname": "Fatimah",
+          "gender": "Perempuan",
+          "life_stage": "Remaja",
+          "marital_status": "Belum Menikah",
+          "blood_type": "A",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "2010-04-05",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        },
+        {
+          "full_name": "Hasan Ali",
+          "nickname": null,
+          "gender": "Laki-Laki",
+          "life_stage": "Cabe Rawit",
+          "marital_status": "Belum Menikah",
+          "blood_type": "A",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "2016-09-30",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        }
+      ]
+    },
+    {
+      "household_no": "002",
+      "type": "KK",
+      "address": "Jl. Cilandak Tengah Raya No. 18, RT 002/RW 004",
+      "members": [
+        {
+          "full_name": "Bambang Hartono",
+          "nickname": "Pak Bambang",
+          "gender": "Laki-Laki",
+          "life_stage": "Dewasa",
+          "marital_status": "Menikah",
+          "blood_type": "B",
+          "rhesus": "Positif",
+          "birth_place": "Solo",
+          "birth_date": "1975-06-04",
+          "is_head": true,
+          "is_active": true,
+          "role": "Sekretaris"
+        },
+        {
+          "full_name": "Rahmah Wati",
+          "nickname": "Bu Rahmah",
+          "gender": "Perempuan",
+          "life_stage": "Dewasa",
+          "marital_status": "Menikah",
+          "blood_type": "AB",
+          "rhesus": "Positif",
+          "birth_place": "Yogyakarta",
+          "birth_date": "1980-02-11",
+          "is_head": false,
+          "is_active": true,
+          "role": "Bendahara"
+        },
+        {
+          "full_name": "Bayu Pratama",
+          "nickname": "Bayu",
+          "gender": "Laki-Laki",
+          "life_stage": "Muda-mudi",
+          "marital_status": "Menikah",
+          "blood_type": "B",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "2001-08-25",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        },
+        {
+          "full_name": "Salma Aulia",
+          "nickname": null,
+          "gender": "Perempuan",
+          "life_stage": "Cabe Rawit",
+          "marital_status": "Belum Menikah",
+          "blood_type": "B",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "2015-12-14",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        }
+      ]
+    },
+    {
+      "household_no": "003",
+      "type": "KK-S",
+      "address": "Jl. Margasatwa Raya No. 7, RT 001/RW 003",
+      "members": [
+        {
+          "full_name": "Hj. Khadijah Salim",
+          "nickname": "Hj. Khadijah",
+          "gender": "Perempuan",
+          "life_stage": "Dewasa",
+          "marital_status": "Janda",
+          "blood_type": "O",
+          "rhesus": "Tidak Tahu",
+          "birth_place": "Surabaya",
+          "birth_date": "1958-05-09",
+          "is_head": true,
+          "is_active": true,
+          "role": "Muballigh"
+        }
+      ]
+    },
+    {
+      "household_no": "004",
+      "type": "KK",
+      "address": "Jl. Cilandak KKO Gg. Mawar No. 12, RT 004/RW 005",
+      "members": [
+        {
+          "full_name": "Abdul Rahman Hidayat",
+          "nickname": "Pak Abdul",
+          "gender": "Laki-Laki",
+          "life_stage": "Dewasa",
+          "marital_status": "Menikah",
+          "blood_type": "O",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "1973-01-17",
+          "is_head": true,
+          "is_active": true,
+          "role": "Wakil"
+        },
+        {
+          "full_name": "Nurul Hidayah",
+          "nickname": "Bu Nurul",
+          "gender": "Perempuan",
+          "life_stage": "Dewasa",
+          "marital_status": "Menikah",
+          "blood_type": "A",
+          "rhesus": "Positif",
+          "birth_place": "Bogor",
+          "birth_date": "1977-10-28",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        },
+        {
+          "full_name": "Rizki Ramadhan",
+          "nickname": "Rizki",
+          "gender": "Laki-Laki",
+          "life_stage": "Muda-mudi",
+          "marital_status": "Belum Menikah",
+          "blood_type": "O",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "2000-09-02",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        },
+        {
+          "full_name": "Anisa Aulia",
+          "nickname": "Anisa",
+          "gender": "Perempuan",
+          "life_stage": "Remaja",
+          "marital_status": "Belum Menikah",
+          "blood_type": "A",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "2009-03-19",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        },
+        {
+          "full_name": "Hafiz Maulana",
+          "nickname": null,
+          "gender": "Laki-Laki",
+          "life_stage": "Cabe Rawit",
+          "marital_status": "Belum Menikah",
+          "blood_type": "B",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "2014-06-07",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        },
+        {
+          "full_name": "Najwa Putri",
+          "nickname": null,
+          "gender": "Perempuan",
+          "life_stage": "Balita",
+          "marital_status": "Belum Menikah",
+          "blood_type": "O",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "2022-11-23",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        }
+      ]
+    },
+    {
+      "household_no": "005",
+      "type": "KK",
+      "address": "Jl. Cilandak Tengah III No. 8, RT 002/RW 006",
+      "members": [
+        {
+          "full_name": "Sutrisno Wijaya",
+          "nickname": "Pak Sutrisno",
+          "gender": "Laki-Laki",
+          "life_stage": "Dewasa",
+          "marital_status": "Menikah",
+          "blood_type": "A",
+          "rhesus": "Positif",
+          "birth_place": "Semarang",
+          "birth_date": "1979-04-15",
+          "is_head": true,
+          "is_active": true,
+          "role": "KMM"
+        },
+        {
+          "full_name": "Lestari Indah",
+          "nickname": "Bu Lestari",
+          "gender": "Perempuan",
+          "life_stage": "Dewasa",
+          "marital_status": "Menikah",
+          "blood_type": "O",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "1984-01-03",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        },
+        {
+          "full_name": "Putri Salwa",
+          "nickname": null,
+          "gender": "Perempuan",
+          "life_stage": "Balita",
+          "marital_status": "Belum Menikah",
+          "blood_type": "Tidak Tahu",
+          "rhesus": "Tidak Tahu",
+          "birth_place": "Jakarta",
+          "birth_date": "2023-07-26",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        }
+      ]
+    },
+    {
+      "household_no": "006",
+      "type": "KK",
+      "address": "Jl. Pondok Labu Permai Blok C-7, RT 001/RW 007",
+      "members": [
+        {
+          "full_name": "Eko Setiawan",
+          "nickname": "Pak Eko",
+          "gender": "Laki-Laki",
+          "life_stage": "Dewasa",
+          "marital_status": "Menikah",
+          "blood_type": "B",
+          "rhesus": "Positif",
+          "birth_place": "Solo",
+          "birth_date": "1976-12-09",
+          "is_head": true,
+          "is_active": true,
+          "role": "Aghnia"
+        },
+        {
+          "full_name": "Dewi Sari",
+          "nickname": "Bu Dewi",
+          "gender": "Perempuan",
+          "life_stage": "Dewasa",
+          "marital_status": "Menikah",
+          "blood_type": "A",
+          "rhesus": "Positif",
+          "birth_place": "Solo",
+          "birth_date": "1981-05-21",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        },
+        {
+          "full_name": "Aulia Rahmah",
+          "nickname": "Aulia",
+          "gender": "Perempuan",
+          "life_stage": "Remaja",
+          "marital_status": "Belum Menikah",
+          "blood_type": "A",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "2011-02-13",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        },
+        {
+          "full_name": "Reza Firmansyah",
+          "nickname": null,
+          "gender": "Laki-Laki",
+          "life_stage": "Cabe Rawit",
+          "marital_status": "Belum Menikah",
+          "blood_type": "AB",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "2015-08-04",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        },
+        {
+          "full_name": "Hadi Setiawan",
+          "nickname": null,
+          "gender": "Laki-Laki",
+          "life_stage": "Muda-mudi",
+          "marital_status": "Belum Menikah",
+          "blood_type": "B",
+          "rhesus": "Positif",
+          "birth_place": "Solo",
+          "birth_date": "2002-06-16",
+          "is_head": false,
+          "is_active": false,
+          "role": null
+        }
+      ]
+    },
+    {
+      "household_no": "007",
+      "type": "KK-S",
+      "address": "Jl. Fatmawati Raya No. 130, RT 005/RW 002",
+      "members": [
+        {
+          "full_name": "H. Mansur Hakim",
+          "nickname": "H. Mansur",
+          "gender": "Laki-Laki",
+          "life_stage": "Dewasa",
+          "marital_status": "Duda",
+          "blood_type": "A",
+          "rhesus": "Positif",
+          "birth_place": "Medan",
+          "birth_date": "1962-08-27",
+          "is_head": true,
+          "is_active": true,
+          "role": "Penerobos"
+        }
+      ]
+    },
+    {
+      "household_no": "008",
+      "type": "KK",
+      "address": "Jl. Cilandak Barat No. 25, RT 003/RW 008",
+      "members": [
+        {
+          "full_name": "Imam Maulana",
+          "nickname": "Pak Imam",
+          "gender": "Laki-Laki",
+          "life_stage": "Dewasa",
+          "marital_status": "Menikah",
+          "blood_type": "O",
+          "rhesus": "Positif",
+          "birth_place": "Yogyakarta",
+          "birth_date": "1974-03-30",
+          "is_head": true,
+          "is_active": true,
+          "role": "KU"
+        },
+        {
+          "full_name": "Hidayah Sakinah",
+          "nickname": "Bu Hidayah",
+          "gender": "Perempuan",
+          "life_stage": "Dewasa",
+          "marital_status": "Menikah",
+          "blood_type": "B",
+          "rhesus": "Negatif",
+          "birth_place": "Yogyakarta",
+          "birth_date": "1978-09-12",
+          "is_head": false,
+          "is_active": true,
+          "role": "PJP"
+        },
+        {
+          "full_name": "Iqbal Rifqi",
+          "nickname": "Iqbal",
+          "gender": "Laki-Laki",
+          "life_stage": "Muda-mudi",
+          "marital_status": "Belum Menikah",
+          "blood_type": "O",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "2002-04-08",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        },
+        {
+          "full_name": "Nabila Safira",
+          "nickname": "Nabila",
+          "gender": "Perempuan",
+          "life_stage": "Remaja",
+          "marital_status": "Belum Menikah",
+          "blood_type": "B",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "2010-01-25",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        },
+        {
+          "full_name": "Hamzah Ridwan",
+          "nickname": null,
+          "gender": "Laki-Laki",
+          "life_stage": "Cabe Rawit",
+          "marital_status": "Belum Menikah",
+          "blood_type": "A",
+          "rhesus": "Positif",
+          "birth_place": "Jakarta",
+          "birth_date": "2014-11-17",
+          "is_head": false,
+          "is_active": true,
+          "role": null
+        }
+      ]
+    }
+  ]
+}

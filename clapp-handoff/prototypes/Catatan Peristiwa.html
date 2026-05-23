@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<title>Catatan Peristiwa — SLM Cilandak A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F1E8; --paper-2:#EFE9DC; --surface:#FCFAF5; --surface-2:#F9F5EC;
+    --ink-900:#1B1814; --ink-700:#4A4640; --ink-500:#7A746A;
+    --ink-400:#9C968B; --ink-300:#C8C2B5; --ink-200:#DCD6C8;
+    --rule:#D9D2C2; --rule-strong:#B8B0A0;
+    --hadir:#2E7048; --hadir-ink:#1E4D31; --hadir-bg:#E1ECDC;
+    --alpa:#B23A3A;  --alpa-ink:#7E2828; --alpa-bg:#F4DCD8;
+    --izin:#B17A1F; --izin-ink:#7F5614; --izin-bg:#F2E5C7;
+    --sakit:#325E8C;  --sakit-ink:#234062;  --sakit-bg:#DCE5F0;
+    --focus:#325E8C;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink-900);
+    font-family:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;font-size:14px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+
+  .page{max-width:1320px;margin:0 auto;padding:40px 32px 80px}
+  .sec-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);margin:0 0 6px}
+  .sec-title{font-size:22px;font-weight:600;margin:0 0 4px;letter-spacing:-.005em}
+  .sec-sub{font-size:14px;color:var(--ink-700);margin:0 0 24px;max-width:62ch}
+  .dir-note{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-700);
+    background:var(--surface-2);border:1px solid var(--rule);padding:10px 14px;border-radius:3px;margin-bottom:14px}
+  .dir-note b{color:var(--ink-900);font-weight:600}
+
+  /* Frame */
+  .frame-wrap{border:1px solid var(--rule-strong);border-radius:6px;background:#cfc7b4;
+    box-shadow:0 24px 48px -28px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.06)}
+  .frame-chrome{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--rule-strong)}
+  .frame-chrome .dots{display:flex;gap:6px}
+  .frame-chrome .dots i{width:11px;height:11px;border-radius:50%;background:#b3aa97;display:block}
+  .frame-chrome .title{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#4a4640;letter-spacing:.04em;flex:1;text-align:center}
+  .frame-chrome .title b{font-weight:600;color:var(--ink-900)}
+  .frame-stage{background:var(--paper);height:760px;overflow:hidden;display:flex;flex-direction:column;
+    border-radius:0 0 5px 5px;position:relative}
+
+  /* CLApp navbar (priority-plus) */
+  .app-top{display:flex;align-items:stretch;background:var(--surface);border-bottom:1px solid var(--rule-strong);position:relative}
+  .app-brand{padding:10px 20px;border-right:1px solid var(--rule);min-width:160px;background:transparent;
+    border-top:0;border-bottom:0;border-left:0;text-align:left;font-family:inherit;color:inherit;
+    cursor:default;display:flex;flex-direction:column;justify-content:center;transition:background .12s}
+  .app-brand:hover{background:var(--surface-2)}
+  .app-brand{flex-direction:row !important;align-items:center !important;gap:10px;border-right:1px solid var(--rule) !important}
+  .app-brand .logo-mark{width:30px;height:30px;background:var(--ink-900);color:#FCFAF5;
+    display:inline-flex;align-items:center;justify-content:center;border-radius:3px;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.04em;
+    flex-shrink:0;border:1px solid var(--ink-900)}
+  .app-brand .logo-mark svg{display:block}
+  .app-brand:hover .logo-mark{background:#000;border-color:#000}
+  .app-brand .logo-mark{position:relative}
+  .app-brand .brand-badge{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;
+    padding:0 4px;border-radius:8px;background:var(--izin);color:#FCFAF5;
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:700;letter-spacing:0;
+    display:inline-flex;align-items:center;justify-content:center;line-height:1;
+    border:1.5px solid var(--surface);pointer-events:none}
+  .app-brand:hover .brand-badge{border-color:var(--surface-2)}
+  .app-brand .name{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-500);
+    font-family:"IBM Plex Mono",monospace}
+  .app-brand .title{font-size:18px;font-weight:600;margin-top:0;letter-spacing:-.005em;display:flex;align-items:center;gap:6px}
+  .app-brand .title .home-mark{font-size:13px;color:var(--ink-400);transition:color .12s,transform .12s}
+  .app-brand:hover .title .home-mark{color:var(--ink-700);transform:translateX(2px)}
+  .app-nav{display:flex;align-items:stretch;flex:1;min-width:0;position:relative}
+  .app-nav .tab{padding:0 18px;display:flex;align-items:center;justify-content:center;
+    font-size:13.5px;color:var(--ink-700);border-right:1px solid var(--rule);cursor:default;
+    font-weight:500;white-space:nowrap;flex:1 1 auto;min-width:0}
+  .app-nav .tab:hover{background:var(--surface-2);color:var(--ink-900)}
+  .app-nav .tab.active{background:var(--paper);color:var(--ink-900);position:relative}
+  .app-nav .tab.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--hadir)}
+  .nav-measure{position:absolute;visibility:hidden;pointer-events:none;white-space:nowrap;
+    left:0;top:0;display:flex;height:100%}
+  .nav-measure .tab,.nav-measure .lainnya-trigger{flex:0 0 auto !important}
+  .lainnya-wrap{position:relative;display:flex;align-items:stretch;flex:0 0 auto}
+  .lainnya-trigger{padding:0 16px;display:flex;align-items:center;gap:6px;color:var(--ink-700);
+    border-right:1px solid var(--rule);cursor:default;font-weight:600;
+    font-family:"IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;font-size:11px;
+    background:var(--surface-2);flex:0 0 auto;white-space:nowrap;position:relative}
+  .lainnya-trigger:hover{background:var(--paper-2);color:var(--ink-900)}
+  .lainnya-trigger.open{background:var(--paper);color:var(--ink-900)}
+  .lainnya-trigger svg{transition:transform .15s ease;color:var(--ink-500)}
+  .lainnya-trigger.open svg{transform:rotate(180deg);color:var(--ink-900)}
+  .lainnya-trigger.has-active{color:var(--ink-900)}
+  .lainnya-trigger.has-active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--hadir)}
+  .lainnya-menu{position:absolute;top:100%;right:0;min-width:220px;background:var(--surface);
+    border:1px solid var(--rule-strong);border-top:1px solid var(--rule);
+    box-shadow:0 14px 32px -8px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.06);z-index:50;padding:6px 0}
+  .lainnya-menu .menu-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);padding:8px 16px 6px}
+  .lainnya-menu .menu-item{padding:9px 16px;font-size:13.5px;color:var(--ink-700);cursor:default;
+    display:flex;align-items:center;gap:10px;border-left:2px solid transparent}
+  .lainnya-menu .menu-item:hover{background:var(--surface-2);color:var(--ink-900);border-left-color:var(--hadir)}
+  .lainnya-menu .menu-item.active{background:var(--paper);color:var(--ink-900);border-left-color:var(--hadir);font-weight:600}
+
+  /* Filter bar */
+  .filt{display:flex;align-items:stretch;background:var(--surface-2);border-bottom:1px solid var(--rule)}
+  .filt .cell{padding:10px 16px;border-right:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center}
+  .filt .cell .k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500);
+    font-family:"IBM Plex Mono",monospace;margin-bottom:3px}
+  .filt .cell .v{font-size:14.5px;font-weight:600;color:var(--ink-900);display:flex;align-items:center;gap:8px}
+  .filt select{appearance:none;background:transparent;border:0;font:inherit;color:inherit;
+    padding:0 20px 0 0;margin:0;cursor:default;font-weight:600;font-size:14.5px;
+    font-family:"IBM Plex Sans",sans-serif;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%231B1814' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;background-position:right center}
+
+  /* Type chips */
+  .type-chips{display:flex;gap:4px;align-items:center;padding:0 16px;border-right:1px solid var(--rule);flex:1;flex-wrap:nowrap;overflow-x:auto}
+  .type-chips::-webkit-scrollbar{display:none}
+  .type-chip{appearance:none;border:1px solid var(--ink-200);background:#fff;
+    height:30px;padding:0 12px;border-radius:3px;cursor:default;
+    font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;font-weight:600;
+    color:var(--ink-500);letter-spacing:.005em;display:inline-flex;align-items:center;gap:6px;
+    white-space:nowrap;transition:background .08s,color .08s,border-color .08s}
+  .type-chip:hover{border-color:var(--ink-300);color:var(--ink-700)}
+  .type-chip .dot{width:8px;height:8px;border-radius:2px;display:block;background:var(--ink-300)}
+  .type-chip.lahir .dot{background:var(--hadir)}
+  .type-chip.meninggal .dot{background:var(--ink-900)}
+  .type-chip.sb .dot{background:var(--izin)}
+  .type-chip.ps .dot{background:var(--sakit)}
+  .type-chip.on{background:var(--ink-900);color:#FCFAF5;border-color:var(--ink-900)}
+  .type-chip.on .dot{background:#FCFAF5}
+  .type-chip.semua.on{background:var(--ink-900);color:#FCFAF5}
+
+  /* + Tambah button + popover */
+  .filt .action{display:flex;align-items:center;padding:0 16px;position:relative}
+  .btn{appearance:none;border:1px solid var(--ink-900);background:var(--ink-900);color:#FCFAF5;
+    font-family:"IBM Plex Sans",sans-serif;font-size:13.5px;font-weight:600;letter-spacing:.01em;
+    padding:0 16px;height:34px;border-radius:3px;cursor:default;display:inline-flex;align-items:center;gap:8px}
+  .btn:hover:not(:disabled){background:#000}
+  .btn.ghost{background:transparent;color:var(--ink-900);border-color:var(--rule-strong)}
+  .btn.ghost:hover:not(:disabled){background:var(--surface-2)}
+  .btn:disabled{background:var(--ink-300);border-color:var(--ink-300);color:var(--surface);cursor:not-allowed}
+  .tambah-pop{position:absolute;top:calc(100% + 6px);right:16px;min-width:240px;background:var(--surface);
+    border:1px solid var(--rule-strong);border-radius:3px;
+    box-shadow:0 14px 32px -8px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.06);z-index:60;padding:6px 0}
+  .tambah-pop .menu-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);padding:8px 16px 6px}
+  .tambah-pop .menu-item{padding:10px 16px;font-size:13.5px;color:var(--ink-900);cursor:default;
+    display:flex;align-items:center;gap:10px;font-weight:500;
+    border-left:2px solid transparent}
+  .tambah-pop .menu-item:hover{background:var(--surface-2);border-left-color:var(--ink-900)}
+  .tambah-pop .menu-item .dot{width:10px;height:10px;border-radius:2px;display:block;flex-shrink:0}
+
+  /* Table */
+  .colhead{display:grid;grid-template-columns:120px 170px 1fr 2fr;
+    align-items:center;background:var(--paper-2);border-bottom:1px solid var(--rule-strong);
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-500);padding:0;position:sticky;top:0;z-index:2;height:36px}
+  .colhead > div{padding:0 14px;border-right:1px solid var(--rule);height:100%;display:flex;align-items:center}
+  .colhead > div:last-child{border-right:0}
+
+  .rows{flex:1;overflow-y:auto;background:var(--surface)}
+  .rows::-webkit-scrollbar{width:12px}
+  .rows::-webkit-scrollbar-track{background:var(--surface)}
+  .rows::-webkit-scrollbar-thumb{background:var(--ink-200);border-radius:6px;border:3px solid var(--surface)}
+
+  .event-row{display:grid;grid-template-columns:120px 170px 1fr 2fr;
+    align-items:center;border-bottom:1px solid var(--rule);height:42px;
+    transition:background .08s}
+  .event-row:hover{background:var(--surface-2)}
+  .event-row > div{padding:0 14px;border-right:1px solid var(--rule);height:100%;display:flex;align-items:center;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .event-row > div:last-child{border-right:0}
+  .event-row .tgl{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-700);font-weight:500;
+    font-variant-numeric:tabular-nums}
+  .event-row .tgl .tgl-num{color:var(--ink-900);font-weight:600;margin-right:4px}
+  .event-row .nama{font-size:14px;font-weight:500;color:var(--ink-900);letter-spacing:-.002em}
+  .event-row .catatan{font-size:13.5px;color:var(--ink-500)}
+  .event-row .catatan.empty{color:var(--ink-300)}
+
+  /* Jenis tags */
+  .jtag{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;
+    border-radius:3px;font-family:"IBM Plex Sans",sans-serif;font-size:11.5px;font-weight:600;
+    letter-spacing:.01em;border:1px solid transparent;line-height:1}
+  .jtag .dot{width:6px;height:6px;border-radius:50%;display:block;flex-shrink:0}
+  .jtag.lahir{background:var(--hadir-bg);color:var(--hadir-ink);border-color:var(--hadir)}
+  .jtag.lahir .dot{background:var(--hadir)}
+  .jtag.meninggal{background:var(--ink-200);color:var(--ink-900);border-color:var(--ink-300)}
+  .jtag.meninggal .dot{background:var(--ink-900)}
+  .jtag.sb{background:var(--izin-bg);color:var(--izin-ink);border-color:var(--izin)}
+  .jtag.sb .dot{background:var(--izin)}
+  .jtag.ps{background:var(--sakit-bg);color:var(--sakit-ink);border-color:var(--sakit)}
+  .jtag.ps .dot{background:var(--sakit)}
+  .jtag.menikah{background:var(--surface-2);color:var(--ink-900);border-color:var(--ink-300)}
+  .jtag.menikah .dot{background:var(--ink-700)}
+  .jtag.tahap{background:var(--surface-2);color:var(--ink-700);border-color:var(--ink-300)}
+  .jtag.tahap .dot{background:var(--ink-500)}
+  .jtag.dapukan{background:var(--surface-2);color:var(--ink-700);border-color:var(--ink-300)}
+  .jtag.dapukan .dot{background:var(--ink-500)}
+
+  /* Empty state */
+  .empty-state{padding:60px 20px;text-align:center;color:var(--ink-500);font-size:13.5px}
+  .empty-state .em-title{font-size:14px;color:var(--ink-700);font-weight:500;margin-bottom:4px}
+
+  /* Footer */
+  .app-foot{display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--surface);
+    border-top:1px solid var(--rule-strong)}
+  .app-foot .stat{display:flex;align-items:baseline;gap:6px;font-size:12.5px;color:var(--ink-700)}
+  .app-foot .stat b{font-size:18px;color:var(--ink-900);font-family:"IBM Plex Mono",monospace;font-weight:600}
+  .app-foot .stat.lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-500)}
+  .app-foot .stat.tag-stat{display:inline-flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;
+    font-size:11.5px;font-weight:600}
+  .app-foot .stat.tag-stat i{width:8px;height:8px;border-radius:2px;display:block}
+  .app-foot .grow{flex:1}
+
+  /* Toast */
+  .toast{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink-900);
+    color:#FCFAF5;padding:11px 18px;border-radius:3px;font-size:13px;font-weight:500;
+    display:flex;align-items:center;gap:9px;
+    box-shadow:0 12px 32px rgba(0,0,0,.3);z-index:80;
+    animation:toastIn .2s cubic-bezier(.3,.7,.4,1)}
+  @keyframes toastIn{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translateX(-50%)}}
+
+  /* ─────────── Modal ─────────── */
+  .modal-backdrop{position:absolute;inset:0;background:rgba(27,24,20,.45);
+    display:flex;align-items:center;justify-content:center;z-index:100;
+    backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+    animation:fade .12s ease-out}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{background:var(--paper);border:1px solid var(--rule-strong);border-radius:4px;
+    width:640px;max-width:calc(100% - 48px);max-height:calc(100% - 48px);
+    display:flex;flex-direction:column;
+    box-shadow:0 30px 80px -20px rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.1);
+    animation:pop .14s cubic-bezier(.3,.7,.4,1)}
+  @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+  .modal-head{display:flex;align-items:flex-start;justify-content:space-between;
+    padding:18px 22px 16px;border-bottom:1px solid var(--rule);background:var(--surface)}
+  .modal-head .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);margin-bottom:2px}
+  .modal-head .title{font-size:18px;font-weight:600;letter-spacing:-.005em;color:var(--ink-900)}
+  .modal-x{appearance:none;border:0;background:transparent;color:var(--ink-500);
+    width:28px;height:28px;border-radius:3px;cursor:default;font-size:16px;line-height:1;
+    display:flex;align-items:center;justify-content:center}
+  .modal-x:hover{background:var(--surface-2);color:var(--ink-900)}
+  .modal-body{flex:1;overflow-y:auto;padding:18px 22px;background:var(--paper)}
+  .modal-body::-webkit-scrollbar{width:10px}
+  .modal-body::-webkit-scrollbar-thumb{background:var(--ink-200);border-radius:5px;border:2px solid var(--paper);background-clip:content-box}
+
+  .field-section{margin-bottom:22px}
+  .field-section:last-child{margin-bottom:0}
+  .section-label{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);margin-bottom:10px;font-weight:600}
+
+  /* Jenis segmented (in modal) — 4 options, color-dotted */
+  .seg-jenis{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+    background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:3px}
+  .seg-jenis button{appearance:none;border:0;background:transparent;color:var(--ink-700);
+    font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;font-weight:600;
+    padding:0 8px;height:36px;cursor:default;border-radius:2px;
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+  .seg-jenis button:hover{background:var(--surface-2);color:var(--ink-900)}
+  .seg-jenis button .dot{width:7px;height:7px;border-radius:2px;display:block;flex-shrink:0}
+  .seg-jenis button.lahir .dot{background:var(--hadir)}
+  .seg-jenis button.meninggal .dot{background:var(--ink-900)}
+  .seg-jenis button.sb .dot{background:var(--izin)}
+  .seg-jenis button.ps .dot{background:var(--sakit)}
+  .seg-jenis button.on{background:var(--ink-900);color:#FCFAF5}
+  .seg-jenis button.on .dot{background:#FCFAF5}
+
+  /* Form grid + fields */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+  .field{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .field.full{grid-column:1 / -1}
+  .field label.lbl{font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;
+    color:var(--ink-700);font-weight:500;display:flex;align-items:baseline;gap:6px}
+  .field label.lbl .req{color:var(--alpa);font-weight:600;margin-left:-3px}
+  .field label.lbl .hint{color:var(--ink-400);font-weight:400;font-size:11.5px;letter-spacing:.01em}
+  .field input[type=text], .field input[type=date], .field select{
+    appearance:none;background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    font:inherit;font-size:14px;color:var(--ink-900);
+    padding:0 14px;height:40px;outline:none;width:100%;font-family:"IBM Plex Sans",sans-serif;
+    transition:background .12s,border-color .12s,box-shadow .12s}
+  .field input[type=text]:hover, .field input[type=date]:hover, .field select:hover{
+    background:#FFFDF8;border-color:var(--rule-strong)}
+  .field input[type=text]:focus, .field input[type=date]:focus, .field select:focus{
+    background:#fff;border-color:var(--ink-900);box-shadow:0 0 0 3px rgba(27,24,20,.08)}
+  .field input[type=text]::placeholder{color:var(--ink-400)}
+  .field select{padding-right:32px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%231B1814' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center}
+  .field textarea{
+    appearance:none;background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    font:inherit;font-size:14px;color:var(--ink-900);line-height:1.45;
+    padding:10px 14px;min-height:64px;resize:vertical;outline:none;width:100%;
+    font-family:"IBM Plex Sans",sans-serif;
+    transition:background .12s,border-color .12s,box-shadow .12s}
+  .field textarea:hover{background:#FFFDF8;border-color:var(--rule-strong)}
+  .field textarea:focus{background:#fff;border-color:var(--ink-900);box-shadow:0 0 0 3px rgba(27,24,20,.08)}
+  .field textarea::placeholder{color:var(--ink-400)}
+
+  /* Mini segmented for L/P inside form */
+  .seg-sm{display:inline-flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden;
+    background:var(--surface);height:40px;width:fit-content}
+  .seg-sm button{appearance:none;border:0;background:transparent;color:var(--ink-700);
+    font-family:"IBM Plex Sans",sans-serif;font-size:13px;font-weight:600;
+    padding:0 16px;height:100%;cursor:default;border-right:1px solid var(--rule);
+    white-space:nowrap}
+  .seg-sm button:last-child{border-right:0}
+  .seg-sm button:hover{background:#FFFDF8}
+  .seg-sm button.on{background:var(--ink-900);color:#FCFAF5}
+
+  /* Footer of modal */
+  .modal-foot{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--surface);
+    border-top:1px solid var(--rule)}
+  .modal-hint{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--ink-700);
+    font-family:"IBM Plex Sans",sans-serif;padding:10px 14px;background:var(--surface);
+    border:1px solid var(--rule-strong);border-radius:3px;line-height:1.45}
+  .modal-hint b{color:var(--ink-900);font-weight:600}
+  .modal-hint .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-700);flex-shrink:0;margin-top:6px}
+  .modal-hint.warn{background:#FCF6F4;border-color:#E9CFCB}
+  .modal-hint.warn .dot{background:var(--alpa)}
+  .modal-hint.warn b{color:var(--alpa-ink)}
+
+  /* Disabled / coming-soon tabs */
+  .app-nav .tab.disabled{color:var(--ink-400);cursor:not-allowed}
+  .app-nav .tab.disabled:hover{background:transparent;color:var(--ink-400)}
+  .lainnya-menu .menu-item.disabled{color:var(--ink-400);cursor:not-allowed}
+  .lainnya-menu .menu-item.disabled:hover{background:transparent;color:var(--ink-400);border-left-color:transparent}
+  .coming-badge{display:inline-flex;align-items:center;padding:1px 5px;
+    font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-500);background:var(--ink-200);
+    border-radius:2px;margin-left:6px;line-height:1;white-space:nowrap;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <section data-screen-label="01 Catatan Peristiwa">
+    <p class="sec-eyebrow">Layar · Catatan Peristiwa</p>
+    <h2 class="sec-title">Catatan Peristiwa — Catatan Mutasi Jama'ah</h2>
+    <p class="sec-sub">
+      Single register for births, deaths, and member movements (Sambung Baru = new arrival,
+      Pindah Sambung = member moving out). Running chronological list, filterable by jenis and periode.
+      Same Arah Visual system: cream paper, Plex Sans/Mono, sharp corners.
+    </p>
+
+    <div class="dir-note">
+      <div>↓</div>
+      <div>
+        Click a jenis chip to filter (or <b>Semua</b> for all). Change <b>Bulan ▾</b> / <b>Tahun ▾</b> to view a different period.
+        Click <b>+ Tambah</b> to open the jenis picker — each event type would open its own form (not built yet).
+      </div>
+    </div>
+
+    <div class="frame-wrap">
+      <div class="frame-chrome">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="title"><b>CLApp</b> &nbsp;·&nbsp; Catatan Peristiwa · Desktop · Offline</div>
+        <div style="width:50px"></div>
+      </div>
+      <div class="frame-stage" id="app-root"></div>
+    </div>
+  </section>
+
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" data-presets="react" src="clapp-data.jsx"></script>
+<script type="text/babel" data-presets="react" src="clapp-navbar.jsx"></script>
+<script type="text/babel" data-presets="react">
+const PERLU_TINDAKAN_COUNT = 3;
+
+
+// ─── NavBar (priority-plus / responsive overflow) ────────────────────────────
+const TABS = [
+  "Absensi","Jama'ah","Rekap Absensi","Laporan Bulanan",
+  "Catatan Peristiwa","Musyawarah","Serkiler","Pengaturan","Qurban",
+];
+const DISABLED_TABS = new Set(["Qurban"]);
+function TabLabel({ name }) {
+  return DISABLED_TABS.has(name)
+    ? <><span>{name}</span><span className="coming-badge">Coming Soon</span></>
+    : name;
+}
+function NavBar({ active }) {
+  const navRef = React.useRef(null);
+  const measureRef = React.useRef(null);
+  const wrapRef = React.useRef(null);
+  const [vCount, setVCount] = React.useState(TABS.length);
+  const [open, setOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (!open) return;
+    const onDown = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+  React.useLayoutEffect(() => {
+    const nav = navRef.current, measure = measureRef.current;
+    if (!nav || !measure) return;
+    const compute = () => {
+      const avail = nav.clientWidth;
+      const tabEls = measure.querySelectorAll('[data-mtab]');
+      const widths = Array.from(tabEls).map(el => el.getBoundingClientRect().width);
+      const lainnyaEl = measure.querySelector('[data-mlainnya]');
+      const lainnyaW = lainnyaEl ? lainnyaEl.getBoundingClientRect().width : 110;
+      const total = widths.reduce((a,b) => a+b, 0);
+      if (total <= avail + 0.5) { setVCount(TABS.length); return; }
+      let used = lainnyaW, count = 0;
+      for (const w of widths) {
+        if (used + w > avail) break;
+        used += w; count++;
+      }
+      setVCount(Math.max(1, count));
+    };
+    compute();
+    const ro = new ResizeObserver(compute);
+    ro.observe(nav);
+    return () => ro.disconnect();
+  }, []);
+  const visible = TABS.slice(0, vCount);
+  const overflowItems = TABS.slice(vCount);
+  const showLainnya = overflowItems.length > 0;
+  const activeIsHidden = showLainnya && overflowItems.includes(active);
+  const Caret = (
+    <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
+      <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5"
+            strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+  return (
+    <div className="app-top">
+      <button className="app-brand" title="Kembali ke Dashboard" onClick={() => { window.location.href = "Dashboard.html"; }}>
+        <span className="logo-mark">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M2.5 3.5L8 5l5.5-1.5v9L8 14l-5.5-1.5v-9z" stroke="#FCFAF5" strokeWidth="1.2" strokeLinejoin="round"/>
+            <path d="M8 5v9" stroke="#FCFAF5" strokeWidth="1.2"/>
+          </svg>
+          {typeof PERLU_TINDAKAN_COUNT !== "undefined" && PERLU_TINDAKAN_COUNT > 0 && <span className="brand-badge">{PERLU_TINDAKAN_COUNT}</span>}
+        </span>
+        <div className="title">CLApp<span className="home-mark">›</span></div>
+      </button>
+      <div className="app-nav" ref={navRef}>
+        <div className="nav-measure" ref={measureRef} aria-hidden="true">
+          {TABS.map(t => <div key={t} className={`tab${DISABLED_TABS.has(t) ? " disabled" : ""}`} data-mtab><TabLabel name={t} /></div>)}
+          <div className="lainnya-trigger" data-mlainnya>Lainnya{Caret}</div>
+        </div>
+        {visible.map(t => (
+          <div key={t} className={`tab${t === active ? " active" : ""}${DISABLED_TABS.has(t) ? " disabled" : ""}`}>
+            <TabLabel name={t} />
+          </div>
+        ))}
+        {showLainnya && (
+          <div className="lainnya-wrap" ref={wrapRef}>
+            <div className={`lainnya-trigger${open ? " open" : ""}${activeIsHidden ? " has-active" : ""}`}
+                 onClick={() => setOpen(o => !o)}>Lainnya{Caret}</div>
+            {open && (
+              <div className="lainnya-menu" role="menu">
+                <div className="menu-eyebrow">Modul Lain</div>
+                {overflowItems.map(t => {
+                  const isDis = DISABLED_TABS.has(t);
+                  return (
+                    <div key={t}
+                         className={`menu-item${t === active ? " active" : ""}${isDis ? " disabled" : ""}`}
+                         role="menuitem"
+                         onClick={isDis ? undefined : () => setOpen(false)}>
+                      <TabLabel name={t} />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Date helpers ────────────────────────────────────────────────────────────
+const TODAY_LOG = new Date();
+const CURRENT_YEAR_LOG = TODAY_LOG.getFullYear();
+const CURRENT_MONTH_LOG = TODAY_LOG.getMonth() + 1;
+const BULAN_LOG = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+const LOG_START_YEAR = 2020;
+const LOG_YEARS = (() => {
+  const out = [];
+  for (let y = LOG_START_YEAR; y <= Math.max(CURRENT_YEAR_LOG, 2026); y++) out.push(y);
+  return out;
+})();
+function fmtTgl(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return { num: String(d).padStart(2, "0"), bln: BULAN_LOG[m - 1] };
+}
+
+// ─── Event types ─────────────────────────────────────────────────────────────
+// Filter buckets — collapse 7 jenis into 4 chip groups.
+const FILTER_GROUPS = [
+  { key:"Semua",                short:"Semua",                cls:"semua",     match: null },
+  { key:"Sambung",              short:"Sambung Baru & Pindah", cls:"sb",       match: new Set(["Sambung Baru","Pindah Sambung"]) },
+  { key:"Lahir-Meninggal",      short:"Lahir & Meninggal",     cls:"lahir",    match: new Set(["Lahir","Meninggal"]) },
+  { key:"Lainnya",              short:"Lainnya",               cls:"lainnya",  match: new Set(["Menikah","Perubahan Kelas","Perubahan Dapukan"]) },
+];
+const TYPE_TO_CLS = {
+  "Lahir":"lahir", "Meninggal":"meninggal",
+  "Sambung Baru":"sb", "Pindah Sambung":"ps",
+  "Menikah":"menikah", "Perubahan Kelas":"tahap", "Perubahan Dapukan":"dapukan",
+};
+
+// ─── Sample events (Mei 2026) ────────────────────────────────────────────────
+const EVENTS = window.CLAPP_EVENTS;
+
+// ─── Sample roster (shared with Jama'ah / Absensi screens) ──────────────────
+const ROSTER = window.CLAPP_ROSTER;
+const memberByMid = window.memberByMid;
+// ─── Event Form Modal ────────────────────────────────────────────────────────
+const JENIS_OPTIONS = [
+  { key:"Lahir",          cls:"lahir" },
+  { key:"Meninggal",      cls:"meninggal" },
+  { key:"Sambung Baru",   cls:"sb" },
+  { key:"Pindah Sambung", cls:"ps" },
+];
+
+function EventFormModal({ onClose, onSave }) {
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const [jenis, setJenis]   = React.useState("Lahir");
+  const [tgl, setTgl]       = React.useState(todayIso);
+  const [nama, setNama]     = React.useState("");
+  const [gender, setGender] = React.useState("L");
+  const [memberMid, setMemberMid] = React.useState("");
+  const [catatan, setCatatan]     = React.useState("");
+
+  React.useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  // Reset member/nama when switching jenis (different fields apply)
+  React.useEffect(() => {
+    setMemberMid("");
+    setNama("");
+    setGender("L");
+  }, [jenis]);
+
+  const member = ROSTER.find(m => m.mid === memberMid);
+  const memberIsHead = !!member?.head;
+
+  const valid = tgl && (
+    jenis === "Lahir" ? nama.trim().length > 1 : !!memberMid
+  );
+
+  const submit = () => {
+    if (!valid) return;
+    onSave({ jenis, tgl, nama, gender, memberMid, catatan });
+  };
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-head">
+          <div>
+            <div className="eyebrow">Catatan Peristiwa · Pendataan</div>
+            <div className="title">Tambah Peristiwa Baru</div>
+          </div>
+          <button className="modal-x" onClick={onClose} aria-label="Tutup">✕</button>
+        </div>
+
+        <div className="modal-body">
+          {/* Jenis selector */}
+          <div className="field-section">
+            <div className="section-label">Jenis Peristiwa</div>
+            <div className="seg-jenis">
+              {JENIS_OPTIONS.map(o => (
+                <button key={o.key} className={`${o.cls}${jenis === o.key ? " on" : ""}`}
+                        onClick={() => setJenis(o.key)}>
+                  <span className="dot"></span>{o.key}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Data Peristiwa */}
+          <div className="field-section">
+            <div className="section-label">Data Peristiwa</div>
+            <div className="form-grid">
+              <div className="field">
+                <label className="lbl">Tanggal<span className="req">*</span></label>
+                <input type="date" value={tgl} onChange={e => setTgl(e.target.value)} max={todayIso} />
+              </div>
+
+              {jenis === "Lahir" && (
+                <div className="field">
+                  <label className="lbl">Jenis Kelamin</label>
+                  <div className="seg-sm">
+                    <button className={gender === "L" ? "on" : ""} onClick={() => setGender("L")}>Laki-Laki</button>
+                    <button className={gender === "P" ? "on" : ""} onClick={() => setGender("P")}>Perempuan</button>
+                  </div>
+                </div>
+              )}
+
+              {jenis === "Lahir" && (
+                <div className="field full">
+                  <label className="lbl">Nama Bayi<span className="req">*</span>
+                    <span className="hint">(belum terdaftar sebagai jama'ah)</span></label>
+                  <input type="text" value={nama} onChange={e => setNama(e.target.value)}
+                         placeholder="contoh: Aisyah" autoFocus />
+                </div>
+              )}
+
+              {jenis === "Lahir" && (
+                <div className="field full">
+                  <label className="lbl">Jama'ah Terkait <span className="hint">(opsional — orang tua)</span></label>
+                  <select value={memberMid} onChange={e => setMemberMid(e.target.value)}>
+                    <option value="">— Tidak terkait —</option>
+                    {ROSTER.map(m => (
+                      <option key={m.mid} value={m.mid}>{m.mid} · {m.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {jenis !== "Lahir" && (
+                <div className="field full">
+                  <label className="lbl">Jama'ah<span className="req">*</span></label>
+                  <select value={memberMid} onChange={e => setMemberMid(e.target.value)} autoFocus>
+                    <option value="">— Pilih Jama'ah —</option>
+                    {ROSTER.map(m => (
+                      <option key={m.mid} value={m.mid}>
+                        {m.mid} · {m.name}{m.head ? " · Kepala KK-" + m.kkNo : " · KK-" + m.kkNo}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <div className="field full">
+                <label className="lbl">Catatan</label>
+                <textarea value={catatan} onChange={e => setCatatan(e.target.value)} rows={2}
+                          placeholder={
+                            jenis === "Lahir"          ? "contoh: anak dari Pak Faisal"
+                          : jenis === "Meninggal"      ? "contoh: wafat di RS Fatmawati"
+                          : jenis === "Sambung Baru"   ? "contoh: dari Solo, gabung dgn keluarga Pak Eko"
+                          :                              "contoh: ke Jogja, mutasi kerja"
+                          } />
+              </div>
+            </div>
+          </div>
+
+          {/* Type-specific hint / warning */}
+          {jenis === "Lahir" && (
+            <div className="field-section">
+              <div className="modal-hint">
+                <span className="dot"></span>
+                <div>
+                  Bayi baru lahir <b>belum terdaftar</b> sebagai jama'ah.
+                  Pencatatan kelahiran tidak otomatis membuat data jama'ah — daftarkan via
+                  <b> Jama'ah → + Tambah Jama'ah</b> jika sudah saatnya.
+                </div>
+              </div>
+            </div>
+          )}
+
+          {jenis === "Meninggal" && (
+            <div className="field-section">
+              <div className={`modal-hint warn${memberIsHead ? "" : ""}`}>
+                <span className="dot"></span>
+                <div>
+                  Jama'ah akan ditandai sebagai <b>Mutasi (almarhum)</b> dan tidak lagi muncul di daftar aktif.
+                  {memberIsHead && <> Jama'ah ini adalah <b>Kepala KK</b> — sistem akan meminta penunjukan kepala baru setelah simpan.</>}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {jenis === "Sambung Baru" && (
+            <div className="field-section">
+              <div className="modal-hint">
+                <span className="dot"></span>
+                <div>
+                  Jama'ah baru biasanya didaftarkan dulu via <b>Jama'ah → + Tambah Jama'ah</b>,
+                  yang otomatis mencatat <b>Sambung Baru</b> di log ini. Form ini untuk
+                  pencatatan manual jika diperlukan.
+                </div>
+              </div>
+            </div>
+          )}
+
+          {jenis === "Pindah Sambung" && (
+            <div className="field-section">
+              <div className="modal-hint warn">
+                <span className="dot"></span>
+                <div>
+                  Jama'ah akan ditandai sebagai <b>Mutasi (pindah keluar)</b> dan tidak lagi muncul di daftar aktif.
+                  {memberIsHead && <> Jama'ah ini adalah <b>Kepala KK</b> — sistem akan meminta penunjukan kepala baru setelah simpan.</>}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="modal-foot">
+          <div style={{flex:1}}></div>
+          <button className="btn ghost" onClick={onClose}>Batal</button>
+          <button className="btn" onClick={submit} disabled={!valid}>Simpan</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [jenisFilter, setJenisFilter] = React.useState("Semua"); // FILTER_GROUPS.key
+  // Default to Mei 2026 (where the sample data lives) so the screen is populated on first load.
+  const [bulan, setBulan] = React.useState(5);
+  const [tahun, setTahun] = React.useState(2026);
+  const [showAdd, setShowAdd] = React.useState(false);
+  const [toast, setToast] = React.useState(null);
+
+  // Filter events by group + bulan + tahun
+  const activeGroup = FILTER_GROUPS.find(g => g.key === jenisFilter);
+  const filtered = EVENTS.filter(e => {
+    if (activeGroup && activeGroup.match && !activeGroup.match.has(e.jenis)) return false;
+    const [y, m] = e.tgl.split("-").map(Number);
+    if (y !== tahun || m !== bulan) return false;
+    return true;
+  }).sort((a, b) => a.tgl.localeCompare(b.tgl));
+
+  // Counts per jenis (across filtered)
+  const counts = filtered.reduce((acc, e) => {
+    acc[e.jenis] = (acc[e.jenis] || 0) + 1;
+    return acc;
+  }, { Lahir:0, Meninggal:0, "Sambung Baru":0, "Pindah Sambung":0 });
+
+  return (
+    <>
+      <window.CLAppNavBar active="Catatan Peristiwa" />
+
+      <div className="filt">
+        <div className="cell" style={{minWidth:130}}>
+          <div className="k">Bulan</div>
+          <div className="v">
+            <select value={bulan} onChange={e => setBulan(parseInt(e.target.value, 10))}>
+              {BULAN_LOG.map((name, i) => {
+                const m = i + 1;
+                const isFuture = tahun === CURRENT_YEAR_LOG && m > CURRENT_MONTH_LOG;
+                return <option key={m} value={m} disabled={isFuture}>{name}</option>;
+              })}
+            </select>
+          </div>
+        </div>
+        <div className="cell" style={{minWidth:110}}>
+          <div className="k">Tahun</div>
+          <div className="v">
+            <select value={tahun} onChange={e => {
+              const y = parseInt(e.target.value, 10);
+              setTahun(y);
+              if (y === CURRENT_YEAR_LOG && bulan > CURRENT_MONTH_LOG) setBulan(CURRENT_MONTH_LOG);
+            }}>
+              {LOG_YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+            </select>
+          </div>
+        </div>
+        <div className="type-chips">
+          {FILTER_GROUPS.map(g => (
+            <button key={g.key}
+                    className={`type-chip ${g.cls}${jenisFilter === g.key ? " on" : ""}`}
+                    onClick={() => setJenisFilter(g.key)}>
+              {g.key !== "Semua" && <span className="dot"></span>}
+              {g.short}
+            </button>
+          ))}
+        </div>
+        <div className="action">
+          <button className="btn ghost" onClick={() => setShowAdd(true)}
+                  title="Untuk koreksi atau pencatatan manual. Log normalnya otomatis dari aksi di Jama'ah.">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+            </svg>
+            Tambah Manual
+          </button>
+        </div>
+      </div>
+
+      {/* Column header */}
+      <div className="colhead">
+        <div>Tanggal</div>
+        <div>Jenis</div>
+        <div>Nama</div>
+        <div>Catatan</div>
+      </div>
+
+      {/* Rows */}
+      <div className="rows">
+        {filtered.length === 0 ? (
+          <div className="empty-state">
+            <div className="em-title">Tidak ada peristiwa di periode ini.</div>
+            Coba ganti Bulan / Tahun atau filter jenis.
+          </div>
+        ) : filtered.map((e, i) => {
+          const t = fmtTgl(e.tgl);
+          const cls = TYPE_TO_CLS[e.jenis] || "meninggal";
+          return (
+            <div key={i} className="event-row">
+              <div className="tgl">
+                <span className="tgl-num">{t.num}</span> {t.bln}
+              </div>
+              <div>
+                <span className={`jtag ${cls}`}>
+                  <span className="dot"></span>{e.jenis}
+                </span>
+              </div>
+              <div className="nama">{e.nama}</div>
+              <div className={`catatan${e.catatan === "—" ? " empty" : ""}`}>{e.catatan}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Footer */}
+      <div className="app-foot">
+        <div className="stat lab">Periode {BULAN_LOG[bulan-1]} {tahun}</div>
+        <div className="stat"><b>{filtered.length}</b> peristiwa</div>
+        <div style={{width:1,height:24,background:"var(--rule)"}}></div>
+        <div className="stat tag-stat" style={{color:"var(--hadir-ink)"}}>
+          <i style={{background:"var(--hadir)"}}></i>{counts.Lahir} Lahir
+        </div>
+        <div className="stat tag-stat" style={{color:"var(--ink-900)"}}>
+          <i style={{background:"var(--ink-900)"}}></i>{counts.Meninggal} Meninggal
+        </div>
+        <div className="stat tag-stat" style={{color:"var(--izin-ink)"}}>
+          <i style={{background:"var(--izin)"}}></i>{counts["Sambung Baru"]} Sambung Baru
+        </div>
+        <div className="stat tag-stat" style={{color:"var(--sakit-ink)"}}>
+          <i style={{background:"var(--sakit)"}}></i>{counts["Pindah Sambung"]} Pindah Sambung
+        </div>
+        <div className="grow"></div>
+      </div>
+
+      {showAdd && (
+        <EventFormModal
+          onClose={() => setShowAdd(false)}
+          onSave={(data) => {
+            setShowAdd(false);
+            const who = data.jenis === "Lahir"
+              ? data.nama
+              : (ROSTER.find(m => m.mid === data.memberMid)?.name || "");
+            setToast(`Peristiwa "${data.jenis}" untuk ${who} disimpan ke log`);
+            setTimeout(() => setToast(null), 3200);
+          }}
+        />
+      )}
+
+      {toast && (
+        <div className="toast">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="6" stroke="#FCFAF5" strokeWidth="1.5"/>
+            <path d="M8 5v3.5M8 11v.5" stroke="#FCFAF5" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+          {toast}
+        </div>
+      )}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("app-root")).render(<App />);
+</script>
+</body>
+</html>

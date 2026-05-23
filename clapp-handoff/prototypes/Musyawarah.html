@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<title>Musyawarah — SLM Cilandak A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F1E8; --paper-2:#EFE9DC; --surface:#FCFAF5; --surface-2:#F9F5EC;
+    --ink-900:#1B1814; --ink-700:#4A4640; --ink-500:#7A746A;
+    --ink-400:#9C968B; --ink-300:#C8C2B5; --ink-200:#DCD6C8;
+    --rule:#D9D2C2; --rule-strong:#B8B0A0;
+    --hadir:#2E7048; --hadir-ink:#1E4D31; --hadir-bg:#E1ECDC;
+    --alpa:#B23A3A;  --alpa-ink:#7E2828; --alpa-bg:#F4DCD8;
+    --izin:#B17A1F; --izin-ink:#7F5614; --izin-bg:#F2E5C7;
+    --sakit:#325E8C;  --sakit-ink:#234062;  --sakit-bg:#DCE5F0;
+    --focus:#325E8C;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink-900);
+    font-family:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;font-size:14px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+  .page{max-width:1320px;margin:0 auto;padding:40px 32px 80px}
+  .sec-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);margin:0 0 6px}
+  .sec-title{font-size:22px;font-weight:600;margin:0 0 4px;letter-spacing:-.005em}
+  .sec-sub{font-size:14px;color:var(--ink-700);margin:0 0 24px;max-width:62ch}
+  .dir-note{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-700);
+    background:var(--surface-2);border:1px solid var(--rule);padding:10px 14px;border-radius:3px;margin-bottom:14px}
+  .dir-note b{color:var(--ink-900);font-weight:600}
+
+  /* Frame */
+  .frame-wrap{border:1px solid var(--rule-strong);border-radius:6px;background:#cfc7b4;
+    box-shadow:0 24px 48px -28px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.06)}
+  .frame-chrome{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--rule-strong)}
+  .frame-chrome .dots{display:flex;gap:6px}
+  .frame-chrome .dots i{width:11px;height:11px;border-radius:50%;background:#b3aa97;display:block}
+  .frame-chrome .title{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#4a4640;letter-spacing:.04em;flex:1;text-align:center}
+  .frame-chrome .title b{font-weight:600;color:var(--ink-900)}
+  .frame-stage{background:var(--paper);height:800px;overflow:hidden;display:flex;flex-direction:column;
+    border-radius:0 0 5px 5px;position:relative}
+
+  /* CLApp navbar (priority-plus) */
+  .app-top{display:flex;align-items:stretch;background:var(--surface);border-bottom:1px solid var(--rule-strong);position:relative}
+  .app-brand{padding:10px 20px;border-right:1px solid var(--rule);min-width:160px;background:transparent;
+    border-top:0;border-bottom:0;border-left:0;text-align:left;font-family:inherit;color:inherit;
+    cursor:default;display:flex;flex-direction:column;justify-content:center;transition:background .12s}
+  .app-brand:hover{background:var(--surface-2)}
+  .app-brand{flex-direction:row !important;align-items:center !important;gap:10px;border-right:1px solid var(--rule) !important}
+  .app-brand .logo-mark{width:30px;height:30px;background:var(--ink-900);color:#FCFAF5;
+    display:inline-flex;align-items:center;justify-content:center;border-radius:3px;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.04em;
+    flex-shrink:0;border:1px solid var(--ink-900)}
+  .app-brand .logo-mark svg{display:block}
+  .app-brand:hover .logo-mark{background:#000;border-color:#000}
+  .app-brand .logo-mark{position:relative}
+  .app-brand .brand-badge{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;
+    padding:0 4px;border-radius:8px;background:var(--izin);color:#FCFAF5;
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:700;letter-spacing:0;
+    display:inline-flex;align-items:center;justify-content:center;line-height:1;
+    border:1.5px solid var(--surface);pointer-events:none}
+  .app-brand:hover .brand-badge{border-color:var(--surface-2)}
+  .app-brand .name{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-500);
+    font-family:"IBM Plex Mono",monospace}
+  .app-brand .title{font-size:18px;font-weight:600;margin-top:0;letter-spacing:-.005em;display:flex;align-items:center;gap:6px}
+  .app-brand .title .home-mark{font-size:13px;color:var(--ink-400);transition:color .12s,transform .12s}
+  .app-brand:hover .title .home-mark{color:var(--ink-700);transform:translateX(2px)}
+  .app-nav{display:flex;align-items:stretch;flex:1;min-width:0;position:relative}
+  .app-nav .tab{padding:0 18px;display:flex;align-items:center;justify-content:center;
+    font-size:13.5px;color:var(--ink-700);border-right:1px solid var(--rule);cursor:default;
+    font-weight:500;white-space:nowrap;flex:1 1 auto;min-width:0}
+  .app-nav .tab:hover{background:var(--surface-2);color:var(--ink-900)}
+  .app-nav .tab.active{background:var(--paper);color:var(--ink-900);position:relative}
+  .app-nav .tab.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--hadir)}
+  .app-nav .tab.disabled{color:var(--ink-400);cursor:not-allowed}
+  .app-nav .tab.disabled:hover{background:transparent;color:var(--ink-400)}
+  .nav-measure{position:absolute;visibility:hidden;pointer-events:none;white-space:nowrap;
+    left:0;top:0;display:flex;height:100%}
+  .nav-measure .tab,.nav-measure .lainnya-trigger{flex:0 0 auto !important}
+  .lainnya-wrap{position:relative;display:flex;align-items:stretch;flex:0 0 auto}
+  .lainnya-trigger{padding:0 16px;display:flex;align-items:center;gap:6px;color:var(--ink-700);
+    border-right:1px solid var(--rule);cursor:default;font-weight:600;
+    font-family:"IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;font-size:11px;
+    background:var(--surface-2);flex:0 0 auto;white-space:nowrap;position:relative}
+  .lainnya-trigger:hover{background:var(--paper-2);color:var(--ink-900)}
+  .lainnya-trigger.open{background:var(--paper);color:var(--ink-900)}
+  .lainnya-trigger svg{transition:transform .15s ease;color:var(--ink-500)}
+  .lainnya-trigger.open svg{transform:rotate(180deg);color:var(--ink-900)}
+  .lainnya-trigger.has-active{color:var(--ink-900)}
+  .lainnya-trigger.has-active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--hadir)}
+  .lainnya-menu{position:absolute;top:100%;right:0;min-width:220px;background:var(--surface);
+    border:1px solid var(--rule-strong);border-top:1px solid var(--rule);
+    box-shadow:0 14px 32px -8px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.06);z-index:50;padding:6px 0}
+  .lainnya-menu .menu-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);padding:8px 16px 6px}
+  .lainnya-menu .menu-item{padding:9px 16px;font-size:13.5px;color:var(--ink-700);cursor:default;
+    display:flex;align-items:center;gap:10px;border-left:2px solid transparent}
+  .lainnya-menu .menu-item:hover{background:var(--surface-2);color:var(--ink-900);border-left-color:var(--hadir)}
+  .lainnya-menu .menu-item.active{background:var(--paper);color:var(--ink-900);border-left-color:var(--hadir);font-weight:600}
+  .lainnya-menu .menu-item.disabled{color:var(--ink-400);cursor:not-allowed}
+  .lainnya-menu .menu-item.disabled:hover{background:transparent;color:var(--ink-400);border-left-color:transparent}
+  .coming-badge{display:inline-flex;align-items:center;padding:1px 5px;
+    font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-500);background:var(--ink-200);
+    border-radius:2px;margin-left:6px;line-height:1;white-space:nowrap;flex-shrink:0}
+
+  /* Filter bar */
+  .filt{display:flex;align-items:stretch;background:var(--surface-2);border-bottom:1px solid var(--rule)}
+  .filt .cell{padding:10px 16px;border-right:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center}
+  .filt .cell .k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500);
+    font-family:"IBM Plex Mono",monospace;margin-bottom:3px}
+  .filt .cell .v{font-size:14.5px;font-weight:600;color:var(--ink-900);display:flex;align-items:center;gap:8px}
+  .filt select{appearance:none;background:transparent;border:0;font:inherit;color:inherit;
+    padding:0 20px 0 0;margin:0;cursor:default;font-weight:600;font-size:14.5px;
+    font-family:"IBM Plex Sans",sans-serif;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%231B1814' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;background-position:right center}
+  .filt .grow{flex:1;border-right:1px solid var(--rule)}
+  .filt .summary{padding:0 16px;display:flex;align-items:center;font-family:"IBM Plex Mono",monospace;
+    font-size:12px;color:var(--ink-500);font-weight:600;letter-spacing:.02em}
+  .filt .summary b{color:var(--ink-900);margin-right:4px;font-size:14px}
+
+  /* Two-pane layout */
+  .layout{flex:1;display:flex;min-height:0;background:var(--surface)}
+  .pane-left{width:320px;flex-shrink:0;display:flex;flex-direction:column;
+    background:var(--paper);border-right:1px solid var(--rule-strong)}
+  .pane-right{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--paper)}
+
+  /* Left pane */
+  .left-head{padding:12px 14px;border-bottom:1px solid var(--rule);background:var(--surface)}
+  .btn{appearance:none;border:1px solid var(--ink-900);background:var(--ink-900);color:#FCFAF5;
+    font-family:"IBM Plex Sans",sans-serif;font-size:13.5px;font-weight:600;letter-spacing:.01em;
+    padding:0 16px;height:36px;border-radius:3px;cursor:default;display:inline-flex;align-items:center;
+    justify-content:center;gap:8px}
+  .btn:hover:not(:disabled){background:#000}
+  .btn.full{width:100%}
+  .btn.ghost{background:transparent;color:var(--ink-900);border-color:var(--rule-strong)}
+  .btn.ghost:hover:not(:disabled){background:var(--surface-2)}
+  .btn:disabled{background:var(--ink-300);border-color:var(--ink-300);color:var(--surface);cursor:not-allowed}
+
+  .meeting-list{flex:1;overflow-y:auto}
+  .meeting-list::-webkit-scrollbar{width:10px}
+  .meeting-list::-webkit-scrollbar-track{background:var(--paper)}
+  .meeting-list::-webkit-scrollbar-thumb{background:var(--ink-200);border-radius:5px;
+    border:2px solid var(--paper);background-clip:content-box}
+  .meeting-item{padding:11px 16px 12px;border-bottom:1px solid var(--rule);
+    border-left:3px solid transparent;cursor:default;transition:background .08s}
+  .meeting-item:hover{background:var(--surface-2)}
+  .meeting-item.selected{background:var(--surface);border-left-color:var(--ink-900)}
+  .meeting-item .date{font-family:"IBM Plex Mono",monospace;font-size:11px;
+    letter-spacing:.04em;text-transform:uppercase;color:var(--ink-500);font-weight:500}
+  .meeting-item .date .day{color:var(--ink-900);font-weight:600;margin-right:4px;font-size:12px}
+  .meeting-item .jenis{display:inline-block;font-size:10.5px;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--ink-500);font-family:"IBM Plex Mono",monospace;margin-left:8px}
+  .meeting-item .jenis.kel{color:var(--hadir-ink)}
+  .meeting-item .jenis.un{color:var(--izin-ink)}
+  .meeting-item .jenis.lain{color:var(--ink-500)}
+  .meeting-item .judul{font-size:13.5px;font-weight:500;color:var(--ink-900);margin-top:4px;
+    letter-spacing:-.002em;line-height:1.35;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .meeting-item .meta{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-400);margin-top:3px}
+
+  .empty-list{padding:60px 20px;text-align:center;color:var(--ink-500);font-size:13px}
+  .empty-list .em-title{color:var(--ink-700);font-weight:500;margin-bottom:4px}
+
+  /* Right pane (detail form) */
+  .detail-head{padding:14px 22px;border-bottom:1px solid var(--rule);background:var(--surface);
+    display:flex;align-items:center;justify-content:space-between}
+  .detail-head .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-500);margin-bottom:2px}
+  .detail-head .title{font-size:17px;font-weight:600;color:var(--ink-900)}
+  .detail-body{flex:1;overflow-y:auto;padding:20px 24px}
+  .detail-body::-webkit-scrollbar{width:10px}
+  .detail-body::-webkit-scrollbar-thumb{background:var(--ink-200);border-radius:5px;
+    border:2px solid var(--paper);background-clip:content-box}
+
+  .field-section{margin-bottom:18px}
+  .field-section:last-child{margin-bottom:0}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+  .field{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .field.full{grid-column:1 / -1}
+  .field label.lbl{font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;
+    color:var(--ink-700);font-weight:500;display:flex;align-items:baseline;gap:6px}
+  .field label.lbl .req{color:var(--alpa);font-weight:600;margin-left:-3px}
+  .field label.lbl .hint{color:var(--ink-400);font-weight:400;font-size:11.5px;letter-spacing:.01em}
+  .field label.lbl .derived{margin-left:auto;color:var(--ink-500);font-family:"IBM Plex Mono",monospace;
+    font-size:11.5px;font-weight:600;letter-spacing:.02em}
+  .field label.lbl .derived b{color:var(--ink-900);font-size:13px;margin:0 3px}
+
+  .field input[type=text], .field input[type=date], .field select{
+    appearance:none;background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    font:inherit;font-size:14px;color:var(--ink-900);
+    padding:0 14px;height:40px;outline:none;width:100%;font-family:"IBM Plex Sans",sans-serif;
+    transition:background .12s,border-color .12s,box-shadow .12s}
+  .field input[type=text]:hover, .field input[type=date]:hover, .field select:hover{
+    background:#FFFDF8;border-color:var(--rule-strong)}
+  .field input[type=text]:focus, .field input[type=date]:focus, .field select:focus{
+    background:#fff;border-color:var(--ink-900);box-shadow:0 0 0 3px rgba(27,24,20,.08)}
+  .field input[type=text]::placeholder{color:var(--ink-400)}
+  .field select{padding-right:32px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%231B1814' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center}
+  .field textarea{
+    appearance:none;background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    font:inherit;font-size:13.5px;color:var(--ink-900);line-height:1.6;
+    padding:12px 14px;min-height:200px;resize:vertical;outline:none;width:100%;
+    font-family:"IBM Plex Sans",sans-serif;
+    transition:background .12s,border-color .12s,box-shadow .12s}
+  .field textarea:hover{background:#FFFDF8;border-color:var(--rule-strong)}
+  .field textarea:focus{background:#fff;border-color:var(--ink-900);box-shadow:0 0 0 3px rgba(27,24,20,.08)}
+
+  /* Hadir picker */
+  .hadir-area{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:9px 11px;
+    background:var(--surface);border:1px solid var(--rule);border-radius:3px;min-height:46px;
+    position:relative}
+  .hadir-area:hover{border-color:var(--rule-strong);background:#FFFDF8}
+  .hadir-chip{display:inline-flex;align-items:center;gap:6px;height:26px;
+    padding:0 10px;background:var(--surface-2);border:1px solid var(--rule);border-radius:3px;
+    font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;font-weight:500;color:var(--ink-900);
+    white-space:nowrap;cursor:default;transition:background .12s,border-color .12s,color .12s}
+  .hadir-chip:hover{background:var(--alpa-bg);border-color:var(--alpa);color:var(--alpa-ink)}
+  .hadir-chip:hover .chip-role{background:#fff;border-color:var(--alpa);color:var(--alpa-ink)}
+  .hadir-chip:hover .mid{color:var(--alpa-ink);opacity:.7}
+  .hadir-chip .mid{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-500);
+    margin-right:4px}
+  .hadir-chip .x{width:18px;height:18px;border-radius:2px;color:var(--ink-500);
+    cursor:default;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
+    transition:background .08s,color .08s}
+  .hadir-chip .x:hover{background:var(--ink-200);color:var(--ink-900)}
+  .hadir-chip .chip-role{display:inline-flex;align-items:center;height:18px;padding:0 6px;
+    border-radius:2px;background:var(--izin-bg);color:var(--izin-ink);border:1px solid var(--izin);
+    font-family:"IBM Plex Sans",sans-serif;font-size:10px;font-weight:600;
+    letter-spacing:.03em;line-height:1;margin-left:4px}
+  .hadir-pick-btn{appearance:none;border:1px dashed var(--ink-300);background:transparent;
+    color:var(--ink-500);font-family:"IBM Plex Sans",sans-serif;font-size:12px;font-weight:600;
+    padding:0 10px;height:26px;border-radius:3px;cursor:default;
+    display:inline-flex;align-items:center;gap:4px}
+  .hadir-pick-btn:hover{border-color:var(--ink-700);color:var(--ink-900);background:#FFFDF8}
+  .hadir-empty{font-family:"IBM Plex Sans",sans-serif;font-size:13px;color:var(--ink-400);font-style:italic}
+
+  /* Hadir popover */
+  .hadir-pop{position:absolute;top:calc(100% + 4px);left:0;right:0;
+    background:var(--surface);border:1px solid var(--rule-strong);border-radius:3px;
+    box-shadow:0 14px 32px -8px rgba(0,0,0,.2),0 2px 6px rgba(0,0,0,.08);z-index:60;
+    display:flex;flex-direction:column;max-height:360px;overflow:hidden}
+  .hadir-pop .pop-head{padding:8px 12px;border-bottom:1px solid var(--rule);background:var(--paper-2);
+    display:flex;align-items:center;gap:8px}
+  .hadir-pop .pop-search{flex:1;display:flex;align-items:center;gap:8px;
+    background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    padding:0 10px;height:32px}
+  .hadir-pop .pop-search svg{flex-shrink:0;color:var(--ink-500)}
+  .hadir-pop .pop-search input{flex:1;border:0;background:transparent;font:inherit;font-size:13px;
+    color:var(--ink-900);outline:none;padding:0}
+  .hadir-pop .pop-search input::placeholder{color:var(--ink-400)}
+  .hadir-pop .pop-actions{display:flex;gap:4px}
+  .hadir-pop .pop-btn{appearance:none;border:0;background:transparent;color:var(--ink-700);
+    font-family:"IBM Plex Sans",sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.02em;
+    padding:0 8px;height:26px;border-radius:2px;cursor:default}
+  .hadir-pop .pop-btn:hover{background:var(--ink-200);color:var(--ink-900)}
+  .hadir-pop .pop-list{flex:1;overflow-y:auto}
+  .hadir-pop .pop-item{display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:default;
+    border-bottom:1px solid var(--rule);font-size:13px;color:var(--ink-900)}
+  .hadir-pop .pop-item:hover{background:var(--surface-2)}
+  .hadir-pop .pop-item input[type=checkbox]{appearance:none;width:16px;height:16px;
+    border:1.5px solid var(--ink-400);border-radius:2px;background:#fff;cursor:default;
+    margin:0;position:relative;flex-shrink:0;transition:background .1s,border-color .1s}
+  .hadir-pop .pop-item input[type=checkbox]:checked{background:var(--ink-900);border-color:var(--ink-900)}
+  .hadir-pop .pop-item input[type=checkbox]:checked::after{content:"";position:absolute;
+    left:4px;top:0;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;
+    transform:rotate(45deg)}
+  .hadir-pop .pop-item .pi-mid{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-500);
+    min-width:28px}
+  .hadir-pop .pop-item .pi-name{flex:1;font-weight:500}
+  .hadir-pop .pop-item .pi-kk{font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+    color:var(--ink-500);letter-spacing:.04em}
+  .hadir-pop .pop-foot{padding:8px 12px;border-top:1px solid var(--rule);
+    display:flex;align-items:center;justify-content:space-between;background:var(--paper-2);
+    font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-500);font-weight:600;letter-spacing:.02em}
+  .hadir-pop .pop-foot b{color:var(--ink-900);margin:0 2px;font-size:13px}
+
+  /* Detail footer */
+  .detail-foot{padding:14px 24px;background:var(--surface);border-top:1px solid var(--rule);
+    display:flex;align-items:center;gap:10px}
+  .detail-foot .grow{flex:1}
+  .detail-foot .saved-note{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-500);
+    letter-spacing:.02em}
+
+  .empty-detail{flex:1;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;color:var(--ink-500);text-align:center;padding:40px;gap:8px}
+  .empty-detail .em-title{font-size:15px;color:var(--ink-700);font-weight:500}
+  .empty-detail .em-sub{font-size:13px;color:var(--ink-500)}
+
+  /* Toast */
+  .toast{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink-900);
+    color:#FCFAF5;padding:11px 18px;border-radius:3px;font-size:13px;font-weight:500;
+    display:flex;align-items:center;gap:9px;
+    box-shadow:0 12px 32px rgba(0,0,0,.3);z-index:80;
+    animation:toastIn .2s cubic-bezier(.3,.7,.4,1)}
+  @keyframes toastIn{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translateX(-50%)}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <section data-screen-label="01 Musyawarah">
+    <p class="sec-eyebrow">Layar · Musyawarah</p>
+    <h2 class="sec-title">Musyawarah — Daftar, Hasil &amp; Saran</h2>
+    <p class="sec-sub">
+      Daftar musyawarah (Kelompok / 5 Unsur / Lainnya) di-browse per bulan. Pilih meeting di daftar kiri
+      untuk melihat / mengedit detail di panel kanan, atau klik <b>+ Musyawarah Baru</b> untuk buat baru.
+      Tiap musyawarah punya tanggal spesifiknya sendiri — periode di atas hanya filter daftar.
+    </p>
+
+    <div class="dir-note">
+      <div>↓</div>
+      <div>
+        Try: <b>Bulan ▾ / Tahun ▾</b> to filter the list. Click a meeting in the left pane to load it,
+        or <b>+ Musyawarah Baru</b> for a blank form. Hadir uses a member picker — count auto-updates.
+      </div>
+    </div>
+
+    <div class="frame-wrap">
+      <div class="frame-chrome">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="title"><b>CLApp</b> &nbsp;·&nbsp; Musyawarah · Desktop · Offline</div>
+        <div style="width:50px"></div>
+      </div>
+      <div class="frame-stage" id="app-root"></div>
+    </div>
+  </section>
+
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" data-presets="react" src="clapp-data.jsx"></script>
+<script type="text/babel" data-presets="react" src="clapp-navbar.jsx"></script>
+<script type="text/babel" data-presets="react">
+const PERLU_TINDAKAN_COUNT = 3;
+
+
+// ─── NavBar (priority-plus / responsive overflow) ────────────────────────────
+const TABS = [
+  "Absensi","Jama'ah","Rekap Absensi","Laporan Bulanan",
+  "Catatan Peristiwa","Musyawarah","Serkiler","Pengaturan","Qurban",
+];
+const DISABLED_TABS = new Set(["Qurban"]);
+function TabLabel({ name }) {
+  return DISABLED_TABS.has(name)
+    ? <><span>{name}</span><span className="coming-badge">Coming Soon</span></>
+    : name;
+}
+function NavBar({ active }) {
+  const navRef = React.useRef(null);
+  const measureRef = React.useRef(null);
+  const wrapRef = React.useRef(null);
+  const [vCount, setVCount] = React.useState(TABS.length);
+  const [open, setOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (!open) return;
+    const onDown = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+  React.useLayoutEffect(() => {
+    const nav = navRef.current, measure = measureRef.current;
+    if (!nav || !measure) return;
+    const compute = () => {
+      const avail = nav.clientWidth;
+      const tabEls = measure.querySelectorAll('[data-mtab]');
+      const widths = Array.from(tabEls).map(el => el.getBoundingClientRect().width);
+      const lainnyaEl = measure.querySelector('[data-mlainnya]');
+      const lainnyaW = lainnyaEl ? lainnyaEl.getBoundingClientRect().width : 110;
+      const total = widths.reduce((a,b) => a+b, 0);
+      if (total <= avail + 0.5) { setVCount(TABS.length); return; }
+      let used = lainnyaW, count = 0;
+      for (const w of widths) {
+        if (used + w > avail) break;
+        used += w; count++;
+      }
+      setVCount(Math.max(1, count));
+    };
+    compute();
+    const ro = new ResizeObserver(compute);
+    ro.observe(nav);
+    return () => ro.disconnect();
+  }, []);
+  const visible = TABS.slice(0, vCount);
+  const overflowItems = TABS.slice(vCount);
+  const showLainnya = overflowItems.length > 0;
+  const activeIsHidden = showLainnya && overflowItems.includes(active);
+  const Caret = (
+    <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
+      <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5"
+            strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+  return (
+    <div className="app-top">
+      <button className="app-brand" title="Kembali ke Dashboard" onClick={() => { window.location.href = "Dashboard.html"; }}>
+        <span className="logo-mark">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M2.5 3.5L8 5l5.5-1.5v9L8 14l-5.5-1.5v-9z" stroke="#FCFAF5" strokeWidth="1.2" strokeLinejoin="round"/>
+            <path d="M8 5v9" stroke="#FCFAF5" strokeWidth="1.2"/>
+          </svg>
+          {typeof PERLU_TINDAKAN_COUNT !== "undefined" && PERLU_TINDAKAN_COUNT > 0 && <span className="brand-badge">{PERLU_TINDAKAN_COUNT}</span>}
+        </span>
+        <div className="title">CLApp<span className="home-mark">›</span></div>
+      </button>
+      <div className="app-nav" ref={navRef}>
+        <div className="nav-measure" ref={measureRef} aria-hidden="true">
+          {TABS.map(t => <div key={t} className={`tab${DISABLED_TABS.has(t) ? " disabled" : ""}`} data-mtab><TabLabel name={t} /></div>)}
+          <div className="lainnya-trigger" data-mlainnya>Lainnya{Caret}</div>
+        </div>
+        {visible.map(t => (
+          <div key={t} className={`tab${t === active ? " active" : ""}${DISABLED_TABS.has(t) ? " disabled" : ""}`}>
+            <TabLabel name={t} />
+          </div>
+        ))}
+        {showLainnya && (
+          <div className="lainnya-wrap" ref={wrapRef}>
+            <div className={`lainnya-trigger${open ? " open" : ""}${activeIsHidden ? " has-active" : ""}`}
+                 onClick={() => setOpen(o => !o)}>Lainnya{Caret}</div>
+            {open && (
+              <div className="lainnya-menu" role="menu">
+                <div className="menu-eyebrow">Modul Lain</div>
+                {overflowItems.map(t => {
+                  const isDis = DISABLED_TABS.has(t);
+                  return (
+                    <div key={t}
+                         className={`menu-item${t === active ? " active" : ""}${isDis ? " disabled" : ""}`}
+                         role="menuitem"
+                         onClick={isDis ? undefined : () => setOpen(false)}>
+                      <TabLabel name={t} />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Date helpers ────────────────────────────────────────────────────────────
+const TODAY = new Date();
+const CURRENT_YEAR = TODAY.getFullYear();
+const CURRENT_MONTH = TODAY.getMonth() + 1;
+const BULAN_ID = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+const BULAN_SHORT = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agt","Sep","Okt","Nov","Des"];
+const YEAR_LIST = (() => {
+  const out = [];
+  const start = 2020;
+  const end = Math.max(CURRENT_YEAR, 2026);
+  for (let y = start; y <= end; y++) out.push(y);
+  return out;
+})();
+function fmtDate(iso) {
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-").map(Number);
+  return { day: String(d).padStart(2, "0"), month: BULAN_SHORT[m - 1], year: y };
+}
+
+// ─── Member roster (shared with other screens) ───────────────────────────────
+const ROSTER = window.CLAPP_ROSTER;
+const memberByMid = window.memberByMid;
+
+// ─── Meeting types ────────────────────────────────────────────────────────────
+const JENIS_LIST = ["Musyawarah Kelompok","Musyawarah 5 Unsur","Lainnya"];
+const JENIS_CLS = {
+  "Musyawarah Kelompok":"kel",
+  "Musyawarah 5 Unsur":"un",
+  "Lainnya":"lain",
+};
+const JENIS_SHORT = {
+  "Musyawarah Kelompok":"Kelompok",
+  "Musyawarah 5 Unsur":"5 Unsur",
+  "Lainnya":"Lainnya",
+};
+
+// ─── Sample meetings (Mei 2026) ──────────────────────────────────────────────
+const MEETINGS_INIT = [
+  {
+    id:"m001", tgl:"2026-05-03", jenis:"Musyawarah Kelompok",
+    judul:"Persiapan Pengajian Bulanan Mei",
+    hadirMids:["001","006","011","017","020","025","026","010"],
+    hasil:"## Agenda\n- Persiapan acara pengajian bulanan tanggal 15 Mei\n- Pembagian tugas (konsumsi, tempat, undangan)\n- Pembahasan kas kelompok",
+    saran:"- Tambah anggaran konsumsi snack sekitar +50%\n- Undangan dibagikan paling lambat H-3",
+  },
+  {
+    id:"m002", tgl:"2026-05-08", jenis:"Musyawarah 5 Unsur",
+    judul:"Evaluasi April & Rencana Program Mei",
+    hadirMids:["001","006","011","017","020"],
+    hasil:"## Evaluasi April\n- Kehadiran rata-rata 87%\n- Donasi (shodaqoh) terkumpul Rp 1.250.000\n- Kegiatan sosial: 2 takziah, 1 walimah\n\n## Rencana Mei\n- Pengajian rutin tetap mingguan\n- Tambah tausiah Muda-mudi setiap Sabtu sore\n- Persiapan kunjungan tokoh dari pusat",
+    saran:"- Perlu pencatatan donasi yang lebih rapi via CLApp",
+  },
+  {
+    id:"m003", tgl:"2026-05-15", jenis:"Musyawarah Kelompok",
+    judul:"Koordinasi Jadwal Yasin & Tahlil",
+    hadirMids:["001","002","006","007","011","012","017","020","026","027"],
+    hasil:"## Pembahasan\n- Yasin & Tahlil rutin tiap malam Jumat\n- Lokasi bergantian per KK, dimulai dari KK-001\n- Konsumsi ditanggung KK tuan rumah",
+    saran:"- Dibuat jadwal tetap 3 bulan ke depan\n- Diumumkan via Serkiler tiap awal bulan",
+  },
+  {
+    id:"m004", tgl:"2026-05-22", jenis:"Musyawarah Kelompok",
+    judul:"Sambung Baru — Bapak Budi Santoso",
+    hadirMids:["001","006","011","017","020","025","026"],
+    hasil:"## Pembahasan\n- Penerimaan jama'ah baru: Bapak Budi Santoso (dari Solo)\n- Pengenalan rangkaian kegiatan kelompok\n- Penempatan dalam jadwal Yasinan rutin",
+    saran:"- Kunjungan silaturahmi oleh perangkat dalam pekan ini\n- Penambahan ke daftar Jama'ah oleh sekretaris",
+  },
+];
+
+// ─── Hadir Picker popover ────────────────────────────────────────────────────
+function HadirPicker({ selectedMids, onChange, onClose }) {
+  const [query, setQuery] = React.useState("");
+  const popRef = React.useRef(null);
+  React.useEffect(() => {
+    const onDown = (e) => {
+      if (popRef.current && !popRef.current.contains(e.target)) onClose();
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [onClose]);
+
+  const q = query.trim().toLowerCase();
+  // Musyawarah hanya untuk Pengurus — selalu filter ke yang punya Dapukan.
+  let list = ROSTER.filter(m => m.dapukan);
+  if (q) list = list.filter(m => m.name.toLowerCase().includes(q) || m.mid.includes(q));
+  const selectedSet = new Set(selectedMids);
+
+  const toggle = (mid) => {
+    const next = selectedSet.has(mid)
+      ? selectedMids.filter(x => x !== mid)
+      : [...selectedMids, mid];
+    onChange(next);
+  };
+  const selectAll = () => onChange(ROSTER.filter(m => m.dapukan).map(m => m.mid));
+  const clear = () => onChange([]);
+
+  return (
+    <div className="hadir-pop" ref={popRef}>
+      <div className="pop-head">
+        <div className="pop-search">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.4"/>
+            <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+          </svg>
+          <input placeholder="Cari nama atau no. jama'ah…" value={query}
+                 onChange={e => setQuery(e.target.value)} autoFocus />
+        </div>
+        <div className="pop-actions">
+          <button className="pop-btn" onClick={selectAll}>Pilih Semua</button>
+          <button className="pop-btn" onClick={clear}>Kosongkan</button>
+        </div>
+      </div>
+      <div className="pop-list">
+        {list.length === 0 ? (
+          <div style={{padding:"30px 16px",textAlign:"center",color:"var(--ink-500)",fontSize:13}}>
+            Tidak ada jama'ah cocok.
+          </div>
+        ) : list.map(m => (
+          <label key={m.mid} className="pop-item">
+            <input type="checkbox" checked={selectedSet.has(m.mid)} onChange={() => toggle(m.mid)} />
+            <span className="pi-mid">{m.mid}</span>
+            <span className="pi-name">
+              {m.name}
+              {m.dapukan && <span style={{marginLeft:6,display:"inline-flex",alignItems:"center",height:16,padding:"0 5px",background:"var(--izin-bg)",color:"var(--izin-ink)",border:"1px solid var(--izin)",borderRadius:2,fontSize:9.5,fontWeight:600,letterSpacing:".04em"}}>{m.dapukan}</span>}
+            </span>
+            <span className="pi-kk">KK-{m.kkNo}</span>
+          </label>
+        ))}
+      </div>
+      <div className="pop-foot">
+        <span>Dipilih: <b>{selectedMids.length}</b> / {ROSTER.length}</span>
+        <button className="pop-btn" onClick={onClose}>Tutup</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main App ────────────────────────────────────────────────────────────────
+function App() {
+  const [meetings, setMeetings] = React.useState(MEETINGS_INIT);
+  // Period filter (current year/month or first sample's month).
+  const [bulan, setBulan] = React.useState(5);
+  const [tahun, setTahun] = React.useState(2026);
+  // Selection: id of a meeting in `meetings`, or null = creating new.
+  const [selectedId, setSelectedId] = React.useState(MEETINGS_INIT[0]?.id || null);
+  const [hadirOpen, setHadirOpen] = React.useState(false);
+  const [toast, setToast] = React.useState(null);
+
+  // Form local state — mirrors selected meeting; "Simpan" commits back.
+  const todayIso = TODAY.toISOString().slice(0, 10);
+  const [tgl, setTgl] = React.useState(MEETINGS_INIT[0]?.tgl || todayIso);
+  const [jenis, setJenis] = React.useState(MEETINGS_INIT[0]?.jenis || "Musyawarah Kelompok");
+  const [judul, setJudul] = React.useState(MEETINGS_INIT[0]?.judul || "");
+  const [hadirMids, setHadirMids] = React.useState(MEETINGS_INIT[0]?.hadirMids || []);
+  const [hasil, setHasil] = React.useState(MEETINGS_INIT[0]?.hasil || "");
+  const [saran, setSaran] = React.useState(MEETINGS_INIT[0]?.saran || "");
+
+  // Sync form when selection changes
+  React.useEffect(() => {
+    if (selectedId === null) {
+      setTgl(todayIso); setJenis("Musyawarah Kelompok");
+      setJudul(""); setHadirMids([]); setHasil(""); setSaran("");
+      return;
+    }
+    const m = meetings.find(x => x.id === selectedId);
+    if (!m) return;
+    setTgl(m.tgl); setJenis(m.jenis); setJudul(m.judul);
+    setHadirMids(m.hadirMids); setHasil(m.hasil || ""); setSaran(m.saran || "");
+  }, [selectedId]);
+
+  const filtered = meetings.filter(m => {
+    const [y, mo] = m.tgl.split("-").map(Number);
+    return y === tahun && mo === bulan;
+  }).sort((a, b) => a.tgl.localeCompare(b.tgl));
+
+  const isNew = selectedId === null;
+  const valid = !!tgl && !!judul.trim();
+
+  const onSave = () => {
+    if (!valid) return;
+    if (isNew) {
+      const newId = `m${Date.now()}`;
+      setMeetings(ms => [...ms, { id:newId, tgl, jenis, judul, hadirMids, hasil, saran }]);
+      setSelectedId(newId);
+      // Snap period to the new meeting's month so it stays visible
+      const [y, mo] = tgl.split("-").map(Number);
+      if (y !== tahun) setTahun(y);
+      if (mo !== bulan) setBulan(mo);
+    } else {
+      setMeetings(ms => ms.map(m => m.id === selectedId
+        ? { ...m, tgl, jenis, judul, hadirMids, hasil, saran } : m));
+    }
+    setToast(isNew ? "Musyawarah baru disimpan" : "Perubahan disimpan");
+    setTimeout(() => setToast(null), 2800);
+  };
+
+  const onNew = () => {
+    setSelectedId(null);
+    setHadirOpen(false);
+  };
+
+  return (
+    <>
+      <window.CLAppNavBar active="Musyawarah" />
+
+      {/* Filter bar */}
+      <div className="filt">
+        <div className="cell" style={{minWidth:130}}>
+          <div className="k">Bulan</div>
+          <div className="v">
+            <select value={bulan} onChange={e => setBulan(parseInt(e.target.value, 10))}>
+              {BULAN_ID.map((name, i) => {
+                const m = i + 1;
+                const isFuture = tahun === CURRENT_YEAR && m > CURRENT_MONTH;
+                return <option key={m} value={m} disabled={isFuture}>{name}</option>;
+              })}
+            </select>
+          </div>
+        </div>
+        <div className="cell" style={{minWidth:110}}>
+          <div className="k">Tahun</div>
+          <div className="v">
+            <select value={tahun} onChange={e => {
+              const y = parseInt(e.target.value, 10);
+              setTahun(y);
+              if (y === CURRENT_YEAR && bulan > CURRENT_MONTH) setBulan(CURRENT_MONTH);
+            }}>
+              {YEAR_LIST.map(y => <option key={y} value={y}>{y}</option>)}
+            </select>
+          </div>
+        </div>
+        <div className="grow"></div>
+        <div className="summary">
+          <b>{filtered.length}</b> musyawarah · {BULAN_ID[bulan-1]} {tahun}
+        </div>
+      </div>
+
+      {/* Two-pane layout */}
+      <div className="layout">
+        {/* Left pane: meeting list */}
+        <div className="pane-left">
+          <div className="left-head">
+            <button className="btn full" onClick={onNew}>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+              </svg>
+              Musyawarah Baru
+            </button>
+          </div>
+          <div className="meeting-list">
+            {filtered.length === 0 ? (
+              <div className="empty-list">
+                <div className="em-title">Belum ada musyawarah</div>
+                di bulan {BULAN_ID[bulan-1]} {tahun}
+              </div>
+            ) : filtered.map(m => {
+              const d = fmtDate(m.tgl);
+              const cls = JENIS_CLS[m.jenis] || "lain";
+              const isSel = selectedId === m.id;
+              return (
+                <div key={m.id}
+                     className={`meeting-item${isSel ? " selected" : ""}`}
+                     onClick={() => setSelectedId(m.id)}>
+                  <div>
+                    <span className="date"><span className="day">{d.day}</span>{d.month}</span>
+                    <span className={`jenis ${cls}`}>· {JENIS_SHORT[m.jenis]}</span>
+                  </div>
+                  <div className="judul">{m.judul}</div>
+                  <div className="meta">{m.hadirMids.length} hadir</div>
+                </div>
+              );
+            })}
+            {isNew && (
+              <div className="meeting-item selected" style={{borderLeftColor:"var(--alpa)"}}>
+                <div>
+                  <span className="date"><span className="day">— —</span></span>
+                  <span className="jenis lain" style={{color:"var(--alpa-ink)"}}>· Baru (belum disimpan)</span>
+                </div>
+                <div className="judul" style={{color:"var(--ink-500)",fontStyle:"italic"}}>
+                  {judul || "(judul kosong)"}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right pane: detail/form */}
+        <div className="pane-right">
+          <div className="detail-head">
+            <div>
+              <div className="eyebrow">{isNew ? "Buat Baru" : "Detail Musyawarah"}</div>
+              <div className="title">{isNew ? "Musyawarah Baru" : (judul || "(judul kosong)")}</div>
+            </div>
+            {!isNew && (
+              <div style={{fontFamily:"IBM Plex Mono, monospace",fontSize:11,color:"var(--ink-500)",letterSpacing:".02em"}}>
+                ID: {selectedId}
+              </div>
+            )}
+          </div>
+
+          <div className="detail-body">
+            {/* Tanggal + Jenis */}
+            <div className="field-section">
+              <div className="form-grid">
+                <div className="field">
+                  <label className="lbl">Tanggal<span className="req">*</span></label>
+                  <input type="date" value={tgl} onChange={e => setTgl(e.target.value)} max={todayIso} />
+                </div>
+                <div className="field">
+                  <label className="lbl">Jenis</label>
+                  <select value={jenis} onChange={e => setJenis(e.target.value)}>
+                    {JENIS_LIST.map(j => <option key={j} value={j}>{j}</option>)}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Judul */}
+            <div className="field-section">
+              <div className="field">
+                <label className="lbl">Judul<span className="req">*</span></label>
+                <input type="text" value={judul} onChange={e => setJudul(e.target.value)}
+                       placeholder="contoh: Persiapan Pengajian Bulanan Mei" />
+              </div>
+            </div>
+
+            {/* Hadir picker */}
+            <div className="field-section">
+              <div className="field">
+                <label className="lbl">
+                  Jama'ah Hadir
+                  <span className="derived">→ jumlah hadir: <b>{hadirMids.length}</b> (otomatis)</span>
+                </label>
+                <div className="hadir-area">
+                  {hadirMids.length === 0 && !hadirOpen && (
+                    <span className="hadir-empty">Belum ada jama'ah dipilih.</span>
+                  )}
+                  {hadirMids.map(mid => {
+                    const mem = memberByMid(mid);
+                    if (!mem) return null;
+                    return (
+                      <span key={mid} className="hadir-chip"
+                            onClick={() => setHadirMids(hadirMids.filter(x => x !== mid))}
+                            title="Klik untuk hapus">
+                        <span className="mid">{mid}</span>{mem.name}
+                        {mem.dapukan && <span className="chip-role">{mem.dapukan}</span>}
+                      </span>
+                    );
+                  })}
+                  <button className="hadir-pick-btn" type="button"
+                          onClick={() => setHadirOpen(o => !o)}>
+                    {hadirMids.length === 0 ? "+ Pilih Jama'ah" : "+ Tambah"}
+                  </button>
+                  {hadirOpen && (
+                    <HadirPicker
+                      selectedMids={hadirMids}
+                      onChange={setHadirMids}
+                      onClose={() => setHadirOpen(false)}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Hasil Musyawarah */}
+            <div className="field-section">
+              <div className="field">
+                <label className="lbl">
+                  Hasil Musyawarah
+                  <span className="hint">— Markdown didukung (## judul, - daftar, **tebal**)</span>
+                </label>
+                <textarea value={hasil} onChange={e => setHasil(e.target.value)}
+                          placeholder={"## Agenda\n- ...\n## Pembahasan\n- ..."} />
+              </div>
+            </div>
+
+            {/* Saran */}
+            <div className="field-section">
+              <div className="field">
+                <label className="lbl">
+                  Saran
+                  <span className="hint">— Markdown didukung</span>
+                </label>
+                <textarea value={saran} onChange={e => setSaran(e.target.value)}
+                          placeholder={"- saran perangkat\n- masukan untuk pertemuan berikutnya"} />
+              </div>
+            </div>
+          </div>
+
+          <div className="detail-foot">
+            <div className="saved-note">
+              {isNew ? "Belum disimpan" : `Disimpan · ${fmtDate(tgl).day} ${fmtDate(tgl).month} ${fmtDate(tgl).year}`}
+            </div>
+            <div className="grow"></div>
+            {!isNew && (
+              <button className="btn ghost" onClick={onNew}>Batal Edit</button>
+            )}
+            <button className="btn" onClick={onSave} disabled={!valid}>
+              {isNew ? "Simpan Musyawarah" : "Simpan Perubahan"}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {toast && (
+        <div className="toast">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8l3.5 3.5L13 5" stroke="#9FCBAE" strokeWidth="1.8"
+                  strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          {toast}
+        </div>
+      )}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("app-root")).render(<App />);
+</script>
+</body>
+</html>

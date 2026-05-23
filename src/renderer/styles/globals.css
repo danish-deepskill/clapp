@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-paper text-ink-900 font-sans antialiased;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Focus ring uses the slate-blue (focus = sakit) token. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-focus ring-offset-1 ring-offset-paper;
+  }
+}

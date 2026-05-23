@@ -48,39 +48,38 @@ export function AttendanceRow({ index, row, onChange }: AttendanceRowProps) {
     [row.status, onChange],
   );
 
-  // Up/Down navigate rows; Left/Right navigate within row (pills + inputs).
-  // Arrow keys inside text inputs are passed through so the cursor can move.
-  const onRowKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
-    const inInput = e.target instanceof HTMLInputElement;
-    const vert = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
-    if (vert !== 0 && !inInput) {
-      const rows = Array.from(
-        e.currentTarget.parentElement?.querySelectorAll<HTMLElement>(
-          '[role="row"]',
-        ) ?? [],
-      );
-      const target = rows[rows.indexOf(e.currentTarget) + vert];
-      if (target) {
-        e.preventDefault();
-        target.focus();
-        target.scrollIntoView({ block: 'nearest' });
+  // Up/Down navigate rows; Left/Right cycle through status pills and apply
+  // immediately. Arrow keys inside text inputs pass through (cursor movement).
+  const onRowKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      const inInput = e.target instanceof HTMLInputElement;
+      if (inInput) return;
+      const vert = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
+      if (vert !== 0) {
+        const rows = Array.from(
+          e.currentTarget.parentElement?.querySelectorAll<HTMLElement>(
+            '[role="row"]',
+          ) ?? [],
+        );
+        const target = rows[rows.indexOf(e.currentTarget) + vert];
+        if (target) {
+          e.preventDefault();
+          target.focus();
+          target.scrollIntoView({ block: 'nearest' });
+        }
+        return;
       }
-      return;
-    }
-    const horiz = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
-    if (horiz !== 0 && !inInput) {
-      const focusable = Array.from(
-        e.currentTarget.querySelectorAll<HTMLElement>('button, input'),
-      );
-      const i = focusable.indexOf(document.activeElement as HTMLElement);
-      const next = Math.max(0, Math.min(i + horiz, focusable.length - 1));
-      const target = focusable[next];
-      if (target) {
+      const horiz = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (horiz !== 0) {
         e.preventDefault();
-        target.focus();
+        const STATUSES: AttendanceStatus[] = ['H', 'A', 'S', 'I'];
+        const cur = row.status ? STATUSES.indexOf(row.status) : -1;
+        const next = Math.max(0, Math.min(cur + horiz, STATUSES.length - 1));
+        if (next !== cur) onStatusChange(STATUSES[next]!);
       }
-    }
-  }, []);
+    },
+    [row.status, onStatusChange],
+  );
 
   return (
     <div

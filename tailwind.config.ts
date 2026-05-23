@@ -17,6 +17,7 @@ const config: Config = {
         'ink-200': '#DCD6C8',
         rule: '#D9D2C2',
         'rule-strong': '#B8B0A0',
+        chrome: '#cfc7b4', // keep in sync with window.ts titleBarOverlay.color
         focus: '#325E8C',
         hadir: '#2E7048',
         'hadir-ink': '#1E4D31',

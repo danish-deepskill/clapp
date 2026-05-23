@@ -1,15 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { NavBar, type Screen } from './components/NavBar';
+import { TitleBar } from './components/TitleBar';
 import { ToastProvider } from './components/Toast';
 import { Pengaturan } from './screens/Pengaturan';
 
 export function App() {
   const [active, setActive] = useState<Screen>('Pengaturan');
 
+  useEffect(() => {
+    document.title = `CLApp — ${active}`;
+  }, [active]);
+
   return (
     <ToastProvider>
       <div className="flex h-full flex-col bg-paper">
+        <TitleBar subtitle={active} />
         <NavBar active={active} onNavigate={setActive} perluTindakanCount={0} />
         <main className="flex-1 overflow-hidden">
           {active === 'Pengaturan' ? (

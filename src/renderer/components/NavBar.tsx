@@ -7,6 +7,8 @@ import {
 } from 'react';
 import { clsx } from 'clsx';
 
+import clappIcon from '@renderer/assets/clapp-icon.jpg';
+
 export type Screen =
   | 'Beranda'
   | 'Absensi'
@@ -108,7 +110,7 @@ export function NavBar({ active, onNavigate, perluTindakanCount = 0 }: NavBarPro
         onClick={onBrandClick}
         title={isHome ? 'Beranda (di sini)' : 'Kembali ke Beranda'}
         className={clsx(
-          'flex min-w-[160px] items-center gap-2.5 border-r border-rule px-5 py-2.5 text-left',
+          'group flex min-w-[160px] items-center gap-2.5 border-r border-rule px-5 py-2.5 text-left',
           'transition-colors hover:bg-surface-2',
           isHome ? 'cursor-default' : 'cursor-pointer',
         )}
@@ -131,7 +133,7 @@ export function NavBar({ active, onNavigate, perluTindakanCount = 0 }: NavBarPro
         <div
           ref={measureRef}
           aria-hidden="true"
-          className="pointer-events-none invisible absolute left-0 top-0 flex h-full whitespace-nowrap"
+          className="pointer-events-none invisible fixed left-0 top-0 flex h-full whitespace-nowrap"
         >
           {TABS.map((t) => (
             <MeasureTab key={t.name} name={t.name} disabled={t.disabled} />
@@ -312,34 +314,11 @@ function TabLabel({
 function BrandMark({ badge }: { badge: number }) {
   return (
     <span className="relative inline-flex h-8 w-8 shrink-0 items-center justify-center">
-      <svg
-        viewBox="0 0 32 32"
-        width="32"
-        height="32"
-        className="block"
-        aria-label="CLApp"
-      >
-        <rect
-          x="0.5"
-          y="0.5"
-          width="31"
-          height="31"
-          rx="3"
-          fill="#FCFAF5"
-          stroke="#DCD6C8"
-        />
-        <text
-          x="16"
-          y="21"
-          textAnchor="middle"
-          fontFamily="IBM Plex Mono, monospace"
-          fontWeight="700"
-          fontSize="14"
-          fill="#1B1814"
-        >
-          CL
-        </text>
-      </svg>
+      <img
+        src={clappIcon}
+        alt="CLApp"
+        className="block h-full w-full rounded-sm border border-ink-200 bg-surface object-contain transition-colors group-hover:border-ink-700"
+      />
       {badge > 0 && (
         <span className="absolute -right-1.5 -top-1.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full border-[1.5px] border-surface bg-izin px-1 font-mono text-[9.5px] font-bold leading-none text-surface">
           {badge}

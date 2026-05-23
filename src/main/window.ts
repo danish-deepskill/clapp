@@ -1,5 +1,14 @@
-import { BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import { join } from 'node:path';
+
+const isMac = process.platform === 'darwin';
+const TITLE_BAR_HEIGHT = 32;
+
+function resolveIconPath(): string {
+  return app.isPackaged
+    ? join(process.resourcesPath, 'clapp-icon.jpg')
+    : join(app.getAppPath(), 'src', 'main', 'assets', 'clapp-icon.jpg');
+}
 
 export function createMainWindow(): BrowserWindow {
   const win = new BrowserWindow({
@@ -10,6 +19,17 @@ export function createMainWindow(): BrowserWindow {
     show: false,
     backgroundColor: '#F5F1E8',
     autoHideMenuBar: true,
+    icon: resolveIconPath(),
+    titleBarStyle: isMac ? 'hiddenInset' : 'hidden',
+    ...(isMac
+      ? {}
+      : {
+          titleBarOverlay: {
+            color: '#cfc7b4', // keep in sync with tailwind.config 'chrome' token
+            symbolColor: '#1B1814',
+            height: TITLE_BAR_HEIGHT,
+          },
+        }),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,

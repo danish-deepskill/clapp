@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(npm test*)",
+      "Bash(npm run *)",
+      "Bash(npm install*)",
+      "Bash(npm uninstall*)",
+      "Bash(npm rebuild *)",
+      "Bash(npm --version)",
+      "Bash(node --version)",
+      "Bash(node -e *)",
+      "Bash(npx vitest *)",
+      "Bash(npx drizzle-kit *)",
+      "Bash(npx electron-rebuild *)",
+
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git add *)",
+      "Bash(git commit -m *)",
+      "Bash(git checkout *)",
+      "Bash(git merge *)",
+      "Bash(git branch *)",
+      "Bash(git ls-files*)",
+      "Bash(git rm *)",
+
+      "Bash(tasklist)",
+      "Bash(taskkill //F //IM electron.exe //T)",
+
+      "Bash(grep *)",
+      "Bash(wc -l *)",
+      "Bash(ls*)",
+      "Bash(cat *)",
+      "Bash(tail *)",
+      "Bash(head *)",
+      "Bash(sed -n *)",
+      "Bash(mkdir -p *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(rm -f *)",
+      "Bash(env)",
+      "Bash(printenv *)",
+      "Bash(until *)",
+
+      "Agent(Explore)",
+      "Agent(general-purpose)"
+    ]
+  }
+}

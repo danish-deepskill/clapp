@@ -15,6 +15,7 @@ import {
 import {
   HouseholdNotFoundError,
   InvalidHeadError,
+  ReorderInputError,
   householdService,
 } from '@main/services/householdService';
 import {
@@ -585,5 +586,54 @@ describe('householdService', () => {
     expect(() =>
       householdService.update({ db }, 999, { address: 'somewhere' }),
     ).toThrow(HouseholdNotFoundError);
+  });
+});
+
+// ─── householdService.reorder ─────────────────────────────────────────────
+
+describe('householdService.reorder', () => {
+  let db: DB;
+  beforeEach(() => {
+    db = freshDb();
+    // Seed 3 households via memberService.addMember → "001", "002", "003".
+    memberService.addMember({ db }, { ...FAISAL, fullName: 'A' });
+    memberService.addMember({ db }, { ...FAISAL, fullName: 'B' });
+    memberService.addMember({ db }, { ...FAISAL, fullName: 'C' });
+  });
+
+  it('rewrites all household_no contiguously in the given order', () => {
+    const hhs = householdService.list({ db });
+    expect(hhs.map((h) => h.householdNo)).toEqual(['001', '002', '003']);
+    // Reverse the order: [C, B, A]
+    householdService.reorder({ db }, [hhs[2]!.id, hhs[1]!.id, hhs[0]!.id]);
+    const after = householdService.list({ db });
+    // List is sorted by householdNo, so the new "001" is C, "002" is B, "003" is A.
+    expect(after.map((h) => h.headMemberName)).toEqual(['C', 'B', 'A']);
+    expect(after.map((h) => h.householdNo)).toEqual(['001', '002', '003']);
+  });
+
+  it('throws ReorderInputError if orderedIds is missing a household', () => {
+    const hhs = householdService.list({ db });
+    expect(() =>
+      householdService.reorder({ db }, [hhs[0]!.id, hhs[1]!.id]),
+    ).toThrow(ReorderInputError);
+  });
+
+  it('throws ReorderInputError on duplicate ids', () => {
+    const hhs = householdService.list({ db });
+    expect(() =>
+      householdService.reorder({ db }, [hhs[0]!.id, hhs[0]!.id, hhs[1]!.id]),
+    ).toThrow(ReorderInputError);
+  });
+
+  it('throws ReorderInputError on unknown id, rolls back', () => {
+    const hhs = householdService.list({ db });
+    const before = hhs.map((h) => h.householdNo);
+    expect(() =>
+      householdService.reorder({ db }, [hhs[0]!.id, hhs[1]!.id, 999]),
+    ).toThrow(ReorderInputError);
+    expect(householdService.list({ db }).map((h) => h.householdNo)).toEqual(
+      before,
+    );
   });
 });

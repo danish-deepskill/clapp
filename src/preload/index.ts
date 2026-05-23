@@ -72,6 +72,8 @@ const api = {
       ipcRenderer.invoke('household:update', id, input),
     suggestNewHead: (householdId: number): Promise<number | null> =>
       ipcRenderer.invoke('household:suggestNewHead', householdId),
+    reorder: (orderedIds: number[]): Promise<IpcResult<null>> =>
+      ipcRenderer.invoke('household:reorder', orderedIds),
   },
 } as const;
 

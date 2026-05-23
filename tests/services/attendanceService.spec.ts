@@ -425,6 +425,68 @@ describe('attendanceService.saveBatch', () => {
     expect(db.select().from(sessions).all()).toHaveLength(2);
   });
 
+  // ─── Materi (session notes) round-trip ─────────────────────────────────
+
+  it('persists notes on new session and returns them via loadRoster', () => {
+    attendanceService.saveBatch(
+      { db, clock: fixedClock() },
+      { ...makeInput(), notes: 'Al-Baqarah ayat 1-15' },
+    );
+    const loaded = attendanceService.loadRoster(
+      { db, clock: fixedClock() },
+      { sessionDate: '2026-05-20' },
+    );
+    expect(loaded.session?.notes).toBe('Al-Baqarah ayat 1-15');
+  });
+
+  it('updates notes on existing session without losing attendance rows', () => {
+    attendanceService.saveBatch(
+      { db, clock: fixedClock() },
+      { ...makeInput(), notes: 'awal' },
+    );
+    const before = db.select().from(attendance).all().length;
+    attendanceService.saveBatch(
+      { db, clock: fixedClock() },
+      { ...makeInput(), notes: 'diubah' },
+    );
+    expect(db.select().from(attendance).all()).toHaveLength(before);
+    const loaded = attendanceService.loadRoster(
+      { db, clock: fixedClock() },
+      { sessionDate: '2026-05-20' },
+    );
+    expect(loaded.session?.notes).toBe('diubah');
+  });
+
+  it('clears notes when passed null', () => {
+    attendanceService.saveBatch(
+      { db, clock: fixedClock() },
+      { ...makeInput(), notes: 'akan dihapus' },
+    );
+    attendanceService.saveBatch(
+      { db, clock: fixedClock() },
+      { ...makeInput(), notes: null },
+    );
+    const loaded = attendanceService.loadRoster(
+      { db, clock: fixedClock() },
+      { sessionDate: '2026-05-20' },
+    );
+    expect(loaded.session?.notes).toBe(null);
+  });
+
+  it('leaves existing notes untouched when caller omits notes (undefined)', () => {
+    attendanceService.saveBatch(
+      { db, clock: fixedClock() },
+      { ...makeInput(), notes: 'jangan disentuh' },
+    );
+    // Re-save without notes field — should NOT clear them.
+    attendanceService.saveBatch({ db, clock: fixedClock() }, makeInput());
+    const loaded = attendanceService.loadRoster(
+      { db, clock: fixedClock() },
+      { sessionDate: '2026-05-20' },
+    );
+    expect(loaded.session?.notes).toBe('jangan disentuh');
+  });
+
   // ─── null-status = DELETE semantics (unmark) ───────────────────────────
 
   it('null status DELETEs existing attendance row (unmark)', () => {

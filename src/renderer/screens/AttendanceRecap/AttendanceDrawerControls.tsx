@@ -17,6 +17,8 @@ export interface DrawerControlsProps {
   maxDate: string;
   search: string;
   onSearchChange: (q: string) => void;
+  notes: string;
+  onNotesChange: (v: string) => void;
 }
 
 /**
@@ -34,6 +36,8 @@ export function DrawerControls({
   maxDate,
   search,
   onSearchChange,
+  notes,
+  onNotesChange,
 }: DrawerControlsProps) {
   const activeTypes = sessionTypes.filter((t) => t.isActive);
   const dateInputRef = useRef<HTMLInputElement>(null);
@@ -55,7 +59,7 @@ export function DrawerControls({
 
   return (
     <div className="shrink-0 border-b border-rule bg-surface-2">
-      {/* Row 1: Jenis + Tanggal */}
+      {/* Row 1: Jenis | Tanggal | Materi */}
       <div className="flex items-stretch">
         <div className="flex min-w-[180px] flex-col justify-center gap-0.5 border-r border-rule px-4 py-2">
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-500">
@@ -80,7 +84,7 @@ export function DrawerControls({
           )}
         </div>
 
-        <div className="flex min-w-[210px] flex-1 flex-col justify-center gap-0.5 px-4 py-2">
+        <div className="flex min-w-[210px] flex-col justify-center gap-0.5 border-r border-rule px-4 py-2">
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-500">
             Tanggal
           </span>
@@ -111,9 +115,23 @@ export function DrawerControls({
             />
           </div>
         </div>
+
+        <div className="flex flex-1 flex-col justify-center gap-0.5 px-4 py-2">
+          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-500">
+            Materi
+          </span>
+          <input
+            type="text"
+            value={notes}
+            onChange={(e) => onNotesChange(e.target.value)}
+            placeholder="Bab / ayat / hadist yang dibahas…"
+            aria-label="Materi sesi"
+            className="h-7 w-full appearance-none border-0 bg-transparent font-sans text-[14px] font-medium text-ink-900 outline-none placeholder:font-normal placeholder:italic placeholder:text-ink-400 focus-visible:!ring-0 focus-visible:!ring-offset-0"
+          />
+        </div>
       </div>
 
-      {/* Row 2: Search */}
+      {/* Row 2: Search + keyboard hint */}
       <div className="flex items-center gap-2 border-t border-rule px-4">
         <Search size={14} strokeWidth={1.6} className="shrink-0 text-ink-500" />
         <input
@@ -122,8 +140,13 @@ export function DrawerControls({
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Cari nama jama'ah…"
           aria-label="Cari jama'ah"
-          className="h-9 w-full appearance-none border-0 bg-transparent font-sans text-[13.5px] text-ink-900 outline-none placeholder:text-ink-400 focus-visible:!ring-0 focus-visible:!ring-offset-0"
+          className="h-9 flex-1 appearance-none border-0 bg-transparent font-sans text-[13.5px] text-ink-900 outline-none placeholder:text-ink-400 focus-visible:!ring-0 focus-visible:!ring-offset-0"
         />
+        <span className="shrink-0 font-mono text-[10.5px] text-ink-500">
+          <kbd className="font-mono text-ink-700">↑↓</kbd> baris
+          <span className="mx-2 text-ink-300">·</span>
+          <kbd className="font-mono text-ink-700">←→</kbd> status
+        </span>
       </div>
     </div>
   );

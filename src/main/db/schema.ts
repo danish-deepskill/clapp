@@ -85,6 +85,8 @@ export const sessions = sqliteTable(
     sessionTypeId: integer('session_type_id')
       .notNull()
       .references(() => sessionTypes.id),
+    /** Materi/catatan sesi: bab/ayat/hadist yang dibahas. Nullable. */
+    notes: text('notes'),
   },
   (t) => ({
     typeDateUq: uniqueIndex('sessions_type_date_uq').on(

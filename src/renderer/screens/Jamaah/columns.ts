@@ -13,12 +13,12 @@ export interface JamaahColumn {
 
 export const COLUMNS_BASE: readonly JamaahColumn[] = [
   { key: 'no', label: 'No.', width: 56, align: 'right', mono: true },
-  { key: 'nama', label: "Nama", width: 220 },
+  { key: 'nama', label: "Nama Jama'ah", width: 230 },
   { key: 'dapukan', label: 'Dapukan', width: 120 },
   { key: 'gender', label: 'L/P', width: 56, align: 'center', mono: true },
   { key: 'kelas', label: 'Kelas', width: 110, mono: true },
-  { key: 'pernikahan', label: 'Pernikahan', width: 130 },
-  { key: 'darah', label: 'Gol. Darah', width: 96, align: 'center', mono: true },
+  { key: 'pernikahan', label: 'Status Pernikahan', width: 160 },
+  { key: 'darah', label: 'Golongan Darah', width: 130, align: 'center', mono: true },
   { key: 'rhesus', label: 'Rhesus', width: 96, align: 'center', mono: true },
   { key: 'tempat', label: 'Tempat Lahir', width: 130 },
   { key: 'tanggal', label: 'Tanggal Lahir', width: 120, mono: true },
@@ -36,7 +36,7 @@ export const NO_KK_COLUMN: JamaahColumn = {
 
 export function columnsFor(viewMode: 'grouped' | 'flat'): JamaahColumn[] {
   if (viewMode === 'grouped') return [...COLUMNS_BASE];
-  // Flat mode: insert No. KK after Nama (index 1).
+    // Flat mode: insert No. KK after Nama (index 1).
   return [
     COLUMNS_BASE[0]!,
     COLUMNS_BASE[1]!,

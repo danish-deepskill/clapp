@@ -1,4 +1,11 @@
-import { Filter, LayoutList, Plus, Search, Table } from 'lucide-react';
+import {
+  ChevronDown,
+  Filter,
+  LayoutList,
+  Plus,
+  Search,
+  Table,
+} from 'lucide-react';
 import { clsx } from 'clsx';
 
 import { GENDER, LIFE_STAGE } from '@shared/enums';
@@ -41,24 +48,29 @@ export function FilterBar({
     (filter.pengurusOnly ? 1 : 0);
 
   return (
-    <div className="flex items-center gap-3 border-b border-rule bg-surface px-6 py-3">
-      <SegmentedControl<ViewMode>
-        aria-label="Tampilan daftar"
-        value={viewMode}
-        onChange={onViewModeChange}
-        items={[
-          {
-            value: 'grouped',
-            label: 'Per KK',
-            icon: <LayoutList size={13} strokeWidth={1.6} />,
-          },
-          {
-            value: 'flat',
-            label: 'Daftar',
-            icon: <Table size={13} strokeWidth={1.6} />,
-          },
-        ]}
-      />
+    <div className="flex items-end gap-3 border-b border-rule bg-surface px-6 py-3">
+      <div className="flex flex-col gap-1">
+        <span className="font-mono text-[9.5px] font-semibold uppercase tracking-[0.14em] text-ink-500">
+          Tampilan
+        </span>
+        <SegmentedControl<ViewMode>
+          aria-label="Tampilan daftar"
+          value={viewMode}
+          onChange={onViewModeChange}
+          items={[
+            {
+              value: 'grouped',
+              label: 'Per KK',
+              icon: <LayoutList size={13} strokeWidth={1.6} />,
+            },
+            {
+              value: 'flat',
+              label: 'Daftar',
+              icon: <Table size={13} strokeWidth={1.6} />,
+            },
+          ]}
+        />
+      </div>
 
       <div className="relative flex-1">
         <Search
@@ -69,7 +81,7 @@ export function FilterBar({
         <Input
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Cari nama atau panggilan…"
+          placeholder="Cari nama atau nomor jama'ah…"
           aria-label="Cari jama'ah"
           className="h-9 pl-9"
         />
@@ -93,6 +105,11 @@ export function FilterBar({
                 {activeFilterCount}
               </span>
             )}
+            <ChevronDown
+              size={13}
+              strokeWidth={1.6}
+              className="text-ink-500"
+            />
           </button>
         }
       >

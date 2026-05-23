@@ -13,6 +13,7 @@
     @apply bg-paper text-ink-900 font-sans antialiased;
     font-size: 14px;
     line-height: 1.45;
+    overflow-x: hidden;
   }
 
   .font-mono {
@@ -22,5 +23,35 @@
   /* Focus ring uses the slate-blue (focus = sakit) token. */
   :focus-visible {
     @apply outline-none ring-2 ring-focus ring-offset-1 ring-offset-paper;
+  }
+
+  /* Paper-colored 3px border narrows the visible thumb to ~6px while keeping the hit-target at 12px. */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: theme('colors.ink-200');
+    border-radius: 6px;
+    border: 3px solid theme('colors.paper');
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: theme('colors.ink-300');
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
+@layer utilities {
+  /* Electron-only: marks regions as window-draggable / non-draggable. */
+  .app-drag {
+    -webkit-app-region: drag;
+  }
+  .app-no-drag {
+    -webkit-app-region: no-drag;
   }
 }

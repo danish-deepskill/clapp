@@ -1,4 +1,5 @@
 import type { DB } from './db';
+import { registerMasterDataHandlers } from './handlers/masterDataHandlers';
 
 export interface IpcDeps {
   db: DB;
@@ -9,13 +10,13 @@ export interface IpcDeps {
  * channels via `ipcMain.handle`. Handlers stay thin — business logic lives in
  * `src/main/services/`.
  */
-export function registerIpcHandlers(_deps: IpcDeps): void {
-  // Domain handlers land here as PRs add screens:
-  //   registerMemberHandlers(_deps);
-  //   registerAttendanceHandlers(_deps);
-  //   registerMeetingHandlers(_deps);
-  //   registerReportHandlers(_deps);
-  //   registerEventLogHandlers(_deps);
-  //   registerSettingsHandlers(_deps);
-  //   registerBackupHandlers(_deps);
+export function registerIpcHandlers(deps: IpcDeps): void {
+  registerMasterDataHandlers(deps);
+  // Future PRs add:
+  //   registerMemberHandlers(deps);
+  //   registerAttendanceHandlers(deps);
+  //   registerMeetingHandlers(deps);
+  //   registerReportHandlers(deps);
+  //   registerEventLogHandlers(deps);
+  //   registerBackupHandlers(deps);
 }

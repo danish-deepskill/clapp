@@ -6,15 +6,15 @@ import type { HouseholdRow } from '@shared/household';
 import type { MasterDataItem } from '@shared/masterData';
 import type { MemberFilter, MemberRow as Member } from '@shared/member';
 
-import { CatatKepindahanModal } from './CatatKepindahanModal';
+import { AddMemberModal } from './AddMemberModal';
 import { DetailPanel } from './DetailPanel';
-import { EditJamaahModal } from './EditJamaahModal';
-import { EditKKModal } from './EditKKModal';
+import { EditHouseholdModal } from './EditHouseholdModal';
+import { EditMemberModal } from './EditMemberModal';
 import { FilterBar, type ViewMode } from './FilterBar';
 import { MemberList } from './MemberList';
-import { TambahJamaahModal } from './TambahJamaahModal';
+import { RecordMovementModal } from './RecordMovementModal';
 
-export function Jamaah() {
+export function Members() {
   const { showToast } = useToast();
 
   const [members, setMembers] = useState<Member[] | null>(null);
@@ -27,10 +27,10 @@ export function Jamaah() {
   const [viewMode, setViewMode] = useState<ViewMode>('grouped');
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
 
-  const [tambahOpen, setTambahOpen] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
-  const [catatOpen, setCatatOpen] = useState(false);
-  const [editKKId, setEditKKId] = useState<number | null>(null);
+  const [recordMovementOpen, setRecordMovementOpen] = useState(false);
+  const [editHouseholdId, setEditHouseholdId] = useState<number | null>(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -96,12 +96,12 @@ export function Jamaah() {
     [members, selectedMember],
   );
 
-  const editKKHousehold = useMemo(
+  const editingHousehold = useMemo(
     () =>
-      editKKId !== null
-        ? (households?.find((h) => h.id === editKKId) ?? null)
+      editHouseholdId !== null
+        ? (households?.find((h) => h.id === editHouseholdId) ?? null)
         : null,
-    [editKKId, households],
+    [editHouseholdId, households],
   );
 
   const onReorderHouseholds = useCallback(
@@ -128,7 +128,7 @@ export function Jamaah() {
         onViewModeChange={setViewMode}
         totalActive={totalActive}
         totalFiltered={filtered.length}
-        onAddClick={() => setTambahOpen(true)}
+        onAddClick={() => setAddOpen(true)}
       />
 
       {loadError && (
@@ -151,7 +151,7 @@ export function Jamaah() {
           households={households}
           viewMode={viewMode}
           onMemberSelect={(id) => setSelectedMemberId(id)}
-          onEditKK={(id) => setEditKKId(id)}
+          onEditHousehold={(id) => setEditHouseholdId(id)}
           onReorderHouseholds={onReorderHouseholds}
         />
       )}
@@ -164,13 +164,13 @@ export function Jamaah() {
         member={selectedMember}
         household={selectedHousehold}
         onEdit={() => setEditOpen(true)}
-        onCatatKepindahan={() => setCatatOpen(true)}
+        onRecordMovement={() => setRecordMovementOpen(true)}
       />
 
       {households && (
-        <TambahJamaahModal
-          open={tambahOpen}
-          onOpenChange={setTambahOpen}
+        <AddMemberModal
+          open={addOpen}
+          onOpenChange={setAddOpen}
           households={households}
           roles={roles}
           onSaved={() => void refresh()}
@@ -178,7 +178,7 @@ export function Jamaah() {
       )}
 
       {households && selectedMember && (
-        <EditJamaahModal
+        <EditMemberModal
           open={editOpen}
           onOpenChange={setEditOpen}
           member={selectedMember}
@@ -189,9 +189,9 @@ export function Jamaah() {
       )}
 
       {selectedMember && (
-        <CatatKepindahanModal
-          open={catatOpen}
-          onOpenChange={setCatatOpen}
+        <RecordMovementModal
+          open={recordMovementOpen}
+          onOpenChange={setRecordMovementOpen}
           member={selectedMember}
           householdMembers={selectedHouseholdMembers}
           onSaved={() => {
@@ -203,13 +203,13 @@ export function Jamaah() {
         />
       )}
 
-      {editKKHousehold && members && (
-        <EditKKModal
-          open={editKKId !== null}
+      {editingHousehold && members && (
+        <EditHouseholdModal
+          open={editHouseholdId !== null}
           onOpenChange={(o) => {
-            if (!o) setEditKKId(null);
+            if (!o) setEditHouseholdId(null);
           }}
-          household={editKKHousehold}
+          household={editingHousehold}
           members={members}
           onSaved={() => void refresh()}
         />

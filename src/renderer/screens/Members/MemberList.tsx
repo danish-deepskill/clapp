@@ -13,7 +13,7 @@ export interface MemberListProps {
   households: HouseholdRow[];
   viewMode: 'grouped' | 'flat';
   onMemberSelect: (memberId: number) => void;
-  onEditKK: (householdId: number) => void;
+  onEditHousehold: (householdId: number) => void;
   onReorderHouseholds: (orderedIds: number[]) => Promise<void>;
 }
 
@@ -22,7 +22,7 @@ export function MemberList({
   households,
   viewMode,
   onMemberSelect,
-  onEditKK,
+  onEditHousehold,
   onReorderHouseholds,
 }: MemberListProps) {
   const columns = useMemo(() => columnsFor(viewMode), [viewMode]);
@@ -46,7 +46,7 @@ export function MemberList({
             households={households}
             columns={columns}
             onMemberSelect={onMemberSelect}
-            onEditKK={onEditKK}
+            onEditHousehold={onEditHousehold}
             onReorderHouseholds={onReorderHouseholds}
           />
         ) : (
@@ -106,14 +106,14 @@ function GroupedBody({
   households,
   columns,
   onMemberSelect,
-  onEditKK,
+  onEditHousehold,
   onReorderHouseholds,
 }: {
   members: Member[];
   households: HouseholdRow[];
   columns: ReturnType<typeof columnsFor>;
   onMemberSelect: (id: number) => void;
-  onEditKK: (id: number) => void;
+  onEditHousehold: (id: number) => void;
   onReorderHouseholds: (orderedIds: number[]) => Promise<void>;
 }) {
   const byHh = useMemo(() => {
@@ -194,7 +194,7 @@ function GroupedBody({
             startNumber={startNumber}
             columns={columns}
             onMemberSelect={onMemberSelect}
-            onEditKK={onEditKK}
+            onEditHousehold={onEditHousehold}
             isDragging={draggingId === hh.id}
             dropIndicator={dropAt?.id === hh.id ? dropAt.position : null}
             onDragStart={onDragStart}

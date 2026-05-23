@@ -3,7 +3,6 @@ import {
   Filter,
   LayoutList,
   Plus,
-  Search,
   Table,
 } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -14,6 +13,11 @@ import type { MemberFilter } from '@shared/member';
 
 import { Button } from '@renderer/components/Button';
 import { Checkbox } from '@renderer/components/Checkbox';
+import {
+  FilterCell,
+  FilterSearch,
+  FilterStrip,
+} from '@renderer/components/FilterStrip';
 import { Popover } from '@renderer/components/Popover';
 import { SegmentedControl } from '@renderer/components/SegmentedControl';
 
@@ -49,11 +53,8 @@ export function FilterBar({
     (filter.pengurusOnly ? 1 : 0);
 
   return (
-    <div className="flex items-stretch border-b border-rule bg-surface-2">
-      <div className="flex flex-col justify-center gap-1 border-r border-rule px-4 py-2.5">
-        <span className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-ink-500">
-          Tampilan
-        </span>
+    <FilterStrip>
+      <FilterCell label="Tampilan">
         <SegmentedControl<ViewMode>
           aria-label="Tampilan daftar"
           value={viewMode}
@@ -71,25 +72,16 @@ export function FilterBar({
             },
           ]}
         />
-      </div>
+      </FilterCell>
 
-      <div className="flex flex-1 items-center gap-2.5 border-r border-rule px-4">
-        <Search
-          size={14}
-          strokeWidth={1.6}
-          className="shrink-0 text-ink-500"
-        />
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Cari nama atau nomor jama'ah…"
-          aria-label="Cari jama'ah"
-          className="h-full w-full appearance-none border-0 bg-transparent font-sans text-sm text-ink-900 outline-none placeholder:text-ink-400 focus-visible:!ring-0 focus-visible:!ring-offset-0"
-        />
-      </div>
+      <FilterSearch
+        value={search}
+        onChange={onSearchChange}
+        placeholder="Cari nama atau nomor jama'ah…"
+        ariaLabel="Cari jama'ah"
+      />
 
-      <div className="flex items-center border-r border-rule px-4 py-2.5">
+      <FilterCell>
         <Popover
           align="end"
           trigger={
@@ -118,9 +110,9 @@ export function FilterBar({
         >
           <FilterPanel filter={filter} onChange={onFilterChange} />
         </Popover>
-      </div>
+      </FilterCell>
 
-      <div className="flex items-center border-r border-rule px-4 py-2.5">
+      <FilterCell>
         <span className="font-mono text-[11px] leading-tight text-ink-500">
           <span className="font-semibold text-ink-900">{totalFiltered}</span>{' '}
           ditampilkan
@@ -128,17 +120,17 @@ export function FilterBar({
           <span className="font-semibold text-ink-900">{totalActive}</span>{' '}
           aktif
         </span>
-      </div>
+      </FilterCell>
 
-      <div className="flex items-center px-4 py-2.5">
+      <FilterCell>
         <Button
           icon={<Plus size={13} strokeWidth={1.8} />}
           onClick={onAddClick}
         >
           Tambah Jama'ah
         </Button>
-      </div>
-    </div>
+      </FilterCell>
+    </FilterStrip>
   );
 }
 

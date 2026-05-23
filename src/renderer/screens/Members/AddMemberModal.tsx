@@ -21,20 +21,19 @@ import {
 } from '@shared/enums';
 import type { HouseholdRow } from '@shared/household';
 import type { MasterDataItem } from '@shared/masterData';
-import type { EditMemberInput, MemberRow } from '@shared/member';
+import type { AddMemberLogAs, NewMemberInput } from '@shared/member';
 
 const NO_ROLE = '__none__';
 
-export interface EditJamaahModalProps {
+export interface AddMemberModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  member: MemberRow | null;
   households: HouseholdRow[];
   roles: MasterDataItem[];
   onSaved: () => void;
 }
 
-type KKMode = 'join-existing' | 'create-new';
+type KKMode = 'create-new' | 'join-existing';
 
 interface FormState {
   fullName: string;
@@ -50,118 +49,114 @@ interface FormState {
   kkMode: KKMode;
   kkId: string;
   kkAddress: string;
+  logAs: AddMemberLogAs;
+  logDate: string;
 }
 
-function fromMember(m: MemberRow): FormState {
-  return {
-    fullName: m.fullName,
-    nickname: m.nickname ?? '',
-    gender: m.gender,
-    lifeStage: m.lifeStage,
-    maritalStatus: m.maritalStatus,
-    bloodType: m.bloodType,
-    rhesus: m.rhesus,
-    birthPlace: m.birthPlace ?? '',
-    birthDate: m.birthDate ?? '',
-    roleId: m.roleId ? String(m.roleId) : NO_ROLE,
-    kkMode: 'join-existing',
-    kkId: String(m.householdId),
-    kkAddress: '',
-  };
-}
+const today = () => new Date().toISOString().slice(0, 10);
 
-export function EditJamaahModal({
+const initial = (): FormState => ({
+  fullName: '',
+  nickname: '',
+  gender: 'Laki-Laki',
+  lifeStage: 'Dewasa',
+  maritalStatus: 'Belum Menikah',
+  bloodType: 'Tidak Tahu',
+  rhesus: 'Tidak Tahu',
+  birthPlace: '',
+  birthDate: '',
+  roleId: NO_ROLE,
+  kkMode: 'create-new',
+  kkId: '',
+  kkAddress: '',
+  logAs: 'Sambung Baru',
+  logDate: today(),
+});
+
+export function AddMemberModal({
   open,
   onOpenChange,
-  member,
   households,
   roles,
   onSaved,
-}: EditJamaahModalProps) {
+}: AddMemberModalProps) {
   const { showToast } = useToast();
-  const [form, setForm] = useState<FormState | null>(null);
+  const [form, setForm] = useState<FormState>(initial);
+  const [logAsTouched, setLogAsTouched] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // Reset state when the modal opens.
   useEffect(() => {
-    if (open && member) {
-      setForm(fromMember(member));
+    if (open) {
+      setForm(initial());
+      setLogAsTouched(false);
       setSubmitting(false);
       setSubmitError(null);
     }
-  }, [open, member]);
+  }, [open]);
 
-  const set = <K extends keyof FormState>(key: K, value: FormState[K]) => {
-    setForm((f) => (f ? { ...f, [key]: value } : f));
-  };
+  // Auto-suggest logAs based on kelas — sticks once the operator touches it.
+  useEffect(() => {
+    if (logAsTouched) return;
+    setForm((f) => ({
+      ...f,
+      logAs: f.lifeStage === 'Balita' ? 'Lahir' : 'Sambung Baru',
+    }));
+  }, [form.lifeStage, logAsTouched]);
 
-  const nameValid = (form?.fullName.trim().length ?? 0) >= 2;
-  const kkValid =
-    !form || form.kkMode === 'create-new' || form.kkId !== '';
+  const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
+    setForm((f) => ({ ...f, [key]: value }));
 
-  // Detect changes vs the original member to keep Save disabled on no-op.
-  const dirty = useMemo(() => {
-    if (!form || !member) return false;
-    const orig = fromMember(member);
-    return JSON.stringify(form) !== JSON.stringify(orig);
-  }, [form, member]);
+  const nameValid = form.fullName.trim().length >= 2;
+  const kkValid = form.kkMode === 'create-new' || form.kkId !== '';
+  const canSubmit = nameValid && kkValid && !submitting;
 
-  const canSubmit = nameValid && kkValid && dirty && !submitting;
-
-  const householdHint = useMemo(() => {
-    if (!form || !member) return null;
+  const consequenceHint = useMemo(() => {
     if (form.kkMode === 'create-new') {
-      return "Akan dibuat KK-S baru dengan jama'ah ini sebagai kepala.";
+      return 'Akan dibuat KK-S baru dengan jama\'ah ini sebagai kepala.';
     }
-    const newId = Number(form.kkId);
-    if (newId !== member.householdId) {
-      const oldKk = households.find((h) => h.id === member.householdId);
-      const newKk = households.find((h) => h.id === newId);
-      if (oldKk && newKk) {
-        return `Jama'ah dipindahkan dari KK-${oldKk.householdNo} ke KK-${newKk.householdNo}.`;
-      }
+    const target = households.find((h) => String(h.id) === form.kkId);
+    if (target) {
+      return `Jama'ah akan bergabung ke KK-${target.householdNo}${target.headMemberName ? ` (kepala: ${target.headMemberName})` : ''}.`;
     }
     return null;
-  }, [form, member, households]);
+  }, [form.kkMode, form.kkId, households]);
+
+  const logAsHint = useMemo(() => {
+    switch (form.logAs) {
+      case 'Lahir':
+        return 'Akan dicatat sebagai Lahir di Catatan Peristiwa — pilih untuk bayi yang baru lahir di keluarga jama\'ah.';
+      case 'Sambung Baru':
+        return 'Akan dicatat sebagai Sambung Baru — pilih untuk jama\'ah pindahan/mutasi masuk dari luar kelompok.';
+      case 'none':
+        return 'Tidak akan membuat entri Catatan Peristiwa — gunakan untuk koreksi data atau import data lama.';
+    }
+  }, [form.logAs]);
 
   const onSubmit = async () => {
-    if (!form || !member || !canSubmit) return;
+    if (!canSubmit) return;
     setSubmitting(true);
     setSubmitError(null);
-    const orig = fromMember(member);
-    const patch: EditMemberInput = {};
-    if (form.fullName !== orig.fullName) patch.fullName = form.fullName;
-    if (form.nickname !== orig.nickname) {
-      patch.nickname = form.nickname || null;
-    }
-    if (form.gender !== orig.gender) patch.gender = form.gender;
-    if (form.lifeStage !== orig.lifeStage) patch.lifeStage = form.lifeStage;
-    if (form.maritalStatus !== orig.maritalStatus) {
-      patch.maritalStatus = form.maritalStatus;
-    }
-    if (form.bloodType !== orig.bloodType) patch.bloodType = form.bloodType;
-    if (form.rhesus !== orig.rhesus) patch.rhesus = form.rhesus;
-    if (form.birthPlace !== orig.birthPlace) {
-      patch.birthPlace = form.birthPlace || null;
-    }
-    if (form.birthDate !== orig.birthDate) {
-      patch.birthDate = form.birthDate || null;
-    }
-    if (form.roleId !== orig.roleId) {
-      patch.roleId = form.roleId === NO_ROLE ? null : Number(form.roleId);
-    }
-    if (form.kkMode === 'create-new') {
-      patch.household = {
-        mode: 'create-new',
-        address: form.kkAddress || null,
-      };
-    } else if (form.kkId !== orig.kkId) {
-      patch.household = {
-        mode: 'join-existing',
-        householdId: Number(form.kkId),
-      };
-    }
-    const result = await window.clapp.member.edit(member.id, patch);
+    const input: NewMemberInput = {
+      fullName: form.fullName,
+      nickname: form.nickname || null,
+      gender: form.gender,
+      lifeStage: form.lifeStage,
+      maritalStatus: form.maritalStatus,
+      bloodType: form.bloodType,
+      rhesus: form.rhesus,
+      birthPlace: form.birthPlace || null,
+      birthDate: form.birthDate || null,
+      roleId: form.roleId === NO_ROLE ? null : Number(form.roleId),
+      household:
+        form.kkMode === 'create-new'
+          ? { mode: 'create-new', address: form.kkAddress || null }
+          : { mode: 'join-existing', householdId: Number(form.kkId) },
+      logAs: form.logAs,
+      logDate: form.logDate || today(),
+    };
+    const result = await window.clapp.member.add(input);
     setSubmitting(false);
     if (!result.ok) {
       setSubmitError(result.message);
@@ -169,43 +164,26 @@ export function EditJamaahModal({
     }
     showToast({
       variant: 'success',
-      message: `Perubahan disimpan untuk "${result.data.fullName}".`,
+      message: `Jama'ah "${input.fullName.trim()}" disimpan.`,
     });
     onSaved();
     onOpenChange(false);
   };
 
-  if (!form || !member) {
-    return (
-      <Modal
-        open={open}
-        onOpenChange={onOpenChange}
-        title="Edit Jama'ah"
-        footer={
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Tutup
-          </Button>
-        }
-      >
-        <p className="text-[13px] text-ink-500">Memuat…</p>
-      </Modal>
-    );
-  }
-
   return (
     <Modal
       open={open}
       onOpenChange={onOpenChange}
-      eyebrow="Jama'ah · Edit"
-      title={member.fullName}
-      footerHint={householdHint}
+      eyebrow="Jama'ah · Pendataan"
+      title="Tambah Jama'ah Baru"
+      footerHint={consequenceHint}
       footer={
         <>
           <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={submitting}>
             Batal
           </Button>
           <Button onClick={() => void onSubmit()} disabled={!canSubmit}>
-            {submitting ? 'Menyimpan…' : 'Simpan Perubahan'}
+            {submitting ? 'Menyimpan…' : 'Simpan'}
           </Button>
         </>
       }
@@ -222,20 +200,21 @@ export function EditJamaahModal({
           value={form.kkMode}
           onChange={(v) => set('kkMode', v)}
           items={[
-            { value: 'join-existing', label: 'Pindah / tetap di KK' },
-            { value: 'create-new', label: 'Pisah ke KK-S baru' },
+            { value: 'create-new', label: 'Buat KK baru' },
+            { value: 'join-existing', label: 'Gabung ke KK yang ada' },
           ]}
         />
         {form.kkMode === 'join-existing' && (
           <div className="mt-3">
-            <FormField label="KK" required>
+            <FormField label="Pilih KK" required error={!kkValid && form.kkId === '' ? 'Pilih KK terlebih dahulu' : null}>
               <Select
                 aria-label="Pilih KK"
                 value={form.kkId}
                 onValueChange={(v) => set('kkId', v)}
+                placeholder="— Pilih KK —"
                 items={households.map((h) => ({
                   value: String(h.id),
-                  label: `KK-${h.householdNo} · ${h.headMemberName ?? '(belum ada kepala)'}${h.id === member.householdId ? ' (saat ini)' : ''}`,
+                  label: `KK-${h.householdNo} · ${h.headMemberName ?? '(belum ada kepala)'} · ${h.activeMemberCount} jama'ah`,
                 }))}
               />
             </FormField>
@@ -243,11 +222,11 @@ export function EditJamaahModal({
         )}
         {form.kkMode === 'create-new' && (
           <div className="mt-3">
-            <FormField label="Alamat KK baru" hint="opsional">
+            <FormField label="Alamat (opsional)" hint="bisa diisi kemudian">
               <Input
                 value={form.kkAddress}
                 onChange={(e) => set('kkAddress', e.target.value)}
-                placeholder="contoh: Jl. Cilandak KKO No. 42"
+                placeholder="contoh: Jl. Cilandak KKO No. 42, RT 003/RW 005"
               />
             </FormField>
           </div>
@@ -265,12 +244,15 @@ export function EditJamaahModal({
             <Input
               value={form.fullName}
               onChange={(e) => set('fullName', e.target.value)}
+              placeholder="contoh: Ahmad Faisal Rahman"
+              autoFocus
             />
           </FormField>
           <FormField label="Panggilan">
             <Input
               value={form.nickname}
               onChange={(e) => set('nickname', e.target.value)}
+              placeholder="opsional"
             />
           </FormField>
           <FormField label="Jenis Kelamin">
@@ -300,7 +282,7 @@ export function EditJamaahModal({
           </FormField>
           <FormField
             label="Dapukan"
-            hint="dikelola di Pengaturan"
+            hint="opsional · dikelola di Pengaturan"
             className="col-span-2"
           >
             <Select
@@ -324,6 +306,7 @@ export function EditJamaahModal({
             <Input
               value={form.birthPlace}
               onChange={(e) => set('birthPlace', e.target.value)}
+              placeholder="contoh: Jakarta"
             />
           </FormField>
           <FormField label="Tanggal Lahir">
@@ -331,7 +314,7 @@ export function EditJamaahModal({
               type="date"
               value={form.birthDate}
               onChange={(e) => set('birthDate', e.target.value)}
-              max={new Date().toISOString().slice(0, 10)}
+              max={today()}
             />
           </FormField>
           <FormField label="Golongan Darah">
@@ -353,10 +336,37 @@ export function EditJamaahModal({
         </FormGrid>
       </FormSection>
 
-      <p className="border-t border-rule pt-4 text-[12px] italic text-ink-500">
-        Status keanggotaan (Pindah Sambung / Meninggal) tidak diubah di sini —
-        gunakan tombol <b className="not-italic font-semibold text-ink-700">Catat Kepindahan</b> di panel detail.
-      </p>
+      <FormSection title="Catat di Catatan Peristiwa sebagai">
+        <SegmentedControl<AddMemberLogAs>
+          aria-label="Catat sebagai"
+          value={form.logAs}
+          onChange={(v) => {
+            setLogAsTouched(true);
+            set('logAs', v);
+          }}
+          items={[
+            { value: 'Lahir', label: 'Lahir' },
+            { value: 'Sambung Baru', label: 'Sambung Baru' },
+            { value: 'none', label: 'Tidak dicatat' },
+          ]}
+          className="w-full"
+        />
+        <p className="mt-2 text-[12px] italic leading-relaxed text-ink-500">
+          {logAsHint}
+        </p>
+        {form.logAs !== 'none' && (
+          <div className="mt-3 max-w-[200px]">
+            <FormField label="Tanggal kejadian">
+              <Input
+                type="date"
+                value={form.logDate}
+                onChange={(e) => set('logDate', e.target.value)}
+                max={today()}
+              />
+            </FormField>
+          </div>
+        )}
+      </FormSection>
     </Modal>
   );
 }

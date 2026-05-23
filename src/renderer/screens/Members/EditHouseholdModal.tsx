@@ -9,7 +9,7 @@ import { useToast } from '@renderer/components/Toast';
 import type { HouseholdRow } from '@shared/household';
 import type { MemberRow } from '@shared/member';
 
-export interface EditKKModalProps {
+export interface EditHouseholdModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   household: HouseholdRow | null;
@@ -17,13 +17,13 @@ export interface EditKKModalProps {
   onSaved: () => void;
 }
 
-export function EditKKModal({
+export function EditHouseholdModal({
   open,
   onOpenChange,
   household,
   members,
   onSaved,
-}: EditKKModalProps) {
+}: EditHouseholdModalProps) {
   const { showToast } = useToast();
   const [headId, setHeadId] = useState<string>('');
   const [address, setAddress] = useState<string>('');

@@ -1,6 +1,13 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 import type {
+  LoadRosterInput,
+  LoadRosterResult,
+  SaveBatchInput,
+  SaveBatchResult,
+  SessionRow,
+} from '../shared/attendance';
+import type {
   EditHouseholdInput,
   HouseholdRow,
 } from '../shared/household';
@@ -74,6 +81,17 @@ const api = {
       ipcRenderer.invoke('household:suggestNewHead', householdId),
     reorder: (orderedIds: number[]): Promise<IpcResult<null>> =>
       ipcRenderer.invoke('household:reorder', orderedIds),
+  },
+  attendance: {
+    loadRoster: (input: LoadRosterInput): Promise<IpcResult<LoadRosterResult>> =>
+      ipcRenderer.invoke('attendance:roster:load', input),
+    saveBatch: (input: SaveBatchInput): Promise<IpcResult<SaveBatchResult>> =>
+      ipcRenderer.invoke('attendance:saveBatch', input),
+    relabelSessionType: (input: {
+      sessionId: number;
+      newSessionTypeId: number;
+    }): Promise<IpcResult<SessionRow>> =>
+      ipcRenderer.invoke('attendance:session:relabel', input),
   },
 } as const;
 

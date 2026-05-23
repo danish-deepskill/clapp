@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, MapPin } from 'lucide-react';
 import { useState } from 'react';
 import { clsx } from 'clsx';
 
@@ -63,8 +63,9 @@ export function HouseholdGroup({
           jama'ah
         </span>
         {household.address && (
-          <span className="hidden truncate text-[12px] italic text-ink-500 md:inline">
-            · {household.address}
+          <span className="hidden items-center gap-1.5 truncate text-[12px] italic text-ink-500 md:inline-flex">
+            <MapPin size={11} strokeWidth={1.6} className="shrink-0" />
+            {household.address}
           </span>
         )}
       </button>

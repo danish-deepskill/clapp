@@ -1,9 +1,25 @@
 import Database from 'better-sqlite3';
+import type { ExtractTablesWithRelations } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
+import type { SQLiteTransaction } from 'drizzle-orm/sqlite-core';
 
 import * as schema from './schema';
 
 export type DB = ReturnType<typeof openDatabase>;
+
+/**
+ * Either the top-level DB or a transaction. Service helpers that may be
+ * called both standalone and inside `db.transaction(...)` use this — drizzle
+ * exposes the same surface on both but the TS types diverge ($client).
+ */
+export type DBLike =
+  | DB
+  | SQLiteTransaction<
+      'sync',
+      Database.RunResult,
+      typeof schema,
+      ExtractTablesWithRelations<typeof schema>
+    >;
 
 export interface OpenDatabaseOptions {
   /** Filesystem path or `:memory:`. */

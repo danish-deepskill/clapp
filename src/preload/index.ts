@@ -1,11 +1,22 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
+import type {
+  EditHouseholdInput,
+  HouseholdRow,
+} from '../shared/household';
 import type { IpcResult } from '../shared/ipc';
 import type {
   MasterDataItem,
   MasterDataKind,
   RemoveResult,
 } from '../shared/masterData';
+import type {
+  EditMemberInput,
+  MemberFilter,
+  MemberRow,
+  NewMemberInput,
+  RecordMovementInput,
+} from '../shared/member';
 
 interface MasterDataNamespace {
   list(): Promise<MasterDataItem[]>;
@@ -33,9 +44,35 @@ const api = {
     sessionTypes: masterDataNamespace('sessionTypes'),
     activityTypes: masterDataNamespace('activityTypes'),
   },
-  // Future namespaces land here as PRs add them:
-  //   member: { list, create, edit, ... },
-  //   attendance: { list, save, ... },
+  member: {
+    list: (filter: MemberFilter = {}): Promise<MemberRow[]> =>
+      ipcRenderer.invoke('member:list', filter),
+    get: (id: number): Promise<MemberRow | null> =>
+      ipcRenderer.invoke('member:get', id),
+    add: (input: NewMemberInput): Promise<IpcResult<MemberRow>> =>
+      ipcRenderer.invoke('member:add', input),
+    edit: (
+      id: number,
+      input: EditMemberInput,
+    ): Promise<IpcResult<MemberRow>> =>
+      ipcRenderer.invoke('member:edit', id, input),
+    recordMovement: (
+      input: RecordMovementInput,
+    ): Promise<IpcResult<MemberRow>> =>
+      ipcRenderer.invoke('member:recordMovement', input),
+  },
+  household: {
+    list: (): Promise<HouseholdRow[]> => ipcRenderer.invoke('household:list'),
+    get: (id: number): Promise<HouseholdRow | null> =>
+      ipcRenderer.invoke('household:get', id),
+    update: (
+      id: number,
+      input: EditHouseholdInput,
+    ): Promise<IpcResult<HouseholdRow>> =>
+      ipcRenderer.invoke('household:update', id, input),
+    suggestNewHead: (householdId: number): Promise<number | null> =>
+      ipcRenderer.invoke('household:suggestNewHead', householdId),
+  },
 } as const;
 
 contextBridge.exposeInMainWorld('clapp', api);

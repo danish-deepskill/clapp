@@ -4,6 +4,7 @@ import { NavBar, type Screen } from './components/NavBar';
 import { TitleBar } from './components/TitleBar';
 import { ToastProvider } from './components/Toast';
 import { AttendanceRecap } from './screens/AttendanceRecap';
+import { Meetings } from './screens/Meetings';
 import { Members } from './screens/Members';
 import { Settings } from './screens/Settings';
 
@@ -24,6 +25,8 @@ export function App() {
             <AttendanceRecap />
           ) : active === "Jama'ah" ? (
             <Members />
+          ) : active === 'Musyawarah' ? (
+            <Meetings />
           ) : active === 'Pengaturan' ? (
             <Settings />
           ) : (

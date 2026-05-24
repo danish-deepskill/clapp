@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm';
 
+import { todayISO } from '../../shared/dates';
 import type {
   EditMemberInput,
   MemberFilter,
@@ -45,7 +46,7 @@ export class HeadReassignmentRequiredError extends Error {
 }
 
 function today(deps: MemberDeps): string {
-  return (deps.clock?.() ?? new Date()).toISOString().slice(0, 10);
+  return todayISO(deps.clock?.());
 }
 
 function buildMemberRows(db: DBLike): MemberRow[] {

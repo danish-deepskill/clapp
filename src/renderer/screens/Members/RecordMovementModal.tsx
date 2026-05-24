@@ -8,6 +8,7 @@ import { Modal } from '@renderer/components/Modal';
 import { SegmentedControl } from '@renderer/components/SegmentedControl';
 import { Select } from '@renderer/components/Select';
 import { useToast } from '@renderer/components/Toast';
+import { todayISO } from '@renderer/lib/dates';
 import type { MemberRow, MovementKind, RecordMovementInput } from '@shared/member';
 
 export interface RecordMovementModalProps {
@@ -20,8 +21,6 @@ export interface RecordMovementModalProps {
   onSaved: () => void;
 }
 
-const today = () => new Date().toISOString().slice(0, 10);
-
 export function RecordMovementModal({
   open,
   onOpenChange,
@@ -31,7 +30,7 @@ export function RecordMovementModal({
 }: RecordMovementModalProps) {
   const { showToast } = useToast();
   const [kind, setKind] = useState<MovementKind>('Pindah Sambung');
-  const [date, setDate] = useState<string>(today());
+  const [date, setDate] = useState<string>(todayISO());
   const [notes, setNotes] = useState<string>('');
   const [newHeadId, setNewHeadId] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
@@ -52,7 +51,7 @@ export function RecordMovementModal({
   useEffect(() => {
     if (open && member) {
       setKind('Pindah Sambung');
-      setDate(today());
+      setDate(todayISO());
       setNotes('');
       setSubmitting(false);
       setSubmitError(null);
@@ -158,7 +157,7 @@ export function RecordMovementModal({
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              max={today()}
+              max={todayISO()}
             />
           </FormField>
           <FormField

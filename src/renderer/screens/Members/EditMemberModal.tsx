@@ -7,6 +7,7 @@ import { Modal } from '@renderer/components/Modal';
 import { SegmentedControl } from '@renderer/components/SegmentedControl';
 import { Select } from '@renderer/components/Select';
 import { useToast } from '@renderer/components/Toast';
+import { todayISO } from '@renderer/lib/dates';
 import {
   BLOOD_TYPE,
   GENDER,
@@ -24,6 +25,36 @@ import type { MasterDataItem } from '@shared/masterData';
 import type { EditMemberInput, MemberRow } from '@shared/member';
 
 const NO_ROLE = '__none__';
+
+/**
+ * Dropdown items for the role picker. Filters to active roles, but includes
+ * the member's CURRENT role even if it's been retired in Pengaturan — with
+ * a "(non-aktif)" suffix — so the operator can see what's assigned and
+ * either keep it or switch. Without this, the dropdown would render blank
+ * and a careless Save would silently clear the assignment.
+ */
+function roleSelectItems(
+  roles: MasterDataItem[],
+  currentRoleId: number | null,
+) {
+  const active = roles.filter((r) => r.isActive);
+  const items = [
+    { value: NO_ROLE, label: '— Tidak ada —' },
+    ...active.map((r) => ({ value: String(r.id), label: r.name })),
+  ];
+  // If the member's current role isn't in the active set, append it as a
+  // labeled-but-deprecated option.
+  if (currentRoleId !== null && !active.some((r) => r.id === currentRoleId)) {
+    const retired = roles.find((r) => r.id === currentRoleId);
+    if (retired) {
+      items.push({
+        value: String(retired.id),
+        label: `${retired.name} (non-aktif)`,
+      });
+    }
+  }
+  return items;
+}
 
 export interface EditMemberModalProps {
   open: boolean;
@@ -307,12 +338,7 @@ export function EditMemberModal({
               aria-label="Dapukan"
               value={form.roleId}
               onValueChange={(v) => set('roleId', v)}
-              items={[
-                { value: NO_ROLE, label: '— Tidak ada —' },
-                ...roles
-                  .filter((r) => r.isActive)
-                  .map((r) => ({ value: String(r.id), label: r.name })),
-              ]}
+              items={roleSelectItems(roles, member?.roleId ?? null)}
             />
           </FormField>
         </FormGrid>
@@ -331,7 +357,7 @@ export function EditMemberModal({
               type="date"
               value={form.birthDate}
               onChange={(e) => set('birthDate', e.target.value)}
-              max={new Date().toISOString().slice(0, 10)}
+              max={todayISO()}
             />
           </FormField>
           <FormField label="Golongan Darah">

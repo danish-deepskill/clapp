@@ -7,6 +7,7 @@ import { Modal } from '@renderer/components/Modal';
 import { SegmentedControl } from '@renderer/components/SegmentedControl';
 import { Select } from '@renderer/components/Select';
 import { useToast } from '@renderer/components/Toast';
+import { todayISO } from '@renderer/lib/dates';
 import {
   BLOOD_TYPE,
   GENDER,
@@ -53,7 +54,6 @@ interface FormState {
   logDate: string;
 }
 
-const today = () => new Date().toISOString().slice(0, 10);
 
 const initial = (): FormState => ({
   fullName: '',
@@ -70,7 +70,7 @@ const initial = (): FormState => ({
   kkId: '',
   kkAddress: '',
   logAs: 'Sambung Baru',
-  logDate: today(),
+  logDate: todayISO(),
 });
 
 export function AddMemberModal({
@@ -154,7 +154,7 @@ export function AddMemberModal({
           ? { mode: 'create-new', address: form.kkAddress || null }
           : { mode: 'join-existing', householdId: Number(form.kkId) },
       logAs: form.logAs,
-      logDate: form.logDate || today(),
+      logDate: form.logDate || todayISO(),
     };
     const result = await window.clapp.member.add(input);
     setSubmitting(false);
@@ -314,7 +314,7 @@ export function AddMemberModal({
               type="date"
               value={form.birthDate}
               onChange={(e) => set('birthDate', e.target.value)}
-              max={today()}
+              max={todayISO()}
             />
           </FormField>
           <FormField label="Golongan Darah">
@@ -361,7 +361,7 @@ export function AddMemberModal({
                 type="date"
                 value={form.logDate}
                 onChange={(e) => set('logDate', e.target.value)}
-                max={today()}
+                max={todayISO()}
               />
             </FormField>
           </div>

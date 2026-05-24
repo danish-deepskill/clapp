@@ -209,6 +209,22 @@ describe('meetingService.eligibleAttendees', () => {
     memberService.addMember({ db }, FAISAL);
     expect(meetingService.eligibleAttendees({ db })).toEqual([]);
   });
+
+  it('still includes members whose role has been retired, with roleIsActive=false', () => {
+    const db = freshDb();
+    const w = seedWorld(db);
+    // Retire Sekretaris (Siti's role) in Pengaturan.
+    roleService.setActive({ db }, w.sekretarisRoleId, false);
+
+    const list = meetingService.eligibleAttendees({ db });
+    const siti = list.find((a) => a.memberId === w.siti.id);
+    expect(siti).toBeDefined();
+    expect(siti?.roleIsActive).toBe(false);
+
+    // Members on active roles still have roleIsActive=true.
+    const faisal = list.find((a) => a.memberId === w.faisal.id);
+    expect(faisal?.roleIsActive).toBe(true);
+  });
 });
 
 // ─── save (create) + listByPeriod + get ───────────────────────────────────

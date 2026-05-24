@@ -54,4 +54,6 @@ export interface EligibleAttendee {
   gender: Gender;
   lifeStage: LifeStage;
   roleName: string;
+  /** False when the role has been retired in Pengaturan. */
+  roleIsActive: boolean;
 }

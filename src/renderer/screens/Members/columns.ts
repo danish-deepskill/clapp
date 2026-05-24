@@ -12,8 +12,8 @@ export interface MemberColumn {
 export const COLUMNS_BASE: readonly MemberColumn[] = [
   { key: 'no', label: 'No.', width: 56, align: 'right', mono: true },
   { key: 'nama', label: "Nama Jama'ah", width: 230 },
-  { key: 'dapukan', label: 'Dapukan', width: 120 },
   { key: 'gender', label: 'L/P', width: 56, align: 'center', mono: true },
+  { key: 'dapukan', label: 'Dapukan', width: 120 },
   { key: 'kelas', label: 'Kelas', width: 110, mono: true },
   { key: 'pernikahan', label: 'Status Pernikahan', width: 160 },
   { key: 'panggilan', label: 'Panggilan', width: 130 },

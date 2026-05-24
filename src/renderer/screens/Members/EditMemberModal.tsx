@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { Button } from '@renderer/components/Button';
 import { FormField, FormGrid, FormSection } from '@renderer/components/FormField';
+import { HintLine, HintPill } from '@renderer/components/HintLine';
 import { Input } from '@renderer/components/Input';
 import { Modal } from '@renderer/components/Modal';
 import { SegmentedControl } from '@renderer/components/SegmentedControl';
@@ -142,14 +143,24 @@ export function EditMemberModal({
   const householdHint = useMemo(() => {
     if (!form || !member) return null;
     if (form.kkMode === 'create-new') {
-      return "Akan dibuat KK-S baru dengan jama'ah ini sebagai kepala.";
+      return (
+        <HintLine>
+          Akan dibuat <HintPill>KK-S</HintPill> baru dengan jama'ah ini sebagai
+          kepala
+        </HintLine>
+      );
     }
     const newId = Number(form.kkId);
     if (newId !== member.householdId) {
       const oldKk = households.find((h) => h.id === member.householdId);
       const newKk = households.find((h) => h.id === newId);
       if (oldKk && newKk) {
-        return `Jama'ah dipindahkan dari KK-${oldKk.householdNo} ke KK-${newKk.householdNo}.`;
+        return (
+          <HintLine>
+            Jama'ah dipindahkan dari <HintPill>KK-{oldKk.householdNo}</HintPill>
+            {' '}ke <HintPill>KK-{newKk.householdNo}</HintPill>
+          </HintLine>
+        );
       }
     }
     return null;
@@ -256,6 +267,7 @@ export function EditMemberModal({
             { value: 'join-existing', label: 'Pindah / tetap di KK' },
             { value: 'create-new', label: 'Pisah ke KK-S baru' },
           ]}
+          fill
         />
         {form.kkMode === 'join-existing' && (
           <div className="mt-3">

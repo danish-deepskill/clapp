@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { Button } from '@renderer/components/Button';
 import { FormField, FormSection } from '@renderer/components/FormField';
+import { HintLine, HintPill } from '@renderer/components/HintLine';
 import { Input } from '@renderer/components/Input';
 import { Modal } from '@renderer/components/Modal';
 import { Select } from '@renderer/components/Select';
@@ -100,7 +101,11 @@ export function EditHouseholdModal({
       eyebrow="Keluarga (KK) · Edit"
       title={`KK-${household.householdNo}`}
       footerHint={
-        newHeadName ? `Kepala KK akan diubah ke ${newHeadName}` : null
+        newHeadName ? (
+          <HintLine>
+            Kepala KK akan diubah ke <HintPill>{newHeadName}</HintPill>
+          </HintLine>
+        ) : null
       }
       footer={
         <>

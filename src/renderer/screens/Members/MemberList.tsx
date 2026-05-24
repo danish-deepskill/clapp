@@ -1,10 +1,11 @@
-import { useMemo, useState, type DragEvent } from 'react';
+import { useMemo } from 'react';
 import { clsx } from 'clsx';
 
+import { useReorderable } from '@renderer/lib/useReorderable';
 import type { HouseholdRow } from '@shared/household';
 import type { MemberRow as Member } from '@shared/member';
 
-import { HouseholdGroup, type DropPosition } from './HouseholdGroup';
+import { HouseholdGroup } from './HouseholdGroup';
 import { MemberRow } from './MemberRow';
 import { columnsFor, gridTemplate, minTableWidth } from './columns';
 
@@ -131,53 +132,10 @@ function GroupedBody({
     [households, byHh],
   );
 
-  const [draggingId, setDraggingId] = useState<number | null>(null);
-  const [dropAt, setDropAt] = useState<{
-    id: number;
-    position: DropPosition;
-  } | null>(null);
-
-  const onDragStart = (id: number, e: DragEvent) => {
-    setDraggingId(id);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', String(id));
-  };
-
-  const onDragOver = (overId: number, e: DragEvent) => {
-    e.preventDefault();
-    if (draggingId === null || draggingId === overId) return;
-    const target = e.currentTarget as HTMLElement;
-    const rect = target.getBoundingClientRect();
-    const position: DropPosition =
-      e.clientY < rect.top + rect.height / 2 ? 'above' : 'below';
-    setDropAt((curr) =>
-      curr?.id === overId && curr.position === position
-        ? curr
-        : { id: overId, position },
-    );
-  };
-
-  const onDrop = (e: DragEvent) => {
-    e.preventDefault();
-    if (draggingId === null || !dropAt || dropAt.id === draggingId) {
-      setDraggingId(null);
-      setDropAt(null);
-      return;
-    }
-    const ordered = households.map((h) => h.id).filter((id) => id !== draggingId);
-    const targetIdx = ordered.indexOf(dropAt.id);
-    const insertAt =
-      dropAt.position === 'above' ? targetIdx : targetIdx + 1;
-    ordered.splice(insertAt, 0, draggingId);
-    void onReorderHouseholds(ordered);
-    setDraggingId(null);
-    setDropAt(null);
-  };
-
-  const onDragEnd = () => {
-    setDraggingId(null);
-    setDropAt(null);
-  };
+  const reorder = useReorderable({
+    items: visibleHouseholds,
+    onReorder: (orderedIds) => onReorderHouseholds(orderedIds),
+  });
 
   let rowCounter = 0;
   return (
@@ -195,12 +153,9 @@ function GroupedBody({
             columns={columns}
             onMemberSelect={onMemberSelect}
             onEditHousehold={onEditHousehold}
-            isDragging={draggingId === hh.id}
-            dropIndicator={dropAt?.id === hh.id ? dropAt.position : null}
-            onDragStart={onDragStart}
-            onDragOver={onDragOver}
-            onDrop={onDrop}
-            onDragEnd={onDragEnd}
+            isDragging={reorder.isDragging(hh.id)}
+            dropIndicator={reorder.dropIndicator(hh.id)}
+            dragHandle={reorder.rowHandle(hh.id)}
           />
         );
       })}

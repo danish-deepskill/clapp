@@ -17,6 +17,7 @@ import {
   DuplicateNameError,
   EmptyNameError,
   NotFoundError,
+  ReorderInputError,
   activityTypeService,
   masterDataServices,
   roleService,
@@ -44,14 +45,16 @@ describe('roleService', () => {
       expect(roleService.list({ db })).toEqual([]);
     });
 
-    it('includes both active and inactive roles, alphabetized', () => {
+    it('includes both active and inactive roles, ordered by insertion (position ASC)', () => {
       roleService.create({ db }, 'Imam');
       const wakil = roleService.create({ db }, 'Wakil');
       roleService.create({ db }, 'Bendahara');
       roleService.setActive({ db }, wakil.id, false);
 
       const items = roleService.list({ db });
-      expect(items.map((i) => i.name)).toEqual(['Bendahara', 'Imam', 'Wakil']);
+      // Insertion order, NOT alphabetical — operator controls order via
+      // Pengaturan drag-reorder. Position auto-assigned max+1 on create.
+      expect(items.map((i) => i.name)).toEqual(['Imam', 'Wakil', 'Bendahara']);
       expect(items.find((i) => i.name === 'Wakil')?.isActive).toBe(false);
     });
   });
@@ -175,6 +178,99 @@ describe('roleService', () => {
 
     it('throws NotFoundError if id does not exist', () => {
       expect(() => roleService.remove({ db }, 999)).toThrow(NotFoundError);
+    });
+  });
+
+  describe('reorder', () => {
+    it('rewrites positions 0..N-1 in the given order; list() reflects it', () => {
+      const a = roleService.create({ db }, 'Imam');
+      const b = roleService.create({ db }, 'Wakil');
+      const c = roleService.create({ db }, 'Bendahara');
+      expect(roleService.list({ db }).map((r) => r.name)).toEqual([
+        'Imam',
+        'Wakil',
+        'Bendahara',
+      ]);
+      roleService.reorder({ db }, [c.id, a.id, b.id]);
+      expect(roleService.list({ db }).map((r) => r.name)).toEqual([
+        'Bendahara',
+        'Imam',
+        'Wakil',
+      ]);
+    });
+
+    it('is idempotent: same order in → same result, no error', () => {
+      const a = roleService.create({ db }, 'Imam');
+      const b = roleService.create({ db }, 'Wakil');
+      roleService.reorder({ db }, [a.id, b.id]);
+      roleService.reorder({ db }, [a.id, b.id]);
+      expect(roleService.list({ db }).map((r) => r.name)).toEqual([
+        'Imam',
+        'Wakil',
+      ]);
+    });
+
+    it('rejects orderedIds with wrong length (missing or extra ids)', () => {
+      const a = roleService.create({ db }, 'Imam');
+      roleService.create({ db }, 'Wakil');
+      expect(() => roleService.reorder({ db }, [a.id])).toThrow(
+        ReorderInputError,
+      );
+      expect(() => roleService.reorder({ db }, [a.id, a.id, a.id])).toThrow(
+        ReorderInputError,
+      );
+    });
+
+    it('rejects duplicate ids in orderedIds', () => {
+      const a = roleService.create({ db }, 'Imam');
+      const b = roleService.create({ db }, 'Wakil');
+      expect(() => roleService.reorder({ db }, [a.id, a.id])).toThrow(
+        ReorderInputError,
+      );
+      // Sanity: positions untouched after the failed reorder.
+      expect(roleService.list({ db }).map((r) => r.name)).toEqual([
+        'Imam',
+        'Wakil',
+      ]);
+      // Confirm `b` still referenceable (no orphan position).
+      expect(roleService.list({ db }).find((r) => r.id === b.id)).toBeDefined();
+    });
+
+    it('rejects unknown id in orderedIds', () => {
+      const a = roleService.create({ db }, 'Imam');
+      roleService.create({ db }, 'Wakil');
+      expect(() => roleService.reorder({ db }, [a.id, 9999])).toThrow(
+        ReorderInputError,
+      );
+    });
+
+    it('new roles inserted after reorder go to the end (max+1)', () => {
+      const a = roleService.create({ db }, 'Imam');
+      const b = roleService.create({ db }, 'Wakil');
+      roleService.reorder({ db }, [b.id, a.id]); // [Wakil, Imam] → positions 0, 1
+      const c = roleService.create({ db }, 'Bendahara'); // → position 2
+      expect(roleService.list({ db }).map((r) => r.name)).toEqual([
+        'Wakil',
+        'Imam',
+        'Bendahara',
+      ]);
+      // Sanity: id stable, not reset.
+      expect(roleService.list({ db }).find((r) => r.name === 'Bendahara')?.id).toBe(
+        c.id,
+      );
+    });
+
+    it('removed roles leave gaps in position; subsequent reorder still works', () => {
+      const a = roleService.create({ db }, 'Imam');
+      const b = roleService.create({ db }, 'Wakil');
+      const c = roleService.create({ db }, 'Bendahara');
+      roleService.remove({ db }, b.id); // gap at position 1
+      // Reorder the remaining two — should succeed and renumber to 0,1.
+      roleService.reorder({ db }, [c.id, a.id]);
+      expect(roleService.list({ db }).map((r) => r.name)).toEqual([
+        'Bendahara',
+        'Imam',
+      ]);
     });
   });
 });

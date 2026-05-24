@@ -9,7 +9,6 @@ import {
   memberChanges,
   memberMovements,
   members,
-  roles,
   vitalRecords,
 } from '@main/db/schema';
 import {
@@ -18,6 +17,7 @@ import {
   ReorderInputError,
   householdService,
 } from '@main/services/householdService';
+import { roleService } from '@main/services/masterDataService';
 import {
   AlreadyInactiveError,
   HeadReassignmentRequiredError,
@@ -37,7 +37,8 @@ function freshDb(): DB {
 const fixedClock = (iso = '2026-05-23T10:00:00.000Z') => () => new Date(iso);
 
 function seedRole(db: DB, name: string): number {
-  return db.insert(roles).values({ name }).returning({ id: roles.id }).get().id;
+  // Through the service so position auto-assigns (UNIQUE(position) constraint).
+  return roleService.create({ db }, name).id;
 }
 
 const FAISAL: NewMemberInput = {

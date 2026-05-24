@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Banner } from '@renderer/components/Banner';
 import { Button } from '@renderer/components/Button';
 import { FormField, FormSection } from '@renderer/components/FormField';
+import { HintLine, HintPill } from '@renderer/components/HintLine';
 import { Input } from '@renderer/components/Input';
 import { Modal } from '@renderer/components/Modal';
 import { SegmentedControl } from '@renderer/components/SegmentedControl';
@@ -76,12 +77,15 @@ export function RecordMovementModal({
     (!needsNewHead || newHeadId !== '') &&
     (!needsNewHead || canPickNewHead);
 
-  const consequenceHint = useMemo(() => {
-    if (kind === 'Pindah Sambung') {
-      return "Akan dicatat sebagai Pindah Sambung di Catatan Peristiwa & jama'ah ditandai Mutasi.";
-    }
-    return "Akan dicatat sebagai Meninggal di Catatan Peristiwa & jama'ah ditandai Mutasi.";
-  }, [kind]);
+  const consequenceHint = useMemo(
+    () => (
+      <HintLine>
+        Akan dicatat sebagai <HintPill>{kind}</HintPill> di Catatan Peristiwa
+        &amp; jama'ah ditandai Mutasi
+      </HintLine>
+    ),
+    [kind],
+  );
 
   const onSubmit = async () => {
     if (!member || !canSubmit) return;

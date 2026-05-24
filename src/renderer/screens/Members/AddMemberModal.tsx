@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { Button } from '@renderer/components/Button';
 import { FormField, FormGrid, FormSection } from '@renderer/components/FormField';
+import { HintLine, HintPill } from '@renderer/components/HintLine';
 import { Input } from '@renderer/components/Input';
 import { Modal } from '@renderer/components/Modal';
 import { SegmentedControl } from '@renderer/components/SegmentedControl';
@@ -114,11 +115,24 @@ export function AddMemberModal({
 
   const consequenceHint = useMemo(() => {
     if (form.kkMode === 'create-new') {
-      return 'Akan dibuat KK-S baru dengan jama\'ah ini sebagai kepala.';
+      return (
+        <HintLine>
+          Akan dibuat <HintPill>KK-S</HintPill> baru dengan jama'ah ini sebagai
+          kepala
+        </HintLine>
+      );
     }
     const target = households.find((h) => String(h.id) === form.kkId);
     if (target) {
-      return `Jama'ah akan bergabung ke KK-${target.householdNo}${target.headMemberName ? ` (kepala: ${target.headMemberName})` : ''}.`;
+      return (
+        <HintLine>
+          Jama'ah akan bergabung ke{' '}
+          <HintPill>KK-{target.householdNo}</HintPill>
+          {target.headMemberName && (
+            <> (kepala: <b className="font-semibold text-ink-700">{target.headMemberName}</b>)</>
+          )}
+        </HintLine>
+      );
     }
     return null;
   }, [form.kkMode, form.kkId, households]);
@@ -200,9 +214,10 @@ export function AddMemberModal({
           value={form.kkMode}
           onChange={(v) => set('kkMode', v)}
           items={[
-            { value: 'create-new', label: 'Buat KK baru' },
+            { value: 'create-new', label: 'Buat KK-S baru' },
             { value: 'join-existing', label: 'Gabung ke KK yang ada' },
           ]}
+          fill
         />
         {form.kkMode === 'join-existing' && (
           <div className="mt-3">
@@ -344,6 +359,7 @@ export function AddMemberModal({
             setLogAsTouched(true);
             set('logAs', v);
           }}
+          fill
           items={[
             { value: 'Lahir', label: 'Lahir' },
             { value: 'Sambung Baru', label: 'Sambung Baru' },
@@ -370,3 +386,4 @@ export function AddMemberModal({
     </Modal>
   );
 }
+

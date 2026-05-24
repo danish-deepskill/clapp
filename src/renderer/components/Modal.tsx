@@ -64,7 +64,7 @@ export function Modal({
           </header>
           <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
           <footer className="flex items-center gap-3 border-t border-rule bg-surface px-5 py-3">
-            <div className="min-w-0 flex-1 truncate text-[12.5px] italic text-ink-500">
+            <div className="min-w-0 flex-1 text-[12.5px] leading-snug text-ink-500">
               {footerHint}
             </div>
             <div className="flex shrink-0 items-center gap-2.5">{footer}</div>

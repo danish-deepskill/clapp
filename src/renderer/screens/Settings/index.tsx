@@ -32,8 +32,10 @@ export function Settings() {
           <MasterDataList
             kind="roles"
             label="Dapukan"
-            titleNote="(peran organisasi jama'ah)"
+            titleNote="(peran organisasi jama'ah — geser untuk mengubah urutan)"
             addPlaceholder="Tambah dapukan baru… (contoh: Penasihat)"
+            reorderable
+            onReorder={(ids) => window.clapp.masterData.roles.reorder(ids)}
           />
 
           <PlaceholderSection

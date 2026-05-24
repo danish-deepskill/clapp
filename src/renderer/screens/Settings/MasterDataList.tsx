@@ -3,11 +3,13 @@ import {
   useEffect,
   useRef,
   useState,
+  type DragEvent,
   type KeyboardEvent,
 } from 'react';
 import { clsx } from 'clsx';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { GripVertical, Pencil, Plus, Trash2 } from 'lucide-react';
 
+import type { IpcResult } from '@shared/ipc';
 import type { MasterDataItem, MasterDataKind } from '@shared/masterData';
 import { Banner } from '@renderer/components/Banner';
 import { Button } from '@renderer/components/Button';
@@ -26,7 +28,16 @@ export interface MasterDataListProps {
   titleNote: string;
   /** Placeholder text for the "+ Tambah" input. */
   addPlaceholder: string;
+  /**
+   * Enable drag-to-reorder. List displays in current order (no alpha sort
+   * after the initial fetch). Required to pass `onReorder` if set.
+   */
+  reorderable?: boolean;
+  /** Called with the next id ordering; runs the IPC reorder + persists. */
+  onReorder?: (orderedIds: number[]) => Promise<IpcResult<null>>;
 }
+
+type DropPosition = 'above' | 'below';
 
 interface BlockedRemoval {
   name: string;
@@ -39,6 +50,8 @@ export function MasterDataList({
   label,
   titleNote,
   addPlaceholder,
+  reorderable,
+  onReorder,
 }: MasterDataListProps) {
   const api = window.clapp.masterData[kind];
   const { showToast } = useToast();
@@ -110,16 +123,15 @@ export function MasterDataList({
       setEditingError(result.message);
       return;
     }
-    setItems((prev) =>
-      prev
-        ? prev
-            .map((i) => (i.id === result.data.id ? result.data : i))
-            .sort((a, b) => a.name.localeCompare(b.name))
-        : prev,
-    );
+    setItems((prev) => {
+      if (!prev) return prev;
+      const next = prev.map((i) => (i.id === result.data.id ? result.data : i));
+      // Reorderable lists preserve their operator-set position on rename.
+      return reorderable ? next : next.sort((a, b) => a.name.localeCompare(b.name));
+    });
     cancelEdit();
     showToast({ variant: 'success', message: `"${name}" disimpan` });
-  }, [api, editingId, editingText, items, cancelEdit, showToast]);
+  }, [api, editingId, editingText, items, cancelEdit, reorderable, showToast]);
 
   const onEditKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -160,15 +172,17 @@ export function MasterDataList({
       setAddError(result.message);
       return;
     }
-    setItems((prev) =>
-      prev
-        ? [...prev, result.data].sort((a, b) => a.name.localeCompare(b.name))
-        : [result.data],
-    );
+    setItems((prev) => {
+      if (!prev) return [result.data];
+      const next = [...prev, result.data];
+      // Reorderable lists append (service assigns position=max+1 — new row
+      // lands at the visual end). Non-reorderable lists stay alpha-sorted.
+      return reorderable ? next : next.sort((a, b) => a.name.localeCompare(b.name));
+    });
     setAdding('');
     setAddError(null);
     showToast({ variant: 'success', message: `"${name}" ditambahkan` });
-  }, [adding, api, showToast]);
+  }, [adding, api, reorderable, showToast]);
 
   const onAddKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -208,6 +222,71 @@ export function MasterDataList({
     }
     setConfirmTarget(null);
   }, [api, confirmTarget, showToast]);
+
+  // ─── Drag-to-reorder (only when reorderable=true) ───────────────────
+  const [draggingId, setDraggingId] = useState<number | null>(null);
+  const [dropAt, setDropAt] = useState<{
+    id: number;
+    position: DropPosition;
+  } | null>(null);
+
+  const onDragStart = (id: number, e: DragEvent) => {
+    setDraggingId(id);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', String(id));
+  };
+
+  const onDragOver = (overId: number, e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (draggingId === null || draggingId === overId) return;
+    const target = e.currentTarget;
+    const rect = target.getBoundingClientRect();
+    const position: DropPosition =
+      e.clientY < rect.top + rect.height / 2 ? 'above' : 'below';
+    setDropAt((curr) =>
+      curr?.id === overId && curr.position === position
+        ? curr
+        : { id: overId, position },
+    );
+  };
+
+  const onDrop = async (e: DragEvent) => {
+    e.preventDefault();
+    const dragId = draggingId;
+    const drop = dropAt;
+    setDraggingId(null);
+    setDropAt(null);
+    if (!items || dragId === null || !drop || drop.id === dragId) return;
+    if (!onReorder) return;
+
+    const orderedIds = items.map((i) => i.id).filter((id) => id !== dragId);
+    const targetIdx = orderedIds.indexOf(drop.id);
+    const insertAt = drop.position === 'above' ? targetIdx : targetIdx + 1;
+    orderedIds.splice(insertAt, 0, dragId);
+
+    // Optimistic: reorder local state instantly; revert on server error.
+    const before = items;
+    const idToItem = new Map(items.map((i) => [i.id, i]));
+    setItems(orderedIds.map((id) => idToItem.get(id)!).filter(Boolean));
+
+    const result = await onReorder(orderedIds);
+    if (!result.ok) {
+      setItems(before);
+      showToast({
+        variant: 'error',
+        message: (
+          <>
+            Gagal mengubah urutan: <b>{result.message}</b>
+          </>
+        ),
+      });
+    }
+  };
+
+  const onDragEnd = () => {
+    setDraggingId(null);
+    setDropAt(null);
+  };
 
   return (
     <>
@@ -260,6 +339,13 @@ export function MasterDataList({
             onBeginEdit={() => beginEdit(item)}
             onToggleActive={() => toggleActive(item)}
             onRequestDelete={() => requestDelete(item)}
+            reorderable={reorderable}
+            isDragging={draggingId === item.id}
+            dropIndicator={dropAt?.id === item.id ? dropAt.position : null}
+            onDragStart={onDragStart}
+            onDragOver={onDragOver}
+            onDrop={onDrop}
+            onDragEnd={onDragEnd}
           />
         ))}
 
@@ -344,6 +430,13 @@ interface RowProps {
   onBeginEdit: () => void;
   onToggleActive: () => void;
   onRequestDelete: () => void;
+  reorderable?: boolean;
+  isDragging?: boolean;
+  dropIndicator?: DropPosition | null;
+  onDragStart?: (id: number, e: DragEvent) => void;
+  onDragOver?: (id: number, e: DragEvent<HTMLDivElement>) => void;
+  onDrop?: (e: DragEvent) => void;
+  onDragEnd?: () => void;
 }
 
 function Row({
@@ -357,14 +450,52 @@ function Row({
   onBeginEdit,
   onToggleActive,
   onRequestDelete,
+  reorderable,
+  isDragging,
+  dropIndicator,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onDragEnd,
 }: RowProps) {
   return (
     <div
+      draggable={reorderable && !isEditing}
+      onDragStart={
+        reorderable && onDragStart
+          ? (e) => onDragStart(item.id, e)
+          : undefined
+      }
+      onDragOver={
+        reorderable && onDragOver ? (e) => onDragOver(item.id, e) : undefined
+      }
+      onDrop={reorderable && onDrop ? onDrop : undefined}
+      onDragEnd={reorderable && onDragEnd ? onDragEnd : undefined}
       className={clsx(
-        'grid h-11 grid-cols-[1fr_150px_80px] items-center border-b border-rule transition-colors hover:bg-surface-2',
+        'relative grid h-11 items-center border-b border-rule transition-colors hover:bg-surface-2',
+        reorderable
+          ? 'grid-cols-[28px_1fr_150px_80px]'
+          : 'grid-cols-[1fr_150px_80px]',
         !item.isActive && 'opacity-55',
+        isDragging && 'opacity-35',
       )}
     >
+      {dropIndicator === 'above' && (
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[3] h-0.5 bg-hadir" />
+      )}
+      {dropIndicator === 'below' && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-0.5 bg-hadir" />
+      )}
+
+      {reorderable && (
+        <span
+          className="flex h-full cursor-grab items-center justify-center border-r border-rule text-ink-500 transition-colors hover:text-ink-900 active:cursor-grabbing"
+          title="Geser untuk mengubah urutan"
+        >
+          <GripVertical size={14} strokeWidth={1.6} />
+        </span>
+      )}
+
       <div className="flex h-full items-center border-r border-rule px-4">
         {isEditing ? (
           <div className="flex w-full flex-col gap-1">

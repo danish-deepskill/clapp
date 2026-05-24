@@ -172,8 +172,11 @@ if (existingTypeCount === 0) {
 const DEV_ROLES = ['Imam', 'Wakil Imam', 'Sekretaris', 'Bendahara'];
 const existingRoleCount = db.select().from(schema.roles).all().length;
 if (existingRoleCount === 0) {
+  // Position assigned contiguously by array index so the canonical "Imam,
+  // Wakil Imam, Sekretaris, Bendahara" order shows up on first run (operator
+  // can still drag-reorder in Pengaturan).
   db.insert(schema.roles)
-    .values(DEV_ROLES.map((name) => ({ name })))
+    .values(DEV_ROLES.map((name, i) => ({ name, position: i })))
     .run();
   console.log(`→ Seeded ${DEV_ROLES.length} roles.`);
 }

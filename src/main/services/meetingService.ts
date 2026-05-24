@@ -305,9 +305,8 @@ export const meetingService = {
    * Pengurus only — `members.role_id IS NOT NULL` per ERD note on
    * `meeting_attendees`. Active members only. Returns role name joined in.
    *
-   * Order: by role insertion order (roles.id ASC), then by name within role.
-   * Interim until `roles.position` lands in a follow-up PR; both orderings
-   * give the operator-controlled "Imam first, then Sekretaris…" sequence.
+   * Order: by operator-controlled `roles.position` ASC, then by name within
+   * role. Reorder roles in Pengaturan to change the picker order.
    */
   eligibleAttendees(deps: MeetingDeps): EligibleAttendee[] {
     return deps.db
@@ -317,17 +316,19 @@ export const meetingService = {
         gender: members.gender,
         lifeStage: members.lifeStage,
         roleName: roles.name,
-        roleId: roles.id,
+        rolePosition: roles.position,
       })
       .from(members)
       .innerJoin(roles, eq(members.roleId, roles.id))
       .where(and(eq(members.isActive, true), isNotNull(members.roleId)))
       .all()
       .sort((a, b) => {
-        if (a.roleId !== b.roleId) return a.roleId - b.roleId;
+        if (a.rolePosition !== b.rolePosition) {
+          return a.rolePosition - b.rolePosition;
+        }
         return a.fullName.localeCompare(b.fullName, 'id');
       })
-      .map(({ roleId: _roleId, ...rest }) => rest);
+      .map(({ rolePosition: _rolePosition, ...rest }) => rest);
   },
 
   save(deps: MeetingDeps, input: SaveMeetingInput): SaveMeetingResult {

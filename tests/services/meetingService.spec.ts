@@ -10,8 +10,8 @@ import {
   meetingAttendees,
   meetings,
   monthlyReports,
-  roles,
 } from '@main/db/schema';
+import { roleService } from '@main/services/masterDataService';
 import {
   FutureMeetingDateError,
   InvalidMeetingInputError,
@@ -60,11 +60,9 @@ const SITI: Omit<NewMemberInput, 'household'> = {
 };
 
 function seedRole(db: DB, name: string): number {
-  return db
-    .insert(roles)
-    .values({ name })
-    .returning({ id: roles.id })
-    .get().id;
+  // Goes through the service so position auto-assigns + UNIQUE(position)
+  // doesn't trip on the second insert.
+  return roleService.create({ db }, name).id;
 }
 
 function seedActivityTypeMeeting(
@@ -171,7 +169,7 @@ describe('meetingService.eligibleAttendees', () => {
     expect(ids).toContain(w.faisal.id);
   });
 
-  it('sorts by role insertion order (roles.id ASC), then by name within role', () => {
+  it('sorts by role position (roles.position ASC), then by name within role', () => {
     const db = freshDb();
     const w = seedWorld(db);
     const list = meetingService.eligibleAttendees({ db });

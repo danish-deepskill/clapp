@@ -15,6 +15,13 @@
       "when": 1779691200000,
       "tag": "0001_session_notes",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1779929600000,
+      "tag": "0002_roles_position",
+      "breakpoints": true
     }
   ]
 }

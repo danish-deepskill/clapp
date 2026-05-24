@@ -57,7 +57,11 @@ function masterDataNamespace(kind: MasterDataKind): MasterDataNamespace {
 
 const api = {
   masterData: {
-    roles: masterDataNamespace('roles'),
+    roles: {
+      ...masterDataNamespace('roles'),
+      reorder: (orderedIds: number[]): Promise<IpcResult<null>> =>
+        ipcRenderer.invoke('masterData:roles:reorder', orderedIds),
+    },
     sessionTypes: masterDataNamespace('sessionTypes'),
     activityTypes: masterDataNamespace('activityTypes'),
   },

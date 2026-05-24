@@ -11,7 +11,9 @@ import {
   DuplicateNameError,
   EmptyNameError,
   NotFoundError,
+  ReorderInputError,
   masterDataServices,
+  roleService,
 } from '../services/masterDataService';
 
 function tryCall<T>(fn: () => T): IpcResult<T> {
@@ -26,6 +28,9 @@ function tryCall<T>(fn: () => T): IpcResult<T> {
     }
     if (e instanceof NotFoundError) {
       return { ok: false, code: 'NOT_FOUND', message: e.message };
+    }
+    if (e instanceof ReorderInputError) {
+      return { ok: false, code: 'INVALID_INPUT', message: e.message };
     }
     throw e;
   }
@@ -64,4 +69,15 @@ export function registerMasterDataHandlers(deps: IpcDeps): void {
         tryCall(() => svc.remove({ db: deps.db }, id)),
     );
   }
+
+  // Roles-only: operator drag-reorder. Other master-data lists don't need
+  // ordering (Pengaturan sorts by name; no UI consumer depends on order).
+  ipcMain.handle(
+    'masterData:roles:reorder',
+    (_e, orderedIds: number[]): IpcResult<null> =>
+      tryCall(() => {
+        roleService.reorder({ db: deps.db }, orderedIds);
+        return null;
+      }),
+  );
 }

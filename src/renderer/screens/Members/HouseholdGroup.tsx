@@ -1,15 +1,18 @@
 import { ChevronDown, GripVertical, MapPin, Pencil } from 'lucide-react';
-import { useState, type DragEvent } from 'react';
+import { useState } from 'react';
 import { clsx } from 'clsx';
 
+import { DropLine } from '@renderer/components/DropLine';
 import { IconButton } from '@renderer/components/IconButton';
+import type {
+  DropPosition,
+  ReorderableHandle,
+} from '@renderer/lib/useReorderable';
 import type { HouseholdRow } from '@shared/household';
 import type { MemberRow as Member } from '@shared/member';
 
 import { MemberRow } from './MemberRow';
 import type { MemberColumn } from './columns';
-
-export type DropPosition = 'above' | 'below';
 
 export interface HouseholdGroupProps {
   household: HouseholdRow;
@@ -18,13 +21,10 @@ export interface HouseholdGroupProps {
   columns: MemberColumn[];
   onMemberSelect: (memberId: number) => void;
   onEditHousehold: (householdId: number) => void;
-  // Drag-to-reorder
+  // Drag-to-reorder (state from useReorderable)
   isDragging: boolean;
   dropIndicator: DropPosition | null;
-  onDragStart: (id: number, e: DragEvent) => void;
-  onDragOver: (id: number, e: DragEvent) => void;
-  onDrop: (e: DragEvent) => void;
-  onDragEnd: () => void;
+  dragHandle: ReorderableHandle;
 }
 
 export function HouseholdGroup({
@@ -36,13 +36,16 @@ export function HouseholdGroup({
   onEditHousehold,
   isDragging,
   dropIndicator,
-  onDragStart,
-  onDragOver,
-  onDrop,
-  onDragEnd,
+  dragHandle,
 }: HouseholdGroupProps) {
   const [collapsed, setCollapsed] = useState(false);
   const totalWidth = columns.reduce((a, c) => a + c.width, 0);
+
+  // The drag handlers live on the header strip (the only "grabbable" zone),
+  // but onDragOver / onDrop apply to the whole group so any member row can
+  // act as a drop target — without that the gaps between groups would be
+  // dead zones for dropping.
+  const { draggable, onDragStart, onDragEnd, onDragOver, onDrop } = dragHandle;
 
   return (
     <div
@@ -50,21 +53,16 @@ export function HouseholdGroup({
         'relative border-b border-rule-strong transition-opacity',
         isDragging && 'opacity-35',
       )}
-      onDragOver={(e) => onDragOver(household.id, e)}
+      onDragOver={onDragOver}
       onDrop={onDrop}
     >
-      {dropIndicator === 'above' && (
-        <div className="pointer-events-none absolute left-0 right-0 top-0 z-[3] h-0.5 bg-hadir" />
-      )}
-      {dropIndicator === 'below' && (
-        <div className="pointer-events-none absolute left-0 right-0 bottom-0 z-[3] h-0.5 bg-hadir" />
-      )}
+      <DropLine position={dropIndicator} />
 
       <div
         className="group flex h-9 items-stretch border-b border-rule bg-surface-2"
         style={{ width: totalWidth, minWidth: '100%' }}
-        draggable
-        onDragStart={(e) => onDragStart(household.id, e)}
+        draggable={draggable}
+        onDragStart={onDragStart}
         onDragEnd={onDragEnd}
       >
         {/* Sticky-left portion — pinned at left:0 as the table scrolls right. */}

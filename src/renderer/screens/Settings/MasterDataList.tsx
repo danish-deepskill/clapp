@@ -3,7 +3,6 @@ import {
   useEffect,
   useRef,
   useState,
-  type DragEvent,
   type KeyboardEvent,
 } from 'react';
 import { clsx } from 'clsx';
@@ -14,11 +13,17 @@ import type { MasterDataItem, MasterDataKind } from '@shared/masterData';
 import { Banner } from '@renderer/components/Banner';
 import { Button } from '@renderer/components/Button';
 import { ConfirmDialog } from '@renderer/components/ConfirmDialog';
+import { DropLine } from '@renderer/components/DropLine';
 import { IconButton } from '@renderer/components/IconButton';
 import { Input } from '@renderer/components/Input';
 import { SectionCard } from '@renderer/components/SectionCard';
 import { Toggle } from '@renderer/components/Toggle';
 import { useToast } from '@renderer/components/Toast';
+import {
+  useReorderable,
+  type DropPosition,
+  type ReorderableHandle,
+} from '@renderer/lib/useReorderable';
 
 export interface MasterDataListProps {
   kind: MasterDataKind;
@@ -36,8 +41,6 @@ export interface MasterDataListProps {
   /** Called with the next id ordering; runs the IPC reorder + persists. */
   onReorder?: (orderedIds: number[]) => Promise<IpcResult<null>>;
 }
-
-type DropPosition = 'above' | 'below';
 
 interface BlockedRemoval {
   name: string;
@@ -224,69 +227,31 @@ export function MasterDataList({
   }, [api, confirmTarget, showToast]);
 
   // ─── Drag-to-reorder (only when reorderable=true) ───────────────────
-  const [draggingId, setDraggingId] = useState<number | null>(null);
-  const [dropAt, setDropAt] = useState<{
-    id: number;
-    position: DropPosition;
-  } | null>(null);
+  // Optimistic local reorder for instant feedback; revert on IPC failure.
+  const handleReorder = useCallback(
+    async (orderedIds: number[]) => {
+      if (!items || !onReorder) return;
+      const before = items;
+      const idToItem = new Map(items.map((i) => [i.id, i]));
+      setItems(orderedIds.map((id) => idToItem.get(id)!).filter(Boolean));
 
-  const onDragStart = (id: number, e: DragEvent) => {
-    setDraggingId(id);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', String(id));
-  };
+      const result = await onReorder(orderedIds);
+      if (!result.ok) {
+        setItems(before);
+        showToast({
+          variant: 'error',
+          message: (
+            <>
+              Gagal mengubah urutan: <b>{result.message}</b>
+            </>
+          ),
+        });
+      }
+    },
+    [items, onReorder, showToast],
+  );
 
-  const onDragOver = (overId: number, e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (draggingId === null || draggingId === overId) return;
-    const target = e.currentTarget;
-    const rect = target.getBoundingClientRect();
-    const position: DropPosition =
-      e.clientY < rect.top + rect.height / 2 ? 'above' : 'below';
-    setDropAt((curr) =>
-      curr?.id === overId && curr.position === position
-        ? curr
-        : { id: overId, position },
-    );
-  };
-
-  const onDrop = async (e: DragEvent) => {
-    e.preventDefault();
-    const dragId = draggingId;
-    const drop = dropAt;
-    setDraggingId(null);
-    setDropAt(null);
-    if (!items || dragId === null || !drop || drop.id === dragId) return;
-    if (!onReorder) return;
-
-    const orderedIds = items.map((i) => i.id).filter((id) => id !== dragId);
-    const targetIdx = orderedIds.indexOf(drop.id);
-    const insertAt = drop.position === 'above' ? targetIdx : targetIdx + 1;
-    orderedIds.splice(insertAt, 0, dragId);
-
-    // Optimistic: reorder local state instantly; revert on server error.
-    const before = items;
-    const idToItem = new Map(items.map((i) => [i.id, i]));
-    setItems(orderedIds.map((id) => idToItem.get(id)!).filter(Boolean));
-
-    const result = await onReorder(orderedIds);
-    if (!result.ok) {
-      setItems(before);
-      showToast({
-        variant: 'error',
-        message: (
-          <>
-            Gagal mengubah urutan: <b>{result.message}</b>
-          </>
-        ),
-      });
-    }
-  };
-
-  const onDragEnd = () => {
-    setDraggingId(null);
-    setDropAt(null);
-  };
+  const reorder = useReorderable({ items, onReorder: handleReorder });
 
   return (
     <>
@@ -340,12 +305,13 @@ export function MasterDataList({
             onToggleActive={() => toggleActive(item)}
             onRequestDelete={() => requestDelete(item)}
             reorderable={reorderable}
-            isDragging={draggingId === item.id}
-            dropIndicator={dropAt?.id === item.id ? dropAt.position : null}
-            onDragStart={onDragStart}
-            onDragOver={onDragOver}
-            onDrop={onDrop}
-            onDragEnd={onDragEnd}
+            isDragging={reorder.isDragging(item.id)}
+            dropIndicator={reorder.dropIndicator(item.id)}
+            dragHandle={
+              reorderable
+                ? reorder.rowHandle(item.id, { draggable: editingId !== item.id })
+                : null
+            }
           />
         ))}
 
@@ -433,10 +399,8 @@ interface RowProps {
   reorderable?: boolean;
   isDragging?: boolean;
   dropIndicator?: DropPosition | null;
-  onDragStart?: (id: number, e: DragEvent) => void;
-  onDragOver?: (id: number, e: DragEvent<HTMLDivElement>) => void;
-  onDrop?: (e: DragEvent) => void;
-  onDragEnd?: () => void;
+  /** Spread onto the row's root; null when not reorderable. */
+  dragHandle?: ReorderableHandle | null;
 }
 
 function Row({
@@ -453,24 +417,11 @@ function Row({
   reorderable,
   isDragging,
   dropIndicator,
-  onDragStart,
-  onDragOver,
-  onDrop,
-  onDragEnd,
+  dragHandle,
 }: RowProps) {
   return (
     <div
-      draggable={reorderable && !isEditing}
-      onDragStart={
-        reorderable && onDragStart
-          ? (e) => onDragStart(item.id, e)
-          : undefined
-      }
-      onDragOver={
-        reorderable && onDragOver ? (e) => onDragOver(item.id, e) : undefined
-      }
-      onDrop={reorderable && onDrop ? onDrop : undefined}
-      onDragEnd={reorderable && onDragEnd ? onDragEnd : undefined}
+      {...(dragHandle ?? {})}
       className={clsx(
         'relative grid h-11 items-center border-b border-rule transition-colors hover:bg-surface-2',
         reorderable
@@ -480,12 +431,7 @@ function Row({
         isDragging && 'opacity-35',
       )}
     >
-      {dropIndicator === 'above' && (
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-[3] h-0.5 bg-hadir" />
-      )}
-      {dropIndicator === 'below' && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-0.5 bg-hadir" />
-      )}
+      <DropLine position={dropIndicator ?? null} />
 
       {reorderable && (
         <span

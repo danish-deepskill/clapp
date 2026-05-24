@@ -20,6 +20,14 @@ import type {
   RemoveResult,
 } from '../shared/masterData';
 import type {
+  EligibleAttendee,
+  LoadMeetingsInput,
+  MeetingDetail,
+  MeetingListItem,
+  SaveMeetingInput,
+  SaveMeetingResult,
+} from '../shared/meeting';
+import type {
   EditMemberInput,
   MemberFilter,
   MemberRow,
@@ -96,6 +104,18 @@ const api = {
       ipcRenderer.invoke('attendance:session:relabel', input),
     loadRecap: (input: LoadRecapInput): Promise<IpcResult<RecapData>> =>
       ipcRenderer.invoke('attendance:recap:load', input),
+  },
+  meeting: {
+    list: (input: LoadMeetingsInput): Promise<IpcResult<MeetingListItem[]>> =>
+      ipcRenderer.invoke('meeting:list', input),
+    get: (id: number): Promise<IpcResult<MeetingDetail>> =>
+      ipcRenderer.invoke('meeting:get', id),
+    save: (input: SaveMeetingInput): Promise<IpcResult<SaveMeetingResult>> =>
+      ipcRenderer.invoke('meeting:save', input),
+    delete: (id: number): Promise<IpcResult<null>> =>
+      ipcRenderer.invoke('meeting:delete', id),
+    eligibleAttendees: (): Promise<IpcResult<EligibleAttendee[]>> =>
+      ipcRenderer.invoke('meeting:eligibleAttendees'),
   },
 } as const;
 

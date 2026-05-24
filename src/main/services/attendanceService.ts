@@ -10,6 +10,7 @@ import type {
   SaveBatchResult,
   SessionRow,
 } from '../../shared/attendance';
+import { todayISO } from '../../shared/dates';
 import { ATTENDANCE_LIFE_STAGES } from '../../shared/enums';
 import type { DB, DBLike } from '../db';
 import {
@@ -71,7 +72,7 @@ export class OneSessionPerDateError extends Error {
 }
 
 function isoToday(deps: AttendanceDeps): string {
-  return (deps.clock?.() ?? new Date()).toISOString().slice(0, 10);
+  return todayISO(deps.clock?.());
 }
 
 function isFutureDate(deps: AttendanceDeps, date: string): boolean {

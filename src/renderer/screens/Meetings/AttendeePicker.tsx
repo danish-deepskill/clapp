@@ -36,15 +36,21 @@ export function AttendeePicker({
     [eligible, selectedSet],
   );
 
+  // Popover hides retired-role members; chips above use the full list.
+  const pickable = useMemo(
+    () => eligible.filter((a) => a.roleIsActive),
+    [eligible],
+  );
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return eligible;
-    return eligible.filter(
+    if (!q) return pickable;
+    return pickable.filter(
       (a) =>
         a.fullName.toLowerCase().includes(q) ||
         a.roleName.toLowerCase().includes(q),
     );
-  }, [eligible, query]);
+  }, [pickable, query]);
 
   const toggle = (id: number) => {
     if (selectedSet.has(id)) {
@@ -125,8 +131,10 @@ export function AttendeePicker({
             <div className="max-h-[280px] overflow-y-auto py-1">
               {filtered.length === 0 && (
                 <div className="px-3 py-4 text-center text-[12.5px] text-ink-500">
-                  {eligible.length === 0
-                    ? 'Belum ada pengurus terdaftar. Tetapkan dapukan dulu di Jama’ah.'
+                  {pickable.length === 0
+                    ? eligible.length === 0
+                      ? 'Belum ada pengurus terdaftar. Tetapkan dapukan dulu di Jama’ah.'
+                      : 'Semua dapukan sedang non-aktif. Aktifkan di Pengaturan.'
                     : 'Tidak ada hasil.'}
                 </div>
               )}

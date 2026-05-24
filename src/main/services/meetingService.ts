@@ -301,13 +301,8 @@ export const meetingService = {
     return readDetail(deps.db, id);
   },
 
-  /**
-   * Pengurus only — `members.role_id IS NOT NULL` per ERD note on
-   * `meeting_attendees`. Active members only. Returns role name joined in.
-   *
-   * Order: by operator-controlled `roles.position` ASC, then by name within
-   * role. Reorder roles in Pengaturan to change the picker order.
-   */
+  // Active members with any role (incl. retired roles, flagged via
+  // roleIsActive); sorted by roles.position ASC then fullName.
   eligibleAttendees(deps: MeetingDeps): EligibleAttendee[] {
     return deps.db
       .select({
@@ -316,6 +311,7 @@ export const meetingService = {
         gender: members.gender,
         lifeStage: members.lifeStage,
         roleName: roles.name,
+        roleIsActive: roles.isActive,
         rolePosition: roles.position,
       })
       .from(members)

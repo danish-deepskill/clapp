@@ -165,7 +165,7 @@ function renderCellContent(
         <ChevronRight
           size={14}
           strokeWidth={1.6}
-          className="text-ink-400 group-hover:text-ink-700"
+          className="text-ink-500 group-hover:text-ink-900"
         />
       );
     default:

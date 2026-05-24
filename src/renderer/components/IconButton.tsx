@@ -27,7 +27,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         ref={ref}
         type={type ?? 'button'}
         className={clsx(
-          'inline-flex h-7 w-7 items-center justify-center rounded border-0 bg-transparent text-ink-400 transition-colors',
+          'inline-flex h-7 w-7 items-center justify-center rounded border-0 bg-transparent text-ink-500 transition-colors',
           VARIANT_HOVER[variant],
           className,
         )}

@@ -104,7 +104,6 @@ export function HouseholdGroup({
               e.stopPropagation();
               onEditHousehold(household.id);
             }}
-            className="opacity-60 transition-opacity hover:opacity-100"
           >
             <Pencil size={13} strokeWidth={1.4} />
           </IconButton>

@@ -26,6 +26,10 @@ export function Members() {
   const [filter, setFilter] = useState<MemberFilter>({ activeOnly: true });
   const [viewMode, setViewMode] = useState<ViewMode>('grouped');
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
+  // householdIds currently collapsed in grouped view; empty = all expanded.
+  const [collapsedHouseholds, setCollapsedHouseholds] = useState<Set<number>>(
+    () => new Set(),
+  );
 
   const [addOpen, setAddOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -117,6 +121,33 @@ export function Members() {
     [refresh, showToast],
   );
 
+  const onToggleCollapsed = useCallback((householdId: number) => {
+    setCollapsedHouseholds((prev) => {
+      const next = new Set(prev);
+      if (next.has(householdId)) next.delete(householdId);
+      else next.add(householdId);
+      return next;
+    });
+  }, []);
+
+  // Visible households in grouped view = those with ≥1 filtered member.
+  const visibleHouseholdIds = useMemo(() => {
+    if (!households) return [] as number[];
+    const hasMember = new Set(filtered.map((m) => m.householdId));
+    return households.filter((h) => hasMember.has(h.id)).map((h) => h.id);
+  }, [households, filtered]);
+
+  const allCollapsed =
+    visibleHouseholdIds.length > 0 &&
+    visibleHouseholdIds.every((id) => collapsedHouseholds.has(id));
+
+  const onToggleCollapseAll = useCallback(() => {
+    setCollapsedHouseholds((prev) => {
+      const allNowCollapsed = visibleHouseholdIds.every((id) => prev.has(id));
+      return allNowCollapsed ? new Set() : new Set(visibleHouseholdIds);
+    });
+  }, [visibleHouseholdIds]);
+
   return (
     <div className="flex h-full flex-col bg-paper">
       <FilterBar
@@ -129,6 +160,11 @@ export function Members() {
         totalActive={totalActive}
         totalFiltered={filtered.length}
         onAddClick={() => setAddOpen(true)}
+        allCollapsed={allCollapsed}
+        onToggleCollapseAll={onToggleCollapseAll}
+        canToggleCollapseAll={
+          viewMode === 'grouped' && visibleHouseholdIds.length > 0
+        }
       />
 
       {loadError && (
@@ -153,6 +189,8 @@ export function Members() {
           onMemberSelect={(id) => setSelectedMemberId(id)}
           onEditHousehold={(id) => setEditHouseholdId(id)}
           onReorderHouseholds={onReorderHouseholds}
+          collapsedHouseholds={collapsedHouseholds}
+          onToggleCollapsed={onToggleCollapsed}
         />
       )}
 

@@ -1,5 +1,7 @@
 import {
   ChevronDown,
+  ChevronsDownUp,
+  ChevronsUpDown,
   Filter,
   LayoutList,
   Plus,
@@ -33,6 +35,11 @@ export interface FilterBarProps {
   totalActive: number;
   totalFiltered: number;
   onAddClick: () => void;
+  /** True when every visible KK in grouped view is currently collapsed. */
+  allCollapsed: boolean;
+  onToggleCollapseAll: () => void;
+  /** False in flat view or when no households are visible. */
+  canToggleCollapseAll: boolean;
 }
 
 export function FilterBar({
@@ -45,6 +52,9 @@ export function FilterBar({
   totalActive,
   totalFiltered,
   onAddClick,
+  allCollapsed,
+  onToggleCollapseAll,
+  canToggleCollapseAll,
 }: FilterBarProps) {
   const activeFilterCount =
     (filter.lifeStage ? 1 : 0) +
@@ -73,6 +83,25 @@ export function FilterBar({
           ]}
         />
       </FilterCell>
+
+      {canToggleCollapseAll && (
+        <FilterCell>
+          <Button
+            variant="ghost"
+            size="sm"
+            icon={
+              allCollapsed ? (
+                <ChevronsUpDown size={13} strokeWidth={1.7} />
+              ) : (
+                <ChevronsDownUp size={13} strokeWidth={1.7} />
+              )
+            }
+            onClick={onToggleCollapseAll}
+          >
+            {allCollapsed ? 'Buka Semua' : 'Tutup Semua'}
+          </Button>
+        </FilterCell>
+      )}
 
       <FilterSearch
         value={search}

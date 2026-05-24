@@ -1,5 +1,4 @@
 import { ChevronDown, GripVertical, MapPin, Pencil } from 'lucide-react';
-import { useState } from 'react';
 import { clsx } from 'clsx';
 
 import { DropLine } from '@renderer/components/DropLine';
@@ -21,6 +20,9 @@ export interface HouseholdGroupProps {
   columns: MemberColumn[];
   onMemberSelect: (memberId: number) => void;
   onEditHousehold: (householdId: number) => void;
+  /** Collapsed state lifted to parent so FilterBar can collapse/expand all. */
+  collapsed: boolean;
+  onToggleCollapsed: () => void;
   // Drag-to-reorder (state from useReorderable)
   isDragging: boolean;
   dropIndicator: DropPosition | null;
@@ -34,11 +36,12 @@ export function HouseholdGroup({
   columns,
   onMemberSelect,
   onEditHousehold,
+  collapsed,
+  onToggleCollapsed,
   isDragging,
   dropIndicator,
   dragHandle,
 }: HouseholdGroupProps) {
-  const [collapsed, setCollapsed] = useState(false);
   const totalWidth = columns.reduce((a, c) => a + c.width, 0);
 
   // The drag handlers live on the header strip (the only "grabbable" zone),
@@ -75,7 +78,7 @@ export function HouseholdGroup({
           </span>
           <button
             type="button"
-            onClick={() => setCollapsed((c) => !c)}
+            onClick={onToggleCollapsed}
             aria-expanded={!collapsed}
             className="flex items-center gap-2.5 text-left transition-colors hover:bg-[#F1ECDD]"
           >

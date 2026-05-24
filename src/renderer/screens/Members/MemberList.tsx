@@ -16,6 +16,9 @@ export interface MemberListProps {
   onMemberSelect: (memberId: number) => void;
   onEditHousehold: (householdId: number) => void;
   onReorderHouseholds: (orderedIds: number[]) => Promise<void>;
+  /** Set of householdIds that are currently collapsed (grouped view only). */
+  collapsedHouseholds: Set<number>;
+  onToggleCollapsed: (householdId: number) => void;
 }
 
 export function MemberList({
@@ -25,6 +28,8 @@ export function MemberList({
   onMemberSelect,
   onEditHousehold,
   onReorderHouseholds,
+  collapsedHouseholds,
+  onToggleCollapsed,
 }: MemberListProps) {
   const columns = useMemo(() => columnsFor(viewMode), [viewMode]);
   const tableWidth = minTableWidth(columns);
@@ -49,6 +54,8 @@ export function MemberList({
             onMemberSelect={onMemberSelect}
             onEditHousehold={onEditHousehold}
             onReorderHouseholds={onReorderHouseholds}
+            collapsedHouseholds={collapsedHouseholds}
+            onToggleCollapsed={onToggleCollapsed}
           />
         ) : (
           <FlatBody
@@ -109,6 +116,8 @@ function GroupedBody({
   onMemberSelect,
   onEditHousehold,
   onReorderHouseholds,
+  collapsedHouseholds,
+  onToggleCollapsed,
 }: {
   members: Member[];
   households: HouseholdRow[];
@@ -116,6 +125,8 @@ function GroupedBody({
   onMemberSelect: (id: number) => void;
   onEditHousehold: (id: number) => void;
   onReorderHouseholds: (orderedIds: number[]) => Promise<void>;
+  collapsedHouseholds: Set<number>;
+  onToggleCollapsed: (householdId: number) => void;
 }) {
   const byHh = useMemo(() => {
     const map = new Map<number, Member[]>();
@@ -153,6 +164,8 @@ function GroupedBody({
             columns={columns}
             onMemberSelect={onMemberSelect}
             onEditHousehold={onEditHousehold}
+            collapsed={collapsedHouseholds.has(hh.id)}
+            onToggleCollapsed={() => onToggleCollapsed(hh.id)}
             isDragging={reorder.isDragging(hh.id)}
             dropIndicator={reorder.dropIndicator(hh.id)}
             dragHandle={reorder.rowHandle(hh.id)}

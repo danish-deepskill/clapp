@@ -146,7 +146,7 @@ export function RecordMovementModal({
             { value: 'Pindah Sambung', label: 'Pindah Sambung' },
             { value: 'Meninggal', label: 'Meninggal' },
           ]}
-          className="w-full"
+          fill
         />
       </FormSection>
 

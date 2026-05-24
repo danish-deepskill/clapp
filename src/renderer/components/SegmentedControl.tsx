@@ -13,6 +13,8 @@ export interface SegmentedControlProps<T extends string> {
   items: SegmentedItem<T>[];
   /** Required for screen readers — describes the group. */
   'aria-label': string;
+  /** Stretch to fill the parent width; children share width equally. */
+  fill?: boolean;
   className?: string;
 }
 
@@ -20,6 +22,7 @@ export function SegmentedControl<T extends string>({
   value,
   onChange,
   items,
+  fill,
   className,
   'aria-label': ariaLabel,
 }: SegmentedControlProps<T>) {
@@ -28,7 +31,8 @@ export function SegmentedControl<T extends string>({
       role="radiogroup"
       aria-label={ariaLabel}
       className={clsx(
-        'inline-flex h-9 items-stretch overflow-hidden rounded border border-rule bg-surface',
+        'h-9 items-stretch overflow-hidden rounded border border-rule bg-surface',
+        fill ? 'flex w-full' : 'inline-flex',
         className,
       )}
     >
@@ -42,7 +46,8 @@ export function SegmentedControl<T extends string>({
             aria-checked={selected}
             onClick={() => onChange(item.value)}
             className={clsx(
-              'inline-flex items-center gap-1.5 border-r border-rule px-3 font-sans text-[13px] font-medium tracking-tight transition-colors last:border-r-0',
+              'items-center gap-1.5 border-r border-rule px-3 font-sans text-[13px] font-medium tracking-tight transition-colors last:border-r-0',
+              fill ? 'flex flex-1 justify-center' : 'inline-flex',
               selected
                 ? 'bg-ink-900 text-surface'
                 : 'text-ink-700 hover:bg-surface-2 hover:text-ink-900',

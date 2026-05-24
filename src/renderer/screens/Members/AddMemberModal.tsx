@@ -261,7 +261,7 @@ export function AddMemberModal({
               value={form.gender}
               onChange={(v) => set('gender', v)}
               items={GENDER.map((g) => ({ value: g, label: g }))}
-              className="w-full"
+              fill
             />
           </FormField>
           <FormField label="Kelas">

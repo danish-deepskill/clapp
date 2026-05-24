@@ -30,11 +30,12 @@ interface SeedMember {
   life_stage:
     | 'Balita'
     | 'AUD'
-    | 'Cabe Rawit'
+    | 'Caberawit'
     | 'Pra Remaja'
     | 'Remaja'
     | 'Muda-mudi'
-    | 'Dewasa';
+    | 'Dewasa'
+    | 'Lansia';
   marital_status: 'Belum Menikah' | 'Menikah' | 'Janda' | 'Duda';
   blood_type: 'A' | 'B' | 'AB' | 'O' | 'Tidak Tahu';
   rhesus: 'Positif' | 'Negatif' | 'Tidak Tahu';

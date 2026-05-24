@@ -7,19 +7,20 @@ export type HouseholdType = (typeof HOUSEHOLD_TYPE)[number];
 export const LIFE_STAGE = [
   'Balita',
   'AUD',
-  'Cabe Rawit',
+  'Caberawit',
   'Pra Remaja',
   'Remaja',
   'Muda-mudi',
   'Dewasa',
+  'Lansia',
 ] as const;
 export type LifeStage = (typeof LIFE_STAGE)[number];
 
 /**
- * Life stages that attend pengajian. Children/teens are excluded from
- * Attendance and AttendanceRecap rosters. See project-attendance-eligibility memory.
+ * Life stages that attend pengajian. Children/teens excluded from Absensi/Rekap.
+ * See project-attendance-eligibility memory.
  */
-export const ATTENDANCE_LIFE_STAGES = ['Muda-mudi', 'Dewasa'] as const;
+export const ATTENDANCE_LIFE_STAGES = ['Muda-mudi', 'Dewasa', 'Lansia'] as const;
 export type AttendanceLifeStage = (typeof ATTENDANCE_LIFE_STAGES)[number];
 
 export const MARITAL_STATUS = [

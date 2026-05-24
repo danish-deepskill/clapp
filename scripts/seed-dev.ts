@@ -140,7 +140,7 @@ if (existingTypeCount === 0) {
   db.insert(schema.sessionTypes)
     .values(DEV_SESSION_TYPES.map((name) => ({ name })))
     .run();
-  // One linked activity_type so the §8 UPSERT trigger is exercisable in dev.
+  // One session-linked activity_type so the §8 UPSERT trigger is exercisable in dev.
   const hasdaId = db
     .select()
     .from(schema.sessionTypes)
@@ -155,7 +155,27 @@ if (existingTypeCount === 0) {
       })
       .run();
   }
-  console.log(`→ Seeded ${DEV_SESSION_TYPES.length} session_types + 1 activity_type.`);
+  // One meeting-linked activity_type so the Musyawarah §8 trigger is exercisable.
+  db.insert(schema.activityTypes)
+    .values({
+      name: 'Musyawarah Kelompok Bulanan',
+      sourceKind: 'meeting',
+      meetingType: 'Musyawarah Kelompok',
+    })
+    .run();
+  console.log(`→ Seeded ${DEV_SESSION_TYPES.length} session_types + 2 activity_types.`);
+}
+
+// Seed a tiny role set + assign a handful of members as Pengurus so the
+// Musyawarah attendee picker has people to choose. Real role vocabulary is
+// unconfirmed (CONTEXT §6 #2) — these are placeholders for dev only.
+const DEV_ROLES = ['Imam', 'Wakil Imam', 'Sekretaris', 'Bendahara'];
+const existingRoleCount = db.select().from(schema.roles).all().length;
+if (existingRoleCount === 0) {
+  db.insert(schema.roles)
+    .values(DEV_ROLES.map((name) => ({ name })))
+    .run();
+  console.log(`→ Seeded ${DEV_ROLES.length} roles.`);
 }
 
 const seed = JSON.parse(readFileSync(SEED_PATH, 'utf-8')) as Seed;
@@ -205,6 +225,36 @@ db.transaction((tx) => {
     }
   }
 });
+
+// Assign roles to the first N adult members per role so the Musyawarah
+// attendee picker has something to pick. Dev only — production seed leaves
+// role_id null for all members.
+const seededRoles = db.select().from(schema.roles).all();
+if (seededRoles.length > 0) {
+  const adults = db
+    .select()
+    .from(schema.members)
+    .all()
+    .filter(
+      (m) =>
+        m.isActive &&
+        (m.lifeStage === 'Dewasa' || m.lifeStage === 'Muda-mudi') &&
+        m.roleId === null,
+    )
+    .sort((a, b) => a.id - b.id);
+  let assigned = 0;
+  for (let i = 0; i < seededRoles.length && i < adults.length; i++) {
+    const member = adults[i];
+    const role = seededRoles[i];
+    if (!member || !role) continue;
+    db.update(schema.members)
+      .set({ roleId: role.id })
+      .where(eq(schema.members.id, member.id))
+      .run();
+    assigned += 1;
+  }
+  console.log(`→ Assigned ${assigned} members as Pengurus.`);
+}
 
 console.log(
   `✓ Seeded ${seed.households.length} households / ${memberCount} members.`,

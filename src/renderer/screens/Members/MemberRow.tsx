@@ -40,7 +40,11 @@ export function MemberRow({
         }
       }}
       className={clsx(
-        'group grid h-[38px] cursor-default items-stretch border-b border-rule bg-surface text-[13px] transition-colors hover:bg-surface-2 focus-visible:bg-surface-2',
+        'group grid h-[38px] cursor-default items-stretch text-[13px] transition-colors hover:bg-paper-2 focus-visible:bg-paper-2',
+        // Zebra: cream-on-cream borders fall below WCAG 3:1 for hairlines.
+        // Alternating bg-surface/bg-surface-2 reads as row boundaries at
+        // solid-fill scale even though the same colors fail as borders.
+        rowNumber % 2 === 1 ? 'bg-surface' : 'bg-surface-2',
         dim && 'opacity-65',
       )}
       style={{ gridTemplateColumns: gridTemplate(columns) }}
@@ -51,7 +55,7 @@ export function MemberRow({
         </Cell>
       ))}
       {/* Flex spacer — fills the gap so the sticky-right aksi cell pins to the viewport edge. */}
-      <div aria-hidden="true" className="bg-surface group-hover:bg-surface-2 group-focus-visible:bg-surface-2" />
+      <div aria-hidden="true" className="bg-inherit" />
       <Cell
         column={columns[columns.length - 1]!}
         index={columns.length - 1}
@@ -79,13 +83,15 @@ function Cell({
   totalCols: number;
   children: React.ReactNode;
 }) {
+  // bg-inherit so sticky cells pick up the row's zebra stripe + hover color
+  // automatically — no need to mirror every state in the cell.
   const sticky =
     column.key === 'no'
-      ? 'sticky left-0 z-[1] bg-surface group-hover:bg-surface-2 group-focus-visible:bg-surface-2'
+      ? 'sticky left-0 z-[1] bg-inherit'
       : column.key === 'nama'
-        ? 'sticky left-[56px] z-[1] bg-surface group-hover:bg-surface-2 group-focus-visible:bg-surface-2'
+        ? 'sticky left-[56px] z-[1] bg-inherit'
         : column.key === 'aksi'
-          ? 'sticky right-0 z-[1] bg-surface group-hover:bg-surface-2 group-focus-visible:bg-surface-2'
+          ? 'sticky right-0 z-[1] bg-inherit'
           : '';
   return (
     <div

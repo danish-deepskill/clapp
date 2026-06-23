@@ -94,13 +94,19 @@ export function AttendanceRow({ index, row, onChange }: AttendanceRowProps) {
       onKeyDown={onRowKeyDown}
       style={{ gridTemplateColumns: gridTemplate() }}
       className={clsx(
-        'grid items-center border-b border-rule bg-surface transition-colors',
-        'hover:bg-surface-2',
+        'grid items-center transition-colors hover:bg-paper-2',
+        // Zebra: rows alternate so boundaries read without relying on hairline
+        // borders (cream-on-cream contrast is sub-WCAG for 1px lines).
+        // isUnmarked overrides zebra — that tint is a meaningful signal.
+        isUnmarked
+          ? 'bg-paper-2/30'
+          : index % 2 === 0
+            ? 'bg-surface'
+            : 'bg-surface-2',
         // Focus: warm bg tint + 3px left-edge ink bar. Override the global
         // slate-blue focus-visible ring from globals.css with !ring-0.
         'focus-visible:outline-none focus-visible:!ring-0 focus-visible:bg-[#FFF8E2] focus-visible:shadow-[inset_3px_0_0_#1B1814]',
         isAlpa && 'text-ink-400',
-        isUnmarked && 'bg-paper-2/30',
       )}
     >
       <Cell column="no">{index + 1}</Cell>

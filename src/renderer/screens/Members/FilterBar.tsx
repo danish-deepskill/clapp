@@ -2,6 +2,7 @@ import {
   ChevronDown,
   ChevronsDownUp,
   ChevronsUpDown,
+  ClipboardList,
   Filter,
   LayoutList,
   Plus,
@@ -40,6 +41,9 @@ export interface FilterBarProps {
   onToggleCollapseAll: () => void;
   /** False in flat view or when no households are visible. */
   canToggleCollapseAll: boolean;
+  /** Mode Pendataan Awal — silences Catatan Peristiwa writes from member ops. */
+  setupMode: boolean;
+  onSetupModeChange: (next: boolean) => void;
 }
 
 export function FilterBar({
@@ -55,6 +59,8 @@ export function FilterBar({
   allCollapsed,
   onToggleCollapseAll,
   canToggleCollapseAll,
+  setupMode,
+  onSetupModeChange,
 }: FilterBarProps) {
   const activeFilterCount =
     (filter.lifeStage ? 1 : 0) +
@@ -149,6 +155,32 @@ export function FilterBar({
           <span className="font-semibold text-ink-900">{totalActive}</span>{' '}
           aktif
         </span>
+      </FilterCell>
+
+      <FilterCell>
+        <button
+          type="button"
+          onClick={() => onSetupModeChange(!setupMode)}
+          title={
+            setupMode
+              ? 'Matikan Mode Setup — kembali mencatat perubahan ke Catatan Peristiwa'
+              : 'Nyalakan untuk bulk-entry tanpa membanjiri Catatan Peristiwa'
+          }
+          className={clsx(
+            'inline-flex h-9 items-center gap-2 rounded border px-3 font-sans text-[13px] font-medium transition-colors',
+            setupMode
+              ? 'border-[#E8C97A] bg-[#FFF8E2] text-[#5A3F0F] hover:border-[#B17A1F]'
+              : 'border-rule bg-surface text-ink-700 hover:border-rule-strong hover:text-ink-900',
+          )}
+        >
+          <ClipboardList size={14} strokeWidth={1.6} />
+          Mode Setup
+          {setupMode && (
+            <span className="inline-flex h-[18px] items-center rounded-sm bg-[#B17A1F] px-1.5 font-mono text-[9.5px] font-bold uppercase tracking-wider text-surface">
+              ON
+            </span>
+          )}
+        </button>
       </FilterCell>
 
       <FilterCell>

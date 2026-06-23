@@ -33,6 +33,8 @@ export interface AddMemberModalProps {
   households: HouseholdRow[];
   roles: MasterDataItem[];
   onSaved: () => void;
+  /** Mode Pendataan Awal — skip event-log writes on submit. */
+  silentLog?: boolean;
 }
 
 type KKMode = 'create-new' | 'join-existing';
@@ -80,6 +82,7 @@ export function AddMemberModal({
   households,
   roles,
   onSaved,
+  silentLog,
 }: AddMemberModalProps) {
   const { showToast } = useToast();
   const [form, setForm] = useState<FormState>(initial);
@@ -169,6 +172,7 @@ export function AddMemberModal({
           : { mode: 'join-existing', householdId: Number(form.kkId) },
       logAs: form.logAs,
       logDate: form.logDate || todayISO(),
+      silentLog: silentLog ?? false,
     };
     const result = await window.clapp.member.add(input);
     setSubmitting(false);

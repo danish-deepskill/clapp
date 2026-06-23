@@ -15,6 +15,10 @@ import type {
 } from '../shared/household';
 import type { IpcResult } from '../shared/ipc';
 import type {
+  EventLogEntry,
+  LoadEventLogInput,
+} from '../shared/eventLog';
+import type {
   MasterDataItem,
   MasterDataKind,
   RemoveResult,
@@ -108,6 +112,10 @@ const api = {
       ipcRenderer.invoke('attendance:session:relabel', input),
     loadRecap: (input: LoadRecapInput): Promise<IpcResult<RecapData>> =>
       ipcRenderer.invoke('attendance:recap:load', input),
+  },
+  eventLog: {
+    list: (input: LoadEventLogInput): Promise<IpcResult<EventLogEntry[]>> =>
+      ipcRenderer.invoke('eventLog:list', input),
   },
   meeting: {
     list: (input: LoadMeetingsInput): Promise<IpcResult<MeetingListItem[]>> =>

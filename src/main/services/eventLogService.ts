@@ -4,10 +4,16 @@ import type {
   MovementType,
   VitalEventType,
 } from '../../shared/enums';
-import type { DBLike } from '../db';
+import type {
+  EventGroup,
+  EventLogEntry,
+  LoadEventLogInput,
+} from '../../shared/eventLog';
+import type { DB, DBLike } from '../db';
 import {
   memberChanges,
   memberMovements,
+  members,
   vitalRecords,
 } from '../db/schema';
 
@@ -35,7 +41,40 @@ export interface MemberChangeInput {
   newValue: string | null;
 }
 
-// All writers accept `DB` so they're callable both standalone and inside a
+export interface EventLogDeps {
+  db: DB;
+}
+
+export class InvalidEventLogPeriodError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InvalidEventLogPeriodError';
+  }
+}
+
+function periodBounds(
+  month: number,
+  year: number,
+): { start: string; end: string } {
+  if (!Number.isInteger(month) || month < 1 || month > 12) {
+    throw new InvalidEventLogPeriodError(
+      `month harus 1–12 (diterima ${month})`,
+    );
+  }
+  if (!Number.isInteger(year) || year < 2000 || year > 2100) {
+    throw new InvalidEventLogPeriodError(`year tidak valid (diterima ${year})`);
+  }
+  const startMonth = String(month).padStart(2, '0');
+  const nextMonth = month === 12 ? 1 : month + 1;
+  const nextYear = month === 12 ? year + 1 : year;
+  const endMonth = String(nextMonth).padStart(2, '0');
+  return {
+    start: `${year}-${startMonth}-01`,
+    end: `${nextYear}-${endMonth}-01`,
+  };
+}
+
+// All writers accept `DBLike` so they're callable both standalone and inside a
 // .transaction((tx) => ...) callback — drizzle's tx is structurally identical.
 
 export const eventLogService = {
@@ -73,5 +112,103 @@ export const eventLogService = {
         newValue: input.newValue,
       })
       .run();
+  },
+
+  /**
+   * Read-only UNION over the three event-log tables, presented as one
+   * chronological stream (CONTEXT §49). Filters by month/year period +
+   * optionally by event group. Joins member name via member_id.
+   */
+  listByPeriod(
+    deps: EventLogDeps,
+    input: LoadEventLogInput,
+  ): EventLogEntry[] {
+    const { start, end } = periodBounds(input.month, input.year);
+    const groups = input.groups ?? [];
+    const include = (g: EventGroup) => groups.length === 0 || groups.includes(g);
+
+    const memberById = new Map(
+      deps.db
+        .select({ id: members.id, fullName: members.fullName })
+        .from(members)
+        .all()
+        .map((m) => [m.id, m.fullName]),
+    );
+
+    const entries: EventLogEntry[] = [];
+
+    if (include('vital')) {
+      const rows = deps.db
+        .select()
+        .from(vitalRecords)
+        .all()
+        .filter((r) => r.eventDate >= start && r.eventDate < end);
+      for (const r of rows) {
+        entries.push({
+          source: 'vital',
+          id: r.id,
+          date: r.eventDate,
+          kind: r.eventType,
+          memberId: r.memberId,
+          memberName:
+            (r.memberId !== null ? memberById.get(r.memberId) : null) ??
+            r.name ??
+            '(tidak diketahui)',
+          gender: r.gender,
+          notes: r.notes,
+        });
+      }
+    }
+
+    if (include('arrival-departure')) {
+      const rows = deps.db
+        .select()
+        .from(memberMovements)
+        .all()
+        .filter((r) => r.movementDate >= start && r.movementDate < end);
+      for (const r of rows) {
+        entries.push({
+          source: 'movement',
+          id: r.id,
+          date: r.movementDate,
+          kind: r.movementType,
+          memberId: r.memberId,
+          memberName: memberById.get(r.memberId) ?? '(tidak diketahui)',
+          notes: r.notes,
+        });
+      }
+    }
+
+    if (include('change')) {
+      const rows = deps.db
+        .select()
+        .from(memberChanges)
+        .all()
+        .filter((r) => r.changeDate >= start && r.changeDate < end);
+      for (const r of rows) {
+        entries.push({
+          source: 'change',
+          id: r.id,
+          date: r.changeDate,
+          kind: r.changeType,
+          memberId: r.memberId,
+          memberName: memberById.get(r.memberId) ?? '(tidak diketahui)',
+          oldValue: r.oldValue,
+          newValue: r.newValue,
+        });
+      }
+    }
+
+    // Chronological asc; same-date tiebreak prefers life events first
+    // (vital → movement → change) so arrivals show before subsequent edits.
+    const SOURCE_ORDER = { vital: 0, movement: 1, change: 2 } as const;
+    entries.sort((a, b) => {
+      if (a.date !== b.date) return a.date.localeCompare(b.date);
+      if (a.source !== b.source)
+        return SOURCE_ORDER[a.source] - SOURCE_ORDER[b.source];
+      return a.id - b.id;
+    });
+
+    return entries;
   },
 };

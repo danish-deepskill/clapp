@@ -30,6 +30,8 @@ export function Members() {
   const [collapsedHouseholds, setCollapsedHouseholds] = useState<Set<number>>(
     () => new Set(),
   );
+  // Mode Pendataan Awal — session-only; member ops skip Catatan Peristiwa writes.
+  const [setupMode, setSetupMode] = useState(false);
 
   const [addOpen, setAddOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -165,7 +167,25 @@ export function Members() {
         canToggleCollapseAll={
           viewMode === 'grouped' && visibleHouseholdIds.length > 0
         }
+        setupMode={setupMode}
+        onSetupModeChange={setSetupMode}
       />
+
+      {setupMode && (
+        <div className="border-b border-[#E8C97A] bg-[#FFF8E2] px-6 py-2 text-[12.5px] text-[#7A5A14]">
+          <b className="text-[#5A3F0F]">Mode Setup aktif</b> — perubahan kelas
+          / status / dapukan, penambahan jama'ah, dan catat kepindahan{' '}
+          <b className="text-[#5A3F0F]">tidak dicatat di Catatan Peristiwa</b>{' '}
+          selama mode ini menyala.{' '}
+          <button
+            type="button"
+            onClick={() => setSetupMode(false)}
+            className="ml-1 font-semibold text-[#5A3F0F] underline underline-offset-2 hover:text-ink-900"
+          >
+            Matikan
+          </button>
+        </div>
+      )}
 
       {loadError && (
         <div className="px-6 py-3">
@@ -212,6 +232,7 @@ export function Members() {
           households={households}
           roles={roles}
           onSaved={() => void refresh()}
+          silentLog={setupMode}
         />
       )}
 
@@ -223,6 +244,7 @@ export function Members() {
           households={households}
           roles={roles}
           onSaved={() => void refresh()}
+          silentLog={setupMode}
         />
       )}
 
@@ -238,6 +260,7 @@ export function Members() {
             // detail panel so the operator returns to the list.
             setSelectedMemberId(null);
           }}
+          silentLog={setupMode}
         />
       )}
 

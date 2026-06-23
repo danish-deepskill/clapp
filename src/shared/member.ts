@@ -45,6 +45,8 @@ export interface NewMemberInput {
   logAs: AddMemberLogAs;
   logDate?: string;
   logNotes?: string | null;
+  /** Mode Pendataan Awal — skip all Catatan Peristiwa writes for this call. */
+  silentLog?: boolean;
 }
 
 export interface EditMemberInput {
@@ -59,6 +61,8 @@ export interface EditMemberInput {
   birthDate?: string | null;
   roleId?: number | null;
   household?: HouseholdChoice;
+  /** Mode Pendataan Awal — skip member_changes log writes for this call. */
+  silentLog?: boolean;
 }
 
 export type MovementKind = 'Pindah Sambung' | 'Meninggal';
@@ -70,6 +74,8 @@ export interface RecordMovementInput {
   notes?: string | null;
   /** Required if the affected member is currently their household's head. */
   newHeadMemberId?: number;
+  /** Mode Pendataan Awal — skip Catatan Peristiwa writes (state change still applies). */
+  silentLog?: boolean;
 }
 
 export interface MemberFilter {

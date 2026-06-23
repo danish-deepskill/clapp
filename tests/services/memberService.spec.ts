@@ -638,3 +638,140 @@ describe('householdService.reorder', () => {
     );
   });
 });
+
+// ─── silentLog (Mode Pendataan Awal) ─────────────────────────────────────
+
+describe('memberService silentLog flag (Mode Pendataan Awal)', () => {
+  let db: DB;
+  beforeEach(() => {
+    db = freshDb();
+  });
+
+  it('addMember with logAs="Lahir" + silentLog skips vital_records insert', () => {
+    memberService.addMember(
+      { db },
+      { ...FAISAL, logAs: 'Lahir', silentLog: true },
+    );
+    expect(db.select().from(vitalRecords).all()).toHaveLength(0);
+    expect(db.select().from(members).all()).toHaveLength(1);
+  });
+
+  it('addMember with logAs="Sambung Baru" + silentLog skips member_movements insert', () => {
+    memberService.addMember(
+      { db },
+      { ...FAISAL, logAs: 'Sambung Baru', silentLog: true },
+    );
+    expect(db.select().from(memberMovements).all()).toHaveLength(0);
+    expect(db.select().from(members).all()).toHaveLength(1);
+  });
+
+  it('addMember without silentLog still writes the log entry (regression guard)', () => {
+    memberService.addMember({ db }, { ...FAISAL, logAs: 'Lahir' });
+    expect(db.select().from(vitalRecords).all()).toHaveLength(1);
+  });
+
+  it('editMember with silentLog skips all 3 member_changes paths', () => {
+    const roleA = seedRole(db, 'Imam');
+    const roleB = seedRole(db, 'Bendahara');
+    const m = memberService.addMember(
+      { db },
+      {
+        ...FAISAL,
+        roleId: roleA,
+        lifeStage: 'Muda-mudi',
+        maritalStatus: 'Belum Menikah',
+      },
+    );
+    memberService.editMember(
+      { db },
+      m.id,
+      {
+        maritalStatus: 'Menikah',
+        lifeStage: 'Dewasa',
+        roleId: roleB,
+        silentLog: true,
+      },
+    );
+    expect(db.select().from(memberChanges).all()).toHaveLength(0);
+    // Sanity: the actual field updates DID happen.
+    const after = memberService.get({ db }, m.id);
+    expect(after?.maritalStatus).toBe('Menikah');
+    expect(after?.lifeStage).toBe('Dewasa');
+    expect(after?.roleId).toBe(roleB);
+  });
+
+  it('editMember without silentLog still logs all 3 changes (regression guard)', () => {
+    const roleA = seedRole(db, 'Imam');
+    const m = memberService.addMember(
+      { db },
+      {
+        ...FAISAL,
+        lifeStage: 'Muda-mudi',
+        maritalStatus: 'Belum Menikah',
+      },
+    );
+    memberService.editMember(
+      { db },
+      m.id,
+      {
+        maritalStatus: 'Menikah',
+        lifeStage: 'Dewasa',
+        roleId: roleA,
+      },
+    );
+    const changes = db.select().from(memberChanges).all();
+    expect(changes).toHaveLength(3);
+    expect(changes.map((c) => c.changeType).sort()).toEqual(
+      ['Menikah', 'Perubahan Dapukan', 'Perubahan Kelas'],
+    );
+  });
+
+  it('recordMovement(Pindah Sambung) with silentLog skips movement log + still flips is_active', () => {
+    // FAISAL becomes head of KK-S; add SITI so we can transfer headship.
+    const faisal = memberService.addMember({ db }, FAISAL);
+    const siti = memberService.addMember(
+      { db },
+      {
+        ...FAISAL,
+        fullName: 'Siti Aminah',
+        household: { mode: 'join-existing', householdId: faisal.householdId },
+      },
+    );
+    memberService.recordMovement(
+      { db },
+      {
+        memberId: faisal.id,
+        kind: 'Pindah Sambung',
+        date: '2026-05-20',
+        newHeadMemberId: siti.id,
+        silentLog: true,
+      },
+    );
+    expect(db.select().from(memberMovements).all()).toHaveLength(0);
+    expect(memberService.get({ db }, faisal.id)?.isActive).toBe(false);
+  });
+
+  it('recordMovement(Meninggal) with silentLog skips vital log + still flips is_active', () => {
+    const faisal = memberService.addMember({ db }, FAISAL);
+    const siti = memberService.addMember(
+      { db },
+      {
+        ...FAISAL,
+        fullName: 'Siti Aminah',
+        household: { mode: 'join-existing', householdId: faisal.householdId },
+      },
+    );
+    memberService.recordMovement(
+      { db },
+      {
+        memberId: faisal.id,
+        kind: 'Meninggal',
+        date: '2026-05-20',
+        newHeadMemberId: siti.id,
+        silentLog: true,
+      },
+    );
+    expect(db.select().from(vitalRecords).all()).toHaveLength(0);
+    expect(memberService.get({ db }, faisal.id)?.isActive).toBe(false);
+  });
+});

@@ -171,24 +171,26 @@ export const memberService = {
           .run();
       }
 
-      // 4. §8 auto-trigger.
-      const logDate = input.logDate ?? today(deps);
-      if (input.logAs === 'Lahir') {
-        eventLogService.recordVital(tx, {
-          eventType: 'Lahir',
-          eventDate: logDate,
-          memberId: inserted.id,
-          name: input.fullName.trim(),
-          gender: input.gender,
-          notes: input.logNotes ?? null,
-        });
-      } else if (input.logAs === 'Sambung Baru') {
-        eventLogService.recordMovement(tx, {
-          movementType: 'Sambung Baru',
-          movementDate: logDate,
-          memberId: inserted.id,
-          notes: input.logNotes ?? null,
-        });
+      // 4. §8 auto-trigger. Skipped when silentLog=true (Mode Pendataan Awal).
+      if (!input.silentLog) {
+        const logDate = input.logDate ?? today(deps);
+        if (input.logAs === 'Lahir') {
+          eventLogService.recordVital(tx, {
+            eventType: 'Lahir',
+            eventDate: logDate,
+            memberId: inserted.id,
+            name: input.fullName.trim(),
+            gender: input.gender,
+            notes: input.logNotes ?? null,
+          });
+        } else if (input.logAs === 'Sambung Baru') {
+          eventLogService.recordMovement(tx, {
+            movementType: 'Sambung Baru',
+            movementDate: logDate,
+            memberId: inserted.id,
+            notes: input.logNotes ?? null,
+          });
+        }
       }
 
       return fetchRow(tx, inserted.id);
@@ -210,9 +212,11 @@ export const memberService = {
       if (!current) throw new MemberNotFoundError(id);
 
       const changeDate = today(deps);
+      const logChanges = !input.silentLog;
 
       // §8: marital_status change.
       if (
+        logChanges &&
         input.maritalStatus !== undefined &&
         input.maritalStatus !== current.maritalStatus
       ) {
@@ -227,6 +231,7 @@ export const memberService = {
 
       // §8: life_stage change.
       if (
+        logChanges &&
         input.lifeStage !== undefined &&
         input.lifeStage !== current.lifeStage
       ) {
@@ -240,7 +245,11 @@ export const memberService = {
       }
 
       // §8: role_id change.
-      if (input.roleId !== undefined && input.roleId !== current.roleId) {
+      if (
+        logChanges &&
+        input.roleId !== undefined &&
+        input.roleId !== current.roleId
+      ) {
         const oldRoleName = current.roleId
           ? (tx.select().from(roles).where(eq(roles.id, current.roleId)).get()
               ?.name ?? null)
@@ -369,22 +378,24 @@ export const memberService = {
         householdService.setHead(tx, current.householdId, input.newHeadMemberId);
       }
 
-      if (input.kind === 'Pindah Sambung') {
-        eventLogService.recordMovement(tx, {
-          movementType: 'Pindah Sambung',
-          movementDate: input.date,
-          memberId: input.memberId,
-          notes: input.notes ?? null,
-        });
-      } else {
-        eventLogService.recordVital(tx, {
-          eventType: 'Meninggal',
-          eventDate: input.date,
-          memberId: input.memberId,
-          name: current.fullName,
-          gender: current.gender,
-          notes: input.notes ?? null,
-        });
+      if (!input.silentLog) {
+        if (input.kind === 'Pindah Sambung') {
+          eventLogService.recordMovement(tx, {
+            movementType: 'Pindah Sambung',
+            movementDate: input.date,
+            memberId: input.memberId,
+            notes: input.notes ?? null,
+          });
+        } else {
+          eventLogService.recordVital(tx, {
+            eventType: 'Meninggal',
+            eventDate: input.date,
+            memberId: input.memberId,
+            name: current.fullName,
+            gender: current.gender,
+            notes: input.notes ?? null,
+          });
+        }
       }
 
       tx.update(members)

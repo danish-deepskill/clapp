@@ -20,6 +20,8 @@ export interface RecordMovementModalProps {
       when the affected member is the head. */
   householdMembers: MemberRow[];
   onSaved: () => void;
+  /** Mode Pendataan Awal — skip Catatan Peristiwa writes on submit. */
+  silentLog?: boolean;
 }
 
 export function RecordMovementModal({
@@ -28,6 +30,7 @@ export function RecordMovementModal({
   member,
   householdMembers,
   onSaved,
+  silentLog,
 }: RecordMovementModalProps) {
   const { showToast } = useToast();
   const [kind, setKind] = useState<MovementKind>('Pindah Sambung');
@@ -97,6 +100,7 @@ export function RecordMovementModal({
       date,
       notes: notes.trim() || null,
       ...(needsNewHead ? { newHeadMemberId: Number(newHeadId) } : {}),
+      silentLog: silentLog ?? false,
     };
     const result = await window.clapp.member.recordMovement(input);
     setSubmitting(false);

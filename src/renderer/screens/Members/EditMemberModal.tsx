@@ -64,6 +64,8 @@ export interface EditMemberModalProps {
   households: HouseholdRow[];
   roles: MasterDataItem[];
   onSaved: () => void;
+  /** Mode Pendataan Awal — skip member_changes writes on submit. */
+  silentLog?: boolean;
 }
 
 type KKMode = 'join-existing' | 'create-new';
@@ -109,6 +111,7 @@ export function EditMemberModal({
   households,
   roles,
   onSaved,
+  silentLog,
 }: EditMemberModalProps) {
   const { showToast } = useToast();
   const [form, setForm] = useState<FormState | null>(null);
@@ -203,6 +206,7 @@ export function EditMemberModal({
         householdId: Number(form.kkId),
       };
     }
+    if (silentLog) patch.silentLog = true;
     const result = await window.clapp.member.edit(member.id, patch);
     setSubmitting(false);
     if (!result.ok) {

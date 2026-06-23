@@ -1,5 +1,6 @@
 import type { DB } from './db';
 import { registerAttendanceHandlers } from './handlers/attendanceHandlers';
+import { registerEventLogHandlers } from './handlers/eventLogHandlers';
 import { registerHouseholdHandlers } from './handlers/householdHandlers';
 import { registerMasterDataHandlers } from './handlers/masterDataHandlers';
 import { registerMeetingHandlers } from './handlers/meetingHandlers';
@@ -15,5 +16,6 @@ export function registerIpcHandlers(deps: IpcDeps): void {
   registerHouseholdHandlers(deps);
   registerAttendanceHandlers(deps);
   registerMeetingHandlers(deps);
-  // Future PRs add: report, eventLog, backup.
+  registerEventLogHandlers(deps);
+  // Future PRs add: report, backup.
 }

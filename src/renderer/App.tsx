@@ -7,6 +7,7 @@ import { AttendanceRecap } from './screens/AttendanceRecap';
 import { EventLog } from './screens/EventLog';
 import { Meetings } from './screens/Meetings';
 import { Members } from './screens/Members';
+import { MonthlyReport } from './screens/MonthlyReport';
 import { Serkiler } from './screens/Serkiler';
 import { Settings } from './screens/Settings';
 
@@ -31,6 +32,8 @@ export function App() {
             <Meetings />
           ) : active === 'Catatan Peristiwa' ? (
             <EventLog />
+          ) : active === 'Laporan Bulanan' ? (
+            <MonthlyReport />
           ) : active === 'Serkiler' ? (
             <Serkiler />
           ) : active === 'Pengaturan' ? (

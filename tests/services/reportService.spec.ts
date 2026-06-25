@@ -360,6 +360,22 @@ describe('reportService.saveReport', () => {
       reportService.saveReport({ db }, emptySave(5, 2026)),
     ).toThrow(ReportLockedError);
   });
+
+  it('kegiatan lists every active activity_type as Belum even with no record', () => {
+    db.insert(activityTypes)
+      .values([
+        { name: 'Kegiatan A', sourceKind: 'manual' },
+        { name: 'Kegiatan B', sourceKind: 'manual' },
+        { name: 'Kegiatan Retired', sourceKind: 'manual', isActive: false },
+      ])
+      .run();
+    const r = reportService.getReport({ db }, { month: 5, year: 2026 });
+    expect(r.activities.map((a) => a.activityName)).toEqual([
+      'Kegiatan A',
+      'Kegiatan B',
+    ]);
+    expect(r.activities.every((a) => a.status === 'Belum')).toBe(true);
+  });
 });
 
 // ─── finalize / unlock (§8 #10) ────────────────────────────────────────────

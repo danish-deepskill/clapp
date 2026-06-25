@@ -2,15 +2,24 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Banner } from '@renderer/components/Banner';
 import { useToast } from '@renderer/components/Toast';
+import {
+  availableYears,
+  currentMonthYear,
+  lastDayOfMonth,
+} from '@renderer/lib/dates';
+import { BULAN_ID } from '@shared/enums';
+import type { MemberAsOf } from '@shared/history';
 import type { HouseholdRow } from '@shared/household';
 import type { MasterDataItem } from '@shared/masterData';
 import type { MemberFilter, MemberRow as Member } from '@shared/member';
 
 import { AddMemberModal } from './AddMemberModal';
+import { AsOfRoster } from './AsOfRoster';
 import { DetailPanel } from './DetailPanel';
 import { EditHouseholdModal } from './EditHouseholdModal';
 import { EditMemberModal } from './EditMemberModal';
 import { FilterBar, type ViewMode } from './FilterBar';
+import { HistoryBar } from './HistoryBar';
 import { MemberList } from './MemberList';
 import { RecordMovementModal } from './RecordMovementModal';
 
@@ -32,6 +41,35 @@ export function Members() {
   );
   // Mode Pendataan Awal — session-only; member ops skip Catatan Peristiwa writes.
   const [setupMode, setSetupMode] = useState(false);
+
+  // Riwayat (history) mode — null = live directory; else reconstruct as-of month.
+  const initialPeriod = useMemo(() => currentMonthYear(), []);
+  const [historyPeriod, setHistoryPeriod] = useState<
+    { month: number; year: number } | null
+  >(null);
+  const [asOfRoster, setAsOfRoster] = useState<MemberAsOf[] | null>(null);
+
+  useEffect(() => {
+    if (!historyPeriod) {
+      setAsOfRoster(null);
+      return;
+    }
+    let cancelled = false;
+    setAsOfRoster(null);
+    void (async () => {
+      const date = lastDayOfMonth(historyPeriod.year, historyPeriod.month);
+      const r = await window.clapp.member.rosterAsOf({ date });
+      if (cancelled) return;
+      if (!r.ok) {
+        showToast({ variant: 'error', message: r.message });
+        return;
+      }
+      setAsOfRoster(r.data);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [historyPeriod, showToast]);
 
   const [addOpen, setAddOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -150,6 +188,38 @@ export function Members() {
     });
   }, [visibleHouseholdIds]);
 
+  const yearChoices = useMemo(
+    () => availableYears(initialPeriod.year - 5),
+    [initialPeriod],
+  );
+
+  // ─── Riwayat (read-only past-month reconstruction) ────────────────────
+  if (historyPeriod) {
+    const label = `${BULAN_ID[historyPeriod.month - 1]} ${historyPeriod.year}`;
+    return (
+      <div className="flex h-full flex-col bg-paper">
+        <HistoryBar
+          month={historyPeriod.month}
+          year={historyPeriod.year}
+          onPeriodChange={setHistoryPeriod}
+          availableYears={yearChoices}
+          count={asOfRoster?.length ?? 0}
+          onExit={() => setHistoryPeriod(null)}
+        />
+        {asOfRoster === null ? (
+          <div className="flex flex-1 items-center justify-center font-mono text-[11px] uppercase tracking-wider text-ink-500">
+            Memuat…
+          </div>
+        ) : (
+          <AsOfRoster
+            rows={asOfRoster}
+            emptyLabel={`Tidak ada jama'ah aktif pada akhir ${label}.`}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-full flex-col bg-paper">
       <FilterBar
@@ -169,6 +239,12 @@ export function Members() {
         }
         setupMode={setupMode}
         onSetupModeChange={setSetupMode}
+        onOpenHistory={() =>
+          setHistoryPeriod({
+            month: initialPeriod.month,
+            year: initialPeriod.year,
+          })
+        }
       />
 
       {setupMode && (

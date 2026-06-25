@@ -8,14 +8,19 @@ import type {
   NewMemberInput,
   RecordMovementInput,
 } from '../../shared/member';
+import type { MemberAsOf, RosterAsOfInput } from '../../shared/history';
 import type { IpcDeps } from '../ipc';
+import {
+  InvalidAsOfDateError,
+  historyService,
+} from '../services/historyService';
+import { HouseholdNotFoundError } from '../services/householdService';
 import {
   AlreadyInactiveError,
   HeadReassignmentRequiredError,
   MemberNotFoundError,
   memberService,
 } from '../services/memberService';
-import { HouseholdNotFoundError } from '../services/householdService';
 
 function tryCall<T>(fn: () => T): IpcResult<T> {
   try {
@@ -36,6 +41,9 @@ function tryCall<T>(fn: () => T): IpcResult<T> {
         code: 'DUPLICATE',
         message: e.message,
       };
+    }
+    if (e instanceof InvalidAsOfDateError) {
+      return { ok: false, code: 'INVALID_INPUT', message: e.message };
     }
     throw e;
   }
@@ -70,5 +78,11 @@ export function registerMemberHandlers(deps: IpcDeps): void {
     'member:recordMovement',
     (_e, input: RecordMovementInput): IpcResult<MemberRow> =>
       tryCall(() => memberService.recordMovement({ db: deps.db }, input)),
+  );
+
+  ipcMain.handle(
+    'member:rosterAsOf',
+    (_e, input: RosterAsOfInput): IpcResult<MemberAsOf[]> =>
+      tryCall(() => historyService.reconstructRosterAsOf({ db: deps.db }, input)),
   );
 }

@@ -39,6 +39,12 @@ import type {
   RecordMovementInput,
 } from '../shared/member';
 import type {
+  FinalizeInput,
+  LoadReportInput,
+  ReportData,
+  SaveReportInput,
+} from '../shared/report';
+import type {
   LoadSerkilerInput,
   SerkilerRow,
   UpdateIuranInput,
@@ -122,6 +128,16 @@ const api = {
   eventLog: {
     list: (input: LoadEventLogInput): Promise<IpcResult<EventLogEntry[]>> =>
       ipcRenderer.invoke('eventLog:list', input),
+  },
+  report: {
+    get: (input: LoadReportInput): Promise<IpcResult<ReportData>> =>
+      ipcRenderer.invoke('report:get', input),
+    save: (input: SaveReportInput): Promise<IpcResult<ReportData>> =>
+      ipcRenderer.invoke('report:save', input),
+    finalize: (input: FinalizeInput): Promise<IpcResult<ReportData>> =>
+      ipcRenderer.invoke('report:finalize', input),
+    unlock: (input: FinalizeInput): Promise<IpcResult<ReportData>> =>
+      ipcRenderer.invoke('report:unlock', input),
   },
   serkiler: {
     list: (input: LoadSerkilerInput): Promise<IpcResult<SerkilerRow[]>> =>

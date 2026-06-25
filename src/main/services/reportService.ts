@@ -232,9 +232,6 @@ function readChildren(db: DBLike, reportId: number) {
       .all()
       .map((h) => [h.id, h.householdNo]),
   );
-  const activityTypeById = new Map(
-    db.select().from(activityTypes).all().map((t) => [t.id, t]),
-  );
 
   const sick = db
     .select()
@@ -262,22 +259,34 @@ function readChildren(db: DBLike, reportId: number) {
       notes: r.notes,
     }));
 
+  // Kegiatan = every ACTIVE activity_type, merged with its record for this
+  // report (default Belum when no record exists yet). So the operator sees
+  // the full checklist, not just rows the §8 trigger happened to create.
+  const recordByType = new Map(
+    db
+      .select()
+      .from(activityRecords)
+      .where(eq(activityRecords.reportId, reportId))
+      .all()
+      .map((r) => [r.activityTypeId, r]),
+  );
   const activities = db
     .select()
-    .from(activityRecords)
-    .where(eq(activityRecords.reportId, reportId))
+    .from(activityTypes)
     .all()
-    .map((r) => {
-      const at = activityTypeById.get(r.activityTypeId);
+    .filter((at) => at.isActive)
+    .sort((a, b) => a.name.localeCompare(b.name, 'id'))
+    .map((at) => {
+      const r = recordByType.get(at.id);
       return {
-        activityTypeId: r.activityTypeId,
-        activityName: at?.name ?? `id ${r.activityTypeId}`,
-        sourceKind: at?.sourceKind,
-        status: r.status,
-        executedDate: r.executedDate,
-        attendeeCount: r.attendeeCount,
-        location: r.location,
-        sourceMeetingId: r.sourceMeetingId,
+        activityTypeId: at.id,
+        activityName: at.name,
+        sourceKind: at.sourceKind,
+        status: r?.status ?? ('Belum' as const),
+        executedDate: r?.executedDate ?? null,
+        attendeeCount: r?.attendeeCount ?? null,
+        location: r?.location ?? null,
+        sourceMeetingId: r?.sourceMeetingId ?? null,
       };
     });
 

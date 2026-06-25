@@ -31,6 +31,7 @@ import type {
   SaveMeetingInput,
   SaveMeetingResult,
 } from '../shared/meeting';
+import type { MemberAsOf, RosterAsOfInput } from '../shared/history';
 import type {
   EditMemberInput,
   MemberFilter,
@@ -97,6 +98,8 @@ const api = {
       input: RecordMovementInput,
     ): Promise<IpcResult<MemberRow>> =>
       ipcRenderer.invoke('member:recordMovement', input),
+    rosterAsOf: (input: RosterAsOfInput): Promise<IpcResult<MemberAsOf[]>> =>
+      ipcRenderer.invoke('member:rosterAsOf', input),
   },
   household: {
     list: (): Promise<HouseholdRow[]> => ipcRenderer.invoke('household:list'),

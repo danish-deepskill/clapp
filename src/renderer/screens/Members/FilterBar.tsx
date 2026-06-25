@@ -4,6 +4,7 @@ import {
   ChevronsUpDown,
   ClipboardList,
   Filter,
+  History,
   LayoutList,
   Plus,
   Table,
@@ -44,6 +45,8 @@ export interface FilterBarProps {
   /** Mode Pendataan Awal — silences Catatan Peristiwa writes from member ops. */
   setupMode: boolean;
   onSetupModeChange: (next: boolean) => void;
+  /** Enter the read-only past-month reconstruction view. */
+  onOpenHistory: () => void;
 }
 
 export function FilterBar({
@@ -61,6 +64,7 @@ export function FilterBar({
   canToggleCollapseAll,
   setupMode,
   onSetupModeChange,
+  onOpenHistory,
 }: FilterBarProps) {
   const activeFilterCount =
     (filter.lifeStage ? 1 : 0) +
@@ -155,6 +159,18 @@ export function FilterBar({
           <span className="font-semibold text-ink-900">{totalActive}</span>{' '}
           aktif
         </span>
+      </FilterCell>
+
+      <FilterCell>
+        <button
+          type="button"
+          onClick={onOpenHistory}
+          title="Lihat keadaan jama'ah pada bulan-bulan lalu"
+          className="inline-flex h-9 items-center gap-2 rounded border border-rule bg-surface px-3 font-sans text-[13px] font-medium text-ink-700 transition-colors hover:border-rule-strong hover:text-ink-900"
+        >
+          <History size={14} strokeWidth={1.6} />
+          Riwayat
+        </button>
       </FilterCell>
 
       <FilterCell>

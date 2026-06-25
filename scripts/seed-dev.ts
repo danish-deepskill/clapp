@@ -260,6 +260,27 @@ if (seededRoles.length > 0) {
   console.log(`→ Assigned ${assigned} members as Pengurus.`);
 }
 
+// Flag the first ~12 active adults into the Serkiler rotation so the screen
+// has data out-of-the-box. Dev only — production starts with none flagged.
+const serkilerAdults = db
+  .select()
+  .from(schema.members)
+  .all()
+  .filter(
+    (m) =>
+      m.isActive &&
+      (m.lifeStage === 'Dewasa' || m.lifeStage === 'Muda-mudi'),
+  )
+  .sort((a, b) => a.id - b.id)
+  .slice(0, 12);
+for (const m of serkilerAdults) {
+  db.update(schema.members)
+    .set({ isSerkiler: true })
+    .where(eq(schema.members.id, m.id))
+    .run();
+}
+console.log(`→ Flagged ${serkilerAdults.length} members into Serkiler.`);
+
 console.log(
   `✓ Seeded ${seed.households.length} households / ${memberCount} members.`,
 );

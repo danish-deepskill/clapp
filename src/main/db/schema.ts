@@ -69,6 +69,10 @@ export const members = sqliteTable('members', {
   birthDate: text('birth_date'),
   roleId: integer('role_id').references(() => roles.id),
   isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
+  /** Standing membership in the Serkiler iuran rotation (curated subset). */
+  isSerkiler: integer('is_serkiler', { mode: 'boolean' })
+    .notNull()
+    .default(false),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(unixepoch())`),

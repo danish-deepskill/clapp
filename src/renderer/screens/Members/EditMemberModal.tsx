@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { Button } from '@renderer/components/Button';
+import { Checkbox } from '@renderer/components/Checkbox';
 import { FormField, FormGrid, FormSection } from '@renderer/components/FormField';
 import { HintLine, HintPill } from '@renderer/components/HintLine';
 import { Input } from '@renderer/components/Input';
@@ -81,6 +82,7 @@ interface FormState {
   birthPlace: string;
   birthDate: string;
   roleId: string;
+  isSerkiler: boolean;
   kkMode: KKMode;
   kkId: string;
   kkAddress: string;
@@ -98,6 +100,7 @@ function fromMember(m: MemberRow): FormState {
     birthPlace: m.birthPlace ?? '',
     birthDate: m.birthDate ?? '',
     roleId: m.roleId ? String(m.roleId) : NO_ROLE,
+    isSerkiler: m.isSerkiler,
     kkMode: 'join-existing',
     kkId: String(m.householdId),
     kkAddress: '',
@@ -194,6 +197,9 @@ export function EditMemberModal({
     }
     if (form.roleId !== orig.roleId) {
       patch.roleId = form.roleId === NO_ROLE ? null : Number(form.roleId);
+    }
+    if (form.isSerkiler !== orig.isSerkiler) {
+      patch.isSerkiler = form.isSerkiler;
     }
     if (form.kkMode === 'create-new') {
       patch.household = {
@@ -357,6 +363,17 @@ export function EditMemberModal({
               items={roleSelectItems(roles, member?.roleId ?? null)}
             />
           </FormField>
+          <label className="col-span-2 flex cursor-default items-center gap-2.5 text-[13px] text-ink-900">
+            <Checkbox
+              aria-label="Termasuk rotasi Serkiler"
+              checked={form.isSerkiler}
+              onCheckedChange={(c) => set('isSerkiler', c)}
+            />
+            Termasuk rotasi Serkiler
+            <span className="text-[11.5px] italic text-ink-500">
+              (muncul di lembar iuran Serkiler)
+            </span>
+          </label>
         </FormGrid>
       </FormSection>
 

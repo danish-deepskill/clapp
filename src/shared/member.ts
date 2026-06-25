@@ -22,6 +22,8 @@ export interface MemberRow {
   roleName: string | null;
   isActive: boolean;
   isHead: boolean;
+  /** Standing membership in the Serkiler iuran rotation. */
+  isSerkiler: boolean;
 }
 
 export type AddMemberLogAs = 'Lahir' | 'Sambung Baru' | 'none';
@@ -60,6 +62,7 @@ export interface EditMemberInput {
   birthPlace?: string | null;
   birthDate?: string | null;
   roleId?: number | null;
+  isSerkiler?: boolean;
   household?: HouseholdChoice;
   /** Mode Pendataan Awal — skip member_changes log writes for this call. */
   silentLog?: boolean;

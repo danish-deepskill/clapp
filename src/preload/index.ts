@@ -38,6 +38,12 @@ import type {
   NewMemberInput,
   RecordMovementInput,
 } from '../shared/member';
+import type {
+  LoadSerkilerInput,
+  SerkilerRow,
+  UpdateIuranInput,
+  UpdateParafInput,
+} from '../shared/serkiler';
 
 interface MasterDataNamespace {
   list(): Promise<MasterDataItem[]>;
@@ -116,6 +122,14 @@ const api = {
   eventLog: {
     list: (input: LoadEventLogInput): Promise<IpcResult<EventLogEntry[]>> =>
       ipcRenderer.invoke('eventLog:list', input),
+  },
+  serkiler: {
+    list: (input: LoadSerkilerInput): Promise<IpcResult<SerkilerRow[]>> =>
+      ipcRenderer.invoke('serkiler:list', input),
+    setParaf: (input: UpdateParafInput): Promise<IpcResult<null>> =>
+      ipcRenderer.invoke('serkiler:setParaf', input),
+    setIuran: (input: UpdateIuranInput): Promise<IpcResult<null>> =>
+      ipcRenderer.invoke('serkiler:setIuran', input),
   },
   meeting: {
     list: (input: LoadMeetingsInput): Promise<IpcResult<MeetingListItem[]>> =>

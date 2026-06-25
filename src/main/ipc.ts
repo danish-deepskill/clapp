@@ -5,6 +5,7 @@ import { registerHouseholdHandlers } from './handlers/householdHandlers';
 import { registerMasterDataHandlers } from './handlers/masterDataHandlers';
 import { registerMeetingHandlers } from './handlers/meetingHandlers';
 import { registerMemberHandlers } from './handlers/memberHandlers';
+import { registerSerkilerHandlers } from './handlers/serkilerHandlers';
 
 export interface IpcDeps {
   db: DB;
@@ -17,5 +18,6 @@ export function registerIpcHandlers(deps: IpcDeps): void {
   registerAttendanceHandlers(deps);
   registerMeetingHandlers(deps);
   registerEventLogHandlers(deps);
+  registerSerkilerHandlers(deps);
   // Future PRs add: report, backup.
 }

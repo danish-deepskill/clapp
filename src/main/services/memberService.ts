@@ -79,6 +79,7 @@ function buildMemberRows(db: DBLike): MemberRow[] {
     isHead: allHouseholds.some(
       (h) => h.id === m.householdId && h.headMemberId === m.id,
     ),
+    isSerkiler: m.isSerkiler,
   }));
 }
 
@@ -318,6 +319,7 @@ export const memberService = {
         birthPlace: string | null;
         birthDate: string | null;
         roleId: number | null;
+        isSerkiler: boolean;
         householdId: number;
         updatedAt: Date;
       }> = {};
@@ -337,6 +339,9 @@ export const memberService = {
       }
       if (input.birthDate !== undefined) patch.birthDate = input.birthDate;
       if (input.roleId !== undefined) patch.roleId = input.roleId;
+      // Serkiler membership is roster curation, not a life event — no
+      // member_changes log entry (not a HANDOFF §8 trigger).
+      if (input.isSerkiler !== undefined) patch.isSerkiler = input.isSerkiler;
       if (newHouseholdId !== undefined) patch.householdId = newHouseholdId;
       patch.updatedAt = deps.clock?.() ?? new Date();
 

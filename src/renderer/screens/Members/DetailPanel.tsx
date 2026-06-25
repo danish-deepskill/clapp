@@ -5,6 +5,7 @@ import {
   ActiveBadge,
   KepalaBadge,
   RoleBadge,
+  SerkilerBadge,
 } from '@renderer/components/badges';
 import { Drawer } from '@renderer/components/Drawer';
 import { fmtDateID } from '@renderer/lib/format';
@@ -59,9 +60,10 @@ export function DetailPanel({
       }
     >
       <div className="flex flex-col gap-5 px-5 py-5">
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2.5">
           <ActiveBadge active={member.isActive} />
           {member.roleName && <RoleBadge name={member.roleName} />}
+          {member.isSerkiler && <SerkilerBadge />}
         </div>
 
         <Section title="Identitas">
@@ -71,6 +73,7 @@ export function DetailPanel({
           <Field label="Kelas" value={member.lifeStage} mono />
           <Field label="Status Pernikahan" value={member.maritalStatus} />
           <Field label="Dapukan" value={member.roleName ?? null} />
+          <Field label="Serkiler" value={member.isSerkiler ? 'Ya' : 'Tidak'} />
         </Section>
 
         <Section title="Keluarga">

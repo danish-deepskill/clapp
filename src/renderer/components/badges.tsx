@@ -46,6 +46,20 @@ export function InactiveTag({ className }: { className?: string }) {
   );
 }
 
+export function SerkilerBadge({ className }: { className?: string }) {
+  return (
+    <span
+      title="Termasuk rotasi Serkiler"
+      className={clsx(
+        'inline-flex h-[22px] items-center rounded-sm border border-rule-strong bg-surface-2 px-2 font-sans text-[11px] font-semibold tracking-[0.02em] leading-none text-ink-700',
+        className,
+      )}
+    >
+      Serkiler
+    </span>
+  );
+}
+
 export function ActiveBadge({
   active,
   className,

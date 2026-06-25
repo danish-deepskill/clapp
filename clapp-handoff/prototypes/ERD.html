@@ -170,9 +170,10 @@
           <div class="field"><span class="key"></span><span class="name">birth_date</span><span class="meta">date · nullable</span></div>
           <div class="field nfk"><span class="key">┄FK</span><span class="name">role_id</span><span class="meta">→ roles</span></div>
           <div class="field"><span class="key"></span><span class="name">is_active</span><span class="meta">bool</span></div>
+          <div class="field"><span class="key"></span><span class="name">is_serkiler</span><span class="meta">bool</span></div>
           <div class="field"><span class="key"></span><span class="name">created_at, updated_at</span><span class="meta">ts</span></div>
         </div>
-        <div class="field-note">Hub of the schema. New: <b>role_id</b> for organizational role (most rows null).</div>
+        <div class="field-note">Hub of the schema. <b>role_id</b> for organizational role (most rows null). <b>is_serkiler</b> = standing membership in the Serkiler iuran rotation (curated subset; per-period paraf/iuran live in circular_roster).</div>
       </div>
 
       <div class="entity">

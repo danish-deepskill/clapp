@@ -15,7 +15,6 @@ import {
 import {
   FutureDateError,
   InvalidAttendanceInputError,
-  InvalidPeriodError,
   OneSessionPerDateError,
   SessionTypeNotFoundError,
   attendanceService,
@@ -23,6 +22,7 @@ import {
 import { memberService } from '@main/services/memberService';
 import type { SaveBatchInput } from '@shared/attendance';
 import type { NewMemberInput } from '@shared/member';
+import { InvalidPeriodError } from '@shared/period';
 
 const MIGRATIONS = join(process.cwd(), 'src', 'main', 'db', 'migrations');
 

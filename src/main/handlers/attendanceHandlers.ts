@@ -10,11 +10,11 @@ import type {
   SessionRow,
 } from '../../shared/attendance';
 import type { IpcResult } from '../../shared/ipc';
+import { InvalidPeriodError } from '../../shared/period';
 import type { IpcDeps } from '../ipc';
 import {
   FutureDateError,
   InvalidAttendanceInputError,
-  InvalidPeriodError,
   OneSessionPerDateError,
   SessionTypeNotFoundError,
   attendanceService,

@@ -8,11 +8,11 @@ import { circularRoster, members } from '@main/db/schema';
 import { memberService } from '@main/services/memberService';
 import {
   InvalidSerkilerInputError,
-  InvalidSerkilerPeriodError,
   MemberNotFoundError,
   serkilerService,
 } from '@main/services/serkilerService';
 import type { NewMemberInput } from '@shared/member';
+import { InvalidPeriodError } from '@shared/period';
 
 const MIGRATIONS = join(process.cwd(), 'src', 'main', 'db', 'migrations');
 
@@ -62,10 +62,10 @@ describe('serkilerService.list', () => {
   it('rejects invalid month/year', () => {
     expect(() =>
       serkilerService.list({ db }, { month: 13, year: 2026 }),
-    ).toThrow(InvalidSerkilerPeriodError);
+    ).toThrow(InvalidPeriodError);
     expect(() =>
       serkilerService.list({ db }, { month: 5, year: 1900 }),
-    ).toThrow(InvalidSerkilerPeriodError);
+    ).toThrow(InvalidPeriodError);
   });
 
   it('includes flagged active members, alpha-sorted, with null paraf/iuran before any edit', () => {

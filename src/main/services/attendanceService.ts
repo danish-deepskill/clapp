@@ -12,6 +12,7 @@ import type {
 } from '../../shared/attendance';
 import { todayISO } from '../../shared/dates';
 import { ATTENDANCE_LIFE_STAGES } from '../../shared/enums';
+import { monthRange } from '../../shared/period';
 import type { DB, DBLike } from '../db';
 import {
   activityRecords,
@@ -52,12 +53,6 @@ export class InvalidAttendanceInputError extends Error {
   }
 }
 
-export class InvalidPeriodError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'InvalidPeriodError';
-  }
-}
 
 export class OneSessionPerDateError extends Error {
   constructor(
@@ -255,24 +250,6 @@ function assertSessionType(db: DBLike, sessionTypeId: number): void {
   if (!row) throw new SessionTypeNotFoundError(sessionTypeId);
 }
 
-function periodBounds(month: number, year: number): { start: string; end: string } {
-  if (!Number.isInteger(month) || month < 1 || month > 12) {
-    throw new InvalidPeriodError(`month harus 1–12 (diterima ${month})`);
-  }
-  if (!Number.isInteger(year) || year < 2000 || year > 2100) {
-    throw new InvalidPeriodError(`year tidak valid (diterima ${year})`);
-  }
-  const startMonth = String(month).padStart(2, '0');
-  // First day of next month — used as exclusive upper bound for string compare.
-  const nextMonth = month === 12 ? 1 : month + 1;
-  const nextYear = month === 12 ? year + 1 : year;
-  const endMonth = String(nextMonth).padStart(2, '0');
-  return {
-    start: `${year}-${startMonth}-01`,
-    end: `${nextYear}-${endMonth}-01`,
-  };
-}
-
 export const attendanceService = {
   /**
    * Reads-only. Returns the attendance matrix for a month/year period:
@@ -281,7 +258,7 @@ export const attendanceService = {
    * pivots into the (member × session) grid + per-row counts + % Hadir.
    */
   loadRecap(deps: AttendanceDeps, input: LoadRecapInput): RecapData {
-    const { start, end } = periodBounds(input.month, input.year);
+    const { start, end } = monthRange(input.month, input.year);
 
     // Sessions in [start, end) — string-compare works because session_date
     // is stored as zero-padded YYYY-MM-DD.

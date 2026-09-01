@@ -9,6 +9,7 @@ import type {
   EventLogEntry,
   LoadEventLogInput,
 } from '../../shared/eventLog';
+import { monthRange } from '../../shared/period';
 import type { DB, DBLike } from '../db';
 import {
   memberChanges,
@@ -43,35 +44,6 @@ export interface MemberChangeInput {
 
 export interface EventLogDeps {
   db: DB;
-}
-
-export class InvalidEventLogPeriodError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'InvalidEventLogPeriodError';
-  }
-}
-
-function periodBounds(
-  month: number,
-  year: number,
-): { start: string; end: string } {
-  if (!Number.isInteger(month) || month < 1 || month > 12) {
-    throw new InvalidEventLogPeriodError(
-      `month harus 1–12 (diterima ${month})`,
-    );
-  }
-  if (!Number.isInteger(year) || year < 2000 || year > 2100) {
-    throw new InvalidEventLogPeriodError(`year tidak valid (diterima ${year})`);
-  }
-  const startMonth = String(month).padStart(2, '0');
-  const nextMonth = month === 12 ? 1 : month + 1;
-  const nextYear = month === 12 ? year + 1 : year;
-  const endMonth = String(nextMonth).padStart(2, '0');
-  return {
-    start: `${year}-${startMonth}-01`,
-    end: `${nextYear}-${endMonth}-01`,
-  };
 }
 
 // All writers accept `DBLike` so they're callable both standalone and inside a
@@ -123,7 +95,7 @@ export const eventLogService = {
     deps: EventLogDeps,
     input: LoadEventLogInput,
   ): EventLogEntry[] {
-    const { start, end } = periodBounds(input.month, input.year);
+    const { start, end } = monthRange(input.month, input.year);
     const groups = input.groups ?? [];
     const include = (g: EventGroup) => groups.length === 0 || groups.includes(g);
 

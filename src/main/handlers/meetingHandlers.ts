@@ -9,11 +9,11 @@ import type {
   SaveMeetingInput,
   SaveMeetingResult,
 } from '../../shared/meeting';
+import { InvalidPeriodError } from '../../shared/period';
 import type { IpcDeps } from '../ipc';
 import {
   FutureMeetingDateError,
   InvalidMeetingInputError,
-  InvalidMeetingPeriodError,
   MeetingNotFoundError,
   meetingService,
 } from '../services/meetingService';
@@ -30,7 +30,7 @@ function tryCall<T>(fn: () => T): IpcResult<T> {
     }
     if (
       e instanceof InvalidMeetingInputError ||
-      e instanceof InvalidMeetingPeriodError
+      e instanceof InvalidPeriodError
     ) {
       return { ok: false, code: 'INVALID_INPUT', message: e.message };
     }

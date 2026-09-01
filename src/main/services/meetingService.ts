@@ -1,6 +1,7 @@
 import { and, eq, inArray, isNotNull } from 'drizzle-orm';
 
 import { todayISO } from '../../shared/dates';
+import { monthRange } from '../../shared/period';
 import type {
   EligibleAttendee,
   LoadMeetingsInput,
@@ -48,37 +49,8 @@ export class FutureMeetingDateError extends Error {
   }
 }
 
-export class InvalidMeetingPeriodError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'InvalidMeetingPeriodError';
-  }
-}
-
 function isoToday(deps: MeetingDeps): string {
   return todayISO(deps.clock?.());
-}
-
-function periodBounds(
-  month: number,
-  year: number,
-): { start: string; end: string } {
-  if (!Number.isInteger(month) || month < 1 || month > 12) {
-    throw new InvalidMeetingPeriodError(
-      `month harus 1–12 (diterima ${month})`,
-    );
-  }
-  if (!Number.isInteger(year) || year < 2000 || year > 2100) {
-    throw new InvalidMeetingPeriodError(`year tidak valid (diterima ${year})`);
-  }
-  const startMonth = String(month).padStart(2, '0');
-  const nextMonth = month === 12 ? 1 : month + 1;
-  const nextYear = month === 12 ? year + 1 : year;
-  const endMonth = String(nextMonth).padStart(2, '0');
-  return {
-    start: `${year}-${startMonth}-01`,
-    end: `${nextYear}-${endMonth}-01`,
-  };
 }
 
 function readAttendees(db: DBLike, meetingId: number): MeetingAttendee[] {
@@ -263,7 +235,7 @@ export const meetingService = {
     deps: MeetingDeps,
     input: LoadMeetingsInput,
   ): MeetingListItem[] {
-    const { start, end } = periodBounds(input.month, input.year);
+    const { start, end } = monthRange(input.month, input.year);
     const rows = deps.db
       .select({
         id: meetings.id,

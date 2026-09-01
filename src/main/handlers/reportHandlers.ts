@@ -7,9 +7,9 @@ import type {
   ReportData,
   SaveReportInput,
 } from '../../shared/report';
+import { InvalidPeriodError } from '../../shared/period';
 import type { IpcDeps } from '../ipc';
 import {
-  InvalidReportPeriodError,
   ReportLockedError,
   ReportNotFoundError,
   reportService,
@@ -25,7 +25,7 @@ function tryCall<T>(fn: () => T): IpcResult<T> {
     if (e instanceof ReportLockedError) {
       return { ok: false, code: 'DUPLICATE', message: e.message };
     }
-    if (e instanceof InvalidReportPeriodError) {
+    if (e instanceof InvalidPeriodError) {
       return { ok: false, code: 'INVALID_INPUT', message: e.message };
     }
     throw e;

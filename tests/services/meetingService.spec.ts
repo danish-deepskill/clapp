@@ -15,7 +15,6 @@ import { roleService } from '@main/services/masterDataService';
 import {
   FutureMeetingDateError,
   InvalidMeetingInputError,
-  InvalidMeetingPeriodError,
   MeetingNotFoundError,
   meetingService,
 } from '@main/services/meetingService';
@@ -23,6 +22,7 @@ import { memberService } from '@main/services/memberService';
 import type { MeetingType } from '@shared/enums';
 import type { SaveMeetingInput } from '@shared/meeting';
 import type { NewMemberInput } from '@shared/member';
+import { InvalidPeriodError } from '@shared/period';
 
 const MIGRATIONS = join(process.cwd(), 'src', 'main', 'db', 'migrations');
 
@@ -577,10 +577,10 @@ describe('meetingService.listByPeriod', () => {
   it('rejects invalid month/year', () => {
     expect(() =>
       meetingService.listByPeriod({ db }, { month: 13, year: 2026 }),
-    ).toThrow(InvalidMeetingPeriodError);
+    ).toThrow(InvalidPeriodError);
     expect(() =>
       meetingService.listByPeriod({ db }, { month: 5, year: 1500 }),
-    ).toThrow(InvalidMeetingPeriodError);
+    ).toThrow(InvalidPeriodError);
   });
 });
 

@@ -15,13 +15,13 @@ import { eventLogService } from '@main/services/eventLogService';
 import { meetingService } from '@main/services/meetingService';
 import { memberService } from '@main/services/memberService';
 import {
-  InvalidReportPeriodError,
   ReportLockedError,
   ReportNotFoundError,
   reportService,
 } from '@main/services/reportService';
 import type { AttendanceStatus } from '@shared/enums';
 import type { NewMemberInput } from '@shared/member';
+import { InvalidPeriodError } from '@shared/period';
 import type { SaveReportInput } from '@shared/report';
 
 const MIGRATIONS = join(process.cwd(), 'src', 'main', 'db', 'migrations');
@@ -76,7 +76,7 @@ describe('reportService.getReport', () => {
   it('rejects invalid period', () => {
     const db = freshDb();
     expect(() => reportService.getReport({ db }, { month: 13, year: 2026 })).toThrow(
-      InvalidReportPeriodError,
+      InvalidPeriodError,
     );
   });
 

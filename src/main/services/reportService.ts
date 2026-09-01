@@ -13,6 +13,7 @@ import type {
   VisitPlan,
   ConstructionProject,
 } from '../../shared/report';
+import { assertMonthYear, monthRange } from '../../shared/period';
 import type { DB, DBLike } from '../db';
 import {
   activityRecords,
@@ -33,13 +34,6 @@ export interface ReportDeps {
   clock?: () => Date;
 }
 
-export class InvalidReportPeriodError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'InvalidReportPeriodError';
-  }
-}
-
 export class ReportLockedError extends Error {
   constructor(month: number, year: number) {
     super(`Laporan ${month}/${year} sudah dikunci — buka kunci dulu`);
@@ -52,25 +46,6 @@ export class ReportNotFoundError extends Error {
     super(`Laporan ${month}/${year} belum ada`);
     this.name = 'ReportNotFoundError';
   }
-}
-
-function assertPeriod(month: number, year: number): void {
-  if (!Number.isInteger(month) || month < 1 || month > 12) {
-    throw new InvalidReportPeriodError(`month harus 1–12 (diterima ${month})`);
-  }
-  if (!Number.isInteger(year) || year < 2000 || year > 2100) {
-    throw new InvalidReportPeriodError(`year tidak valid (diterima ${year})`);
-  }
-}
-
-function periodBounds(month: number, year: number): { start: string; end: string } {
-  const startMonth = String(month).padStart(2, '0');
-  const nextMonth = month === 12 ? 1 : month + 1;
-  const nextYear = month === 12 ? year + 1 : year;
-  return {
-    start: `${year}-${startMonth}-01`,
-    end: `${nextYear}-${String(nextMonth).padStart(2, '0')}-01`,
-  };
 }
 
 function getOrCreateReport(tx: DBLike, month: number, year: number) {
@@ -119,7 +94,7 @@ function computeDemografi(db: DBLike): Demografi {
 
 /** % Hadir = (H + S + I) / total sessions, per attendance-eligible member. */
 function computeLimaBab(db: DBLike, month: number, year: number): LimaBab {
-  const { start, end } = periodBounds(month, year);
+  const { start, end } = monthRange(month, year);
   const sessionIds = db
     .select({ id: sessions.id, sessionDate: sessions.sessionDate })
     .from(sessions)
@@ -190,7 +165,7 @@ function computePeristiwa(deps: ReportDeps, month: number, year: number): Perist
 }
 
 function computeSaran(db: DBLike, month: number, year: number): SaranEntry[] {
-  const { start, end } = periodBounds(month, year);
+  const { start, end } = monthRange(month, year);
   return db
     .select({
       meetingId: meetings.id,
@@ -295,7 +270,7 @@ function readChildren(db: DBLike, reportId: number) {
 
 export const reportService = {
   getReport(deps: ReportDeps, input: LoadReportInput): ReportData {
-    assertPeriod(input.month, input.year);
+    assertMonthYear(input.month, input.year);
     const { month, year } = input;
 
     return deps.db.transaction((tx) => {
@@ -345,7 +320,7 @@ export const reportService = {
   },
 
   saveReport(deps: ReportDeps, input: SaveReportInput): ReportData {
-    assertPeriod(input.month, input.year);
+    assertMonthYear(input.month, input.year);
     const { month, year } = input;
 
     deps.db.transaction((tx) => {
@@ -427,7 +402,7 @@ export const reportService = {
    * Lima Bab bucket counts so the report freezes as-of finalize time.
    */
   finalize(deps: ReportDeps, input: FinalizeInput): ReportData {
-    assertPeriod(input.month, input.year);
+    assertMonthYear(input.month, input.year);
     const { month, year } = input;
 
     deps.db.transaction((tx) => {
@@ -454,7 +429,7 @@ export const reportService = {
   },
 
   unlock(deps: ReportDeps, input: FinalizeInput): ReportData {
-    assertPeriod(input.month, input.year);
+    assertMonthYear(input.month, input.year);
     const { month, year } = input;
 
     deps.db.transaction((tx) => {

@@ -6,18 +6,12 @@ import type {
   UpdateIuranInput,
   UpdateParafInput,
 } from '../../shared/serkiler';
+import { monthKey } from '../../shared/period';
 import type { DB } from '../db';
 import { circularRoster, households, members } from '../db/schema';
 
 export interface SerkilerDeps {
   db: DB;
-}
-
-export class InvalidSerkilerPeriodError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'InvalidSerkilerPeriodError';
-  }
 }
 
 export class InvalidSerkilerInputError extends Error {
@@ -32,18 +26,6 @@ export class MemberNotFoundError extends Error {
     super(`Jama'ah id ${id} tidak ditemukan`);
     this.name = 'MemberNotFoundError';
   }
-}
-
-function periodString(month: number, year: number): string {
-  if (!Number.isInteger(month) || month < 1 || month > 12) {
-    throw new InvalidSerkilerPeriodError(
-      `month harus 1–12 (diterima ${month})`,
-    );
-  }
-  if (!Number.isInteger(year) || year < 2000 || year > 2100) {
-    throw new InvalidSerkilerPeriodError(`year tidak valid (diterima ${year})`);
-  }
-  return `${year}-${String(month).padStart(2, '0')}`;
 }
 
 /** Upsert a circular_roster row's paraf/iuran; creates lazily if absent. */
@@ -98,7 +80,7 @@ export const serkilerService = {
    * per-period paraf/iuran. Alpha-sorted.
    */
   list(deps: SerkilerDeps, input: LoadSerkilerInput): SerkilerRow[] {
-    const period = periodString(input.month, input.year);
+    const period = monthKey(input.month, input.year);
 
     const flagged = deps.db
       .select({
@@ -158,12 +140,12 @@ export const serkilerService = {
   },
 
   setParaf(deps: SerkilerDeps, input: UpdateParafInput): void {
-    const period = periodString(input.month, input.year);
+    const period = monthKey(input.month, input.year);
     upsertRow(deps, period, input.memberId, { paraf: input.paraf });
   },
 
   setIuran(deps: SerkilerDeps, input: UpdateIuranInput): void {
-    const period = periodString(input.month, input.year);
+    const period = monthKey(input.month, input.year);
     if (input.amount !== null) {
       if (!Number.isInteger(input.amount) || input.amount < 0) {
         throw new InvalidSerkilerInputError(

@@ -3,12 +3,10 @@ import { join } from 'node:path';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { type DB, openDatabase, runMigrations } from '@main/db';
-import {
-  eventLogService,
-  InvalidEventLogPeriodError,
-} from '@main/services/eventLogService';
+import { eventLogService } from '@main/services/eventLogService';
 import { memberService } from '@main/services/memberService';
 import type { NewMemberInput } from '@shared/member';
+import { InvalidPeriodError } from '@shared/period';
 
 const MIGRATIONS = join(process.cwd(), 'src', 'main', 'db', 'migrations');
 
@@ -55,10 +53,10 @@ describe('eventLogService.listByPeriod', () => {
   it('rejects invalid month/year', () => {
     expect(() =>
       eventLogService.listByPeriod({ db }, { month: 13, year: 2026 }),
-    ).toThrow(InvalidEventLogPeriodError);
+    ).toThrow(InvalidPeriodError);
     expect(() =>
       eventLogService.listByPeriod({ db }, { month: 5, year: 1500 }),
-    ).toThrow(InvalidEventLogPeriodError);
+    ).toThrow(InvalidPeriodError);
   });
 
   it('includes vital_records for the period (Lahir / Meninggal)', () => {

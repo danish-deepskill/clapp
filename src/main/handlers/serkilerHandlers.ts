@@ -7,10 +7,10 @@ import type {
   UpdateIuranInput,
   UpdateParafInput,
 } from '../../shared/serkiler';
+import { InvalidPeriodError } from '../../shared/period';
 import type { IpcDeps } from '../ipc';
 import {
   InvalidSerkilerInputError,
-  InvalidSerkilerPeriodError,
   MemberNotFoundError,
   serkilerService,
 } from '../services/serkilerService';
@@ -24,7 +24,7 @@ function tryCall<T>(fn: () => T): IpcResult<T> {
     }
     if (
       e instanceof InvalidSerkilerInputError ||
-      e instanceof InvalidSerkilerPeriodError
+      e instanceof InvalidPeriodError
     ) {
       return { ok: false, code: 'INVALID_INPUT', message: e.message };
     }

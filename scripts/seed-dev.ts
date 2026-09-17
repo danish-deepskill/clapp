@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 // Dev-only convenience: imports clapp-handoff/seed.json into the dev SQLite
-// file so the Jamaah screen has data to render. The real first-run wizard
-// (later PR) replaces this.
+// file with extra dev fixtures (Pengurus assignments, Serkiler flags). The
+// production path is the in-app first-run wizard (src/main/services/seedService.ts).
 //
 // Usage:
 //   1. Close any running CLApp window (DB lock).

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { isValidISODate } from './dates';
 import {
   BLOOD_TYPE,
   GENDER,
@@ -7,7 +8,7 @@ import {
   LIFE_STAGE,
   MARITAL_STATUS,
   RHESUS,
-} from '@shared/enums';
+} from './enums';
 
 // Role is intentionally NOT a Zod enum here. The `roles` lookup table is the
 // single source of truth (see CLAUDE.md / project memory). At seed-import time
@@ -26,7 +27,7 @@ const MemberSchema = z.object({
   birth_place: z.string().nullable(),
   birth_date: z
     .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .refine(isValidISODate, { message: 'Tanggal lahir bukan tanggal YYYY-MM-DD yang valid' })
     .nullable(),
   is_head: z.boolean(),
   is_active: z.boolean(),

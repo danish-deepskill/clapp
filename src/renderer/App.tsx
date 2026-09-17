@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactElement } from 'react';
 
 import { NavBar, type Screen } from './components/NavBar';
 import { TitleBar } from './components/TitleBar';
-import { ToastProvider } from './components/Toast';
+import { ToastProvider, useToast } from './components/Toast';
 import { AttendanceRecap } from './screens/AttendanceRecap';
 import { Dashboard } from './screens/Dashboard';
 import { EventLog } from './screens/EventLog';
@@ -15,6 +15,40 @@ import { SetupWizard } from './screens/Setup';
 import { useActionItemsStore } from './store/actionItemsStore';
 
 export function App() {
+  return (
+    <ToastProvider>
+      <Shell />
+    </ToastProvider>
+  );
+}
+
+/** Notify-only update toast (CONTEXT §5): link to the download, never install. */
+function useUpdateToast() {
+  const { showToast } = useToast();
+  useEffect(
+    () =>
+      window.clapp.update.onAvailable((info) => {
+        showToast({
+          variant: 'info',
+          duration: null,
+          message: (
+            <>
+              CLApp <b>v{info.latestVersion}</b> tersedia (terpasang v{info.currentVersion}).
+              Unduh dan pasang manual.
+            </>
+          ),
+          action: {
+            label: 'Lihat',
+            onClick: () => void window.clapp.update.openRelease(info.releaseUrl),
+          },
+        });
+      }),
+    [showToast],
+  );
+}
+
+function Shell() {
+  useUpdateToast();
   const [active, setActive] = useState<Screen>('Beranda');
   // null = not checked yet; true = database has no members → first-run wizard
   // (OPERATIONS: gated on emptiness, self-disables after seeding).
@@ -51,7 +85,7 @@ export function App() {
   }, [active, needsSetup, refreshBadge]);
 
   return (
-    <ToastProvider>
+    <>
       <div className="flex h-full flex-col bg-paper">
         <TitleBar subtitle={needsSetup ? 'Persiapan Awal' : active} />
         {needsSetup === false && (
@@ -74,7 +108,7 @@ export function App() {
           )}
         </main>
       </div>
-    </ToastProvider>
+    </>
   );
 }
 

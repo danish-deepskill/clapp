@@ -5,6 +5,7 @@ import { scheduleAutoBackup } from './backup/autoBackup';
 import { openDatabase, resolveDbPaths, runMigrations, type DB } from './db';
 import { registerBackupHandlers } from './handlers/backupHandlers';
 import { registerIpcHandlers } from './ipc';
+import { registerUpdateHandlers, scheduleLaunchUpdateCheck } from './handlers/updateHandlers';
 import { createMainWindow } from './window';
 
 let db: DB | null = null;
@@ -34,7 +35,10 @@ app.whenReady().then(async () => {
   });
   app.on('will-quit', stopAutoBackup);
 
-  createMainWindow();
+  registerUpdateHandlers();
+  const win = createMainWindow();
+  const stopUpdateCheck = scheduleLaunchUpdateCheck(win);
+  app.on('will-quit', stopUpdateCheck);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createMainWindow();

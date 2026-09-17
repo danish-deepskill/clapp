@@ -1,5 +1,6 @@
 import { BackupSection } from './BackupSection';
 import { MasterDataList } from './MasterDataList';
+import { PembaruanSection } from './PembaruanSection';
 import { PlaceholderSection } from './PlaceholderSection';
 
 export function Settings() {
@@ -50,15 +51,7 @@ export function Settings() {
               </>
             }
           />
-          <PlaceholderSection
-            label="Pembaruan"
-            description={
-              <>
-                Periksa Pembaruan &amp; tampilan versi akan tersedia setelah
-                infrastruktur version-feed dipasang.
-              </>
-            }
-          />
+          <PembaruanSection />
         </div>
       </div>
     </div>

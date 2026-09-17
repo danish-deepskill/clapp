@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer, webUtils } from 'electron';
+import { contextBridge, ipcRenderer, webUtils, type IpcRendererEvent } from 'electron';
 
 import type {
   LoadRecapInput,
@@ -16,6 +16,7 @@ import type {
   RestoreResult,
 } from '../shared/backup';
 import type { DashboardData } from '../shared/dashboard';
+import type { UpdateInfo } from '../shared/update';
 import type {
   SeedCommitResult,
   SeedPreviewResult,
@@ -107,6 +108,19 @@ const api = {
       ipcRenderer.invoke('dashboard:get'),
     actionItemCount: (): Promise<IpcResult<number>> =>
       ipcRenderer.invoke('dashboard:actionItemCount'),
+  },
+  update: {
+    check: (): Promise<UpdateInfo> => ipcRenderer.invoke('update:check'),
+    openRelease: (url: string): Promise<IpcResult<null>> =>
+      ipcRenderer.invoke('update:openRelease', url),
+    /** Fires when the launch check finds a newer release. Returns an unsubscribe. */
+    onAvailable: (cb: (info: UpdateInfo) => void): (() => void) => {
+      const listener = (_e: IpcRendererEvent, info: UpdateInfo) => cb(info);
+      ipcRenderer.on('update:available', listener);
+      return () => {
+        ipcRenderer.removeListener('update:available', listener);
+      };
+    },
   },
   seed: {
     status: (): Promise<SeedStatus> => ipcRenderer.invoke('seed:status'),

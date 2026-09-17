@@ -32,7 +32,27 @@ npm run dev -- -w  # same, and also restart Electron when main/ or preload/ chan
 npm test           # vitest (rebuilds better-sqlite3 for Node, then restores)
 npm run build      # typecheck + production bundle
 npm run db:generate # regenerate Drizzle migration after schema.ts edits
+npm run dist:win   # Windows installer (NSIS) → dist/CLApp-Setup-<version>.exe
+npm run dist:mac   # macOS disk image → dist/CLApp-<version>.dmg (build on a Mac)
+npm run dist:linux # AppImage, handy for a smoke test of the packaged app
 ```
+
+## Releasing an update
+
+Updates are notify-only (CONTEXT §5): the app checks GitHub's latest release
+on launch (when online) and in Pengaturan › Pembaruan, and links the
+operator to the release page. Nothing is auto-installed and nothing is
+signed. To ship a version:
+
+1. Bump `version` in `package.json` and commit.
+2. `npm run dist:win` (and `dist:mac` on a Mac); installers land in `dist/`.
+3. Tag `vX.Y.Z`, create a GitHub release with that tag, attach the installers.
+4. The app compares the release tag with its own version; a newer one shows a
+   toast and a download link. Reinstalling never touches the database
+   (`userData`); migrations run on the next launch with a backup first.
+
+Unsigned builds trigger the usual first-run warnings: SmartScreen on Windows
+("More info → Run anyway"), and right-click → Open on macOS.
 
 ## Known gotchas
 
@@ -62,6 +82,7 @@ If this env var is set (some automated agent shells set it globally), the Electr
 - Past months everywhere (Rekap, Laporan demografi / Lima Bab, Beranda) use the month-end roster via `historyService.rosterForPeriod`; late finalize snapshots it (HANDOFF §8 #10)
 - Backup: daily auto-backup (on launch + hourly check), user-chosen folder, retention of automatic copies, "Backup Sekarang", validated restore with pre-restore copy + relaunch (HANDOFF §12.7). Settings live in `userData/settings.json`
 - First-run wizard: on an empty database the app opens Persiapan Awal — pick or drop `seed.json`, see every validation issue at once, preview demografi / KK / Dapukan counts, confirm, one-transaction commit (HANDOFF §12.3). Provisional roles + session/activity types from HANDOFF §12.2/§12.5 are seeded alongside (all editable in Pengaturan)
+- Packaging via electron-builder (`npm run dist:*`) and a notify-only update check against GitHub releases (Pengaturan › Pembaruan + launch toast)
 - Excel exports (Unduh on Laporan Bulanan, Rekap Absensi, Serkiler) built with ExcelJS after the manager's workbook in `clapp-handoff/`; coordinate specs in `src/main/exports/specs/`; `tests/exports/laporanFidelity.spec.ts` diffs the Laporan against the manager's sheets (merges, labels, effective border weights, fonts)
 - Service-layer Vitest specs for every HANDOFF §8 auto-trigger + migrations smoke test
 
@@ -69,7 +90,6 @@ If this env var is set (some automated agent shells set it globally), the Electr
 
 Remaining per HANDOFF.md §4 / §7 / §10 (the screen order below is historical):
 
-- Update notifications (notify-only version check)
 
 Original build order:
 

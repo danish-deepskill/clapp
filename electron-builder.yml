@@ -1,0 +1,41 @@
+# Packaging (HANDOFF §13.6, OPERATIONS "Updates"): unsigned installers,
+# distributed by hand (Drive / USB / GitHub release). No auto-update.
+appId: id.slm.cilandak.clapp
+productName: CLApp
+copyright: SLM Kelompok Cilandak A
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - out/**
+  - package.json
+extraResources:
+  # resolveDbPaths() reads migrations + icon from process.resourcesPath.
+  - from: src/main/db/migrations
+    to: db/migrations
+  - from: src/main/assets/clapp-icon.jpg
+    to: clapp-icon.jpg
+asar: true
+asarUnpack:
+  - "**/*.node"
+win:
+  target:
+    - nsis
+  icon: resources/icon.png
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+  artifactName: ${productName}-Setup-${version}.${ext}
+mac:
+  target:
+    - dmg
+  category: public.app-category.productivity
+  icon: resources/icon.png
+linux:
+  target:
+    - AppImage
+  category: Office
+  icon: resources/icon.png
+  artifactName: ${productName}-${version}.${ext}
+publish: null

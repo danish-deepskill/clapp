@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Banner } from '@renderer/components/Banner';
+import { refreshActionItems } from '@renderer/store/actionItemsStore';
 import { ConfirmDialog } from '@renderer/components/ConfirmDialog';
 import { useToast } from '@renderer/components/Toast';
 import {
@@ -240,6 +241,7 @@ export function Meetings() {
     setEditDraft(detailToDraft(r.data.meeting));
     setIsEditing(false);
     setReloadKey((k) => k + 1);
+    void refreshActionItems();
   }, [activeDraft, newDraft, selectedId, month, year, showToast]);
 
   const handleDelete = useCallback(async () => {
@@ -264,6 +266,7 @@ export function Meetings() {
     setLoadedDetail(null);
     setEditDraft(null);
     setReloadKey((k) => k + 1);
+    void refreshActionItems();
   }, [selectedId, showToast]);
 
   const yearChoices = useMemo(

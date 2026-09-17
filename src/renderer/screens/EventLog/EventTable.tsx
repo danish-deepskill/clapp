@@ -131,7 +131,7 @@ function tokensFor(entry: EventLogEntry): BadgeTokens {
   }
 }
 
-function KindBadge({ entry }: { entry: EventLogEntry }) {
+export function KindBadge({ entry }: { entry: EventLogEntry }) {
   const t = tokensFor(entry);
   return (
     <span

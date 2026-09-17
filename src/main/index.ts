@@ -1,7 +1,9 @@
 import { app, BrowserWindow } from 'electron';
 import { join } from 'node:path';
 
+import { scheduleAutoBackup } from './backup/autoBackup';
 import { openDatabase, resolveDbPaths, runMigrations, type DB } from './db';
+import { registerBackupHandlers } from './handlers/backupHandlers';
 import { registerIpcHandlers } from './ipc';
 import { createMainWindow } from './window';
 
@@ -9,11 +11,28 @@ let db: DB | null = null;
 
 app.whenReady().then(async () => {
   const { dbPath, backupFolder, migrationsFolder } = resolveDbPaths();
+  const settingsPath = join(app.getPath('userData'), 'settings.json');
+  // HANDOFF §12.7 default; operators repoint it at a Drive/OneDrive folder.
+  const defaultBackupFolder = join(app.getPath('documents'), 'CLApp', 'backups');
 
   db = openDatabase({ path: dbPath });
   runMigrations({ db, migrationsFolder, dbPath, backupFolder });
 
   registerIpcHandlers({ db });
+  registerBackupHandlers({
+    db,
+    dbPath,
+    settingsPath,
+    defaultFolder: defaultBackupFolder,
+  });
+
+  const stopAutoBackup = scheduleAutoBackup({
+    sqlite: db.$client,
+    settingsPath,
+    defaultFolder: defaultBackupFolder,
+    log: (m) => console.error(`[backup] ${m}`),
+  });
+  app.on('will-quit', stopAutoBackup);
 
   createMainWindow();
 
@@ -25,6 +44,3 @@ app.whenReady().then(async () => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
-
-// Suppress unused-import warning when in-bundle path resolution moves around.
-void join;

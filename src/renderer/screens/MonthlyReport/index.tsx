@@ -3,8 +3,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Banner } from '@renderer/components/Banner';
 import { ConfirmDialog } from '@renderer/components/ConfirmDialog';
 import { useToast } from '@renderer/components/Toast';
+import { fmtPeriodID } from '@renderer/lib/format';
+import { useExcelExport } from '@renderer/lib/useExcelExport';
 import { availableYears, currentMonthYear } from '@renderer/lib/dates';
-import { BULAN_ID } from '@shared/enums';
+import { refreshActionItems } from '@renderer/store/actionItemsStore';
+import { usePeriodStore } from '@renderer/store/periodStore';
 import type { ReportData, SaveReportInput } from '@shared/report';
 
 import {
@@ -56,9 +59,16 @@ function toDraft(r: ReportData): SaveReportInput {
 }
 
 export function MonthlyReport() {
-  const initial = useMemo(() => currentMonthYear(), []);
+  // Beranda may hand over a specific period ("Laporan April belum dikunci").
+  const initial = useMemo(
+    () => usePeriodStore.getState().pendingPeriod ?? currentMonthYear(),
+    [],
+  );
   const [month, setMonth] = useState(initial.month);
   const [year, setYear] = useState(initial.year);
+  useEffect(() => {
+    usePeriodStore.getState().setPendingPeriod(null);
+  }, []);
 
   const [report, setReport] = useState<ReportData | null>(null);
   const [draft, setDraft] = useState<SaveReportInput | null>(null);
@@ -70,6 +80,7 @@ export function MonthlyReport() {
   const [members, setMembers] = useState<PickerMember[]>([]);
   const [households, setHouseholds] = useState<PickerHousehold[]>([]);
   const { showToast } = useToast();
+  const exportExcel = useExcelExport();
 
   useEffect(() => {
     void (async () => {
@@ -129,6 +140,7 @@ export function MonthlyReport() {
       return;
     }
     setReport(r.data);
+    void refreshActionItems();
     setDraft(toDraft(r.data));
     setDirty(false);
     showToast({ variant: 'success', message: 'Laporan disimpan.' });
@@ -148,6 +160,7 @@ export function MonthlyReport() {
       return;
     }
     setReport(r.data);
+    void refreshActionItems();
     setDraft(toDraft(r.data));
     setDirty(false);
     showToast({
@@ -157,7 +170,7 @@ export function MonthlyReport() {
   }, [report, month, year, showToast]);
 
   const yearChoices = useMemo(() => availableYears(initial.year - 5), [initial]);
-  const periodLabel = `${BULAN_ID[month - 1]} ${year}`;
+  const periodLabel = fmtPeriodID({ month, year });
   const finalized = report?.finalizedAt != null;
 
   const editProps: EditableProps | null = draft
@@ -179,12 +192,7 @@ export function MonthlyReport() {
         saving={saving}
         onSave={handleSave}
         onToggleLock={() => setConfirmLock(finalized ? 'unlock' : 'lock')}
-        onDownload={() =>
-          showToast({
-            variant: 'info',
-            message: 'Ekspor Excel akan tersedia di pembaruan berikutnya.',
-          })
-        }
+        onDownload={() => void exportExcel('laporan', { month, year })}
       />
 
       {loadError && (
@@ -211,7 +219,7 @@ export function MonthlyReport() {
       {report && editProps && (
         <div className="flex-1 overflow-y-auto px-6 py-6">
           <div className="mx-auto flex max-w-[860px] flex-col gap-[18px]">
-            <DemografiSection data={report.demografi} />
+            <DemografiSection data={report.demografi} asOf={report.rosterAsOf} />
             <LimaBabSection data={report.limaBab} />
             <KegiatanSection {...editProps} />
             <SakitSection {...editProps} />

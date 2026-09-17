@@ -1,4 +1,6 @@
+import { BackupSection } from './BackupSection';
 import { MasterDataList } from './MasterDataList';
+import { PembaruanSection } from './PembaruanSection';
 import { PlaceholderSection } from './PlaceholderSection';
 
 export function Settings() {
@@ -38,16 +40,7 @@ export function Settings() {
             onReorder={(ids) => window.clapp.masterData.roles.reorder(ids)}
           />
 
-          <PlaceholderSection
-            label="Backup &amp; Data"
-            title="Cadangan Otomatis"
-            description={
-              <>
-                Auto-backup harian, pemilihan folder cadangan, &amp; Pulihkan
-                dari Backup akan tersedia di pembaruan berikutnya.
-              </>
-            }
-          />
+          <BackupSection />
           <PlaceholderSection
             label="Sinkronisasi Cloud"
             description={
@@ -58,15 +51,7 @@ export function Settings() {
               </>
             }
           />
-          <PlaceholderSection
-            label="Pembaruan"
-            description={
-              <>
-                Periksa Pembaruan &amp; tampilan versi akan tersedia setelah
-                infrastruktur version-feed dipasang.
-              </>
-            }
-          />
+          <PembaruanSection />
         </div>
       </div>
     </div>

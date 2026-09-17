@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Banner } from '@renderer/components/Banner';
+import { useExcelExport } from '@renderer/lib/useExcelExport';
+import { refreshActionItems } from '@renderer/store/actionItemsStore';
 import {
   availableYears,
   currentMonthYear,
@@ -23,6 +25,7 @@ export function AttendanceRecap() {
   const [data, setData] = useState<RecapData | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
+  const exportExcel = useExcelExport();
 
   // ─── Session types loaded once for the drawer ─────────────────────────
   const [sessionTypes, setSessionTypes] = useState<MasterDataItem[]>([]);
@@ -114,7 +117,9 @@ export function AttendanceRecap() {
         onSearchChange={setSearch}
         sessionCount={data?.sessions.length ?? 0}
         memberCount={data?.members.length ?? 0}
+        rosterAsOf={data?.rosterAsOf ?? null}
         overallPct={overallPct}
+        onDownload={() => void exportExcel('rekap', { month, year })}
         onCatatAbsensi={() => openDrawerFor(defaultEntryDate())}
         catatAbsensiDisabled={periodInFuture}
       />
@@ -158,7 +163,10 @@ export function AttendanceRecap() {
         minDate={periodStart}
         maxDate={drawerMaxDate}
         sessionTypes={sessionTypes}
-        onSaved={() => setReloadKey((k) => k + 1)}
+        onSaved={() => {
+          setReloadKey((k) => k + 1);
+          void refreshActionItems();
+        }}
       />
     </div>
   );

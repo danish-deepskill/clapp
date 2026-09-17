@@ -1,12 +1,10 @@
 export { BULAN_ID, BULAN_SHORT, HARI_ID } from '@shared/enums';
-export { firstDayOfMonth, lastDayOfMonth, todayISO } from '@shared/dates';
-
-export function currentMonthYear(now: Date = new Date()): {
-  month: number;
-  year: number;
-} {
-  return { month: now.getMonth() + 1, year: now.getFullYear() };
-}
+export {
+  currentMonthYear,
+  firstDayOfMonth,
+  lastDayOfMonth,
+  todayISO,
+} from '@shared/dates';
 
 export function availableYears(
   startYear: number,

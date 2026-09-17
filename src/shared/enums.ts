@@ -40,6 +40,12 @@ export type Rhesus = (typeof RHESUS)[number];
 export const ATTENDANCE_STATUS = ['H', 'A', 'S', 'I'] as const;
 export type AttendanceStatus = (typeof ATTENDANCE_STATUS)[number];
 
+/** CONTEXT §2: % Hadir counts H + S + I — only Alpa is an absence. */
+export const PRESENT_STATUSES: readonly AttendanceStatus[] = ['H', 'S', 'I'];
+export function isPresentStatus(status: AttendanceStatus): boolean {
+  return PRESENT_STATUSES.includes(status);
+}
+
 export const MEETING_TYPE = [
   'Musyawarah Kelompok',
   'Musyawarah 5 Unsur',

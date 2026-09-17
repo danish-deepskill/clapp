@@ -2,12 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Banner } from '@renderer/components/Banner';
 import { useToast } from '@renderer/components/Toast';
+import { fmtPeriodID } from '@renderer/lib/format';
+import { refreshActionItems } from '@renderer/store/actionItemsStore';
 import {
   availableYears,
   currentMonthYear,
   lastDayOfMonth,
 } from '@renderer/lib/dates';
-import { BULAN_ID } from '@shared/enums';
 import type { MemberAsOf } from '@shared/history';
 import type { HouseholdRow } from '@shared/household';
 import type { MasterDataItem } from '@shared/masterData';
@@ -87,6 +88,7 @@ export function Members() {
       setHouseholds(h);
       setRoles(r);
       setLoadError(null);
+      void refreshActionItems();
     } catch (err: unknown) {
       setLoadError(err instanceof Error ? err.message : String(err));
     }
@@ -195,7 +197,7 @@ export function Members() {
 
   // ─── Riwayat (read-only past-month reconstruction) ────────────────────
   if (historyPeriod) {
-    const label = `${BULAN_ID[historyPeriod.month - 1]} ${historyPeriod.year}`;
+    const label = fmtPeriodID(historyPeriod);
     return (
       <div className="flex h-full flex-col bg-paper">
         <HistoryBar

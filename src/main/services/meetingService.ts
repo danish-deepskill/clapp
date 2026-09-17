@@ -1,6 +1,6 @@
 import { and, eq, inArray, isNotNull } from 'drizzle-orm';
 
-import { todayISO } from '../../shared/dates';
+import { isValidISODate, todayISO } from '../../shared/dates';
 import { monthRange } from '../../shared/period';
 import type {
   EligibleAttendee,
@@ -303,9 +303,9 @@ export const meetingService = {
     if (!input.title.trim()) {
       throw new InvalidMeetingInputError('Judul musyawarah wajib diisi');
     }
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(input.meetingDate)) {
+    if (!isValidISODate(input.meetingDate)) {
       throw new InvalidMeetingInputError(
-        `Tanggal ${input.meetingDate} bukan format YYYY-MM-DD`,
+        `Tanggal  bukan tanggal YYYY-MM-DD yang valid`,
       );
     }
     if (input.meetingDate > isoToday(deps)) {

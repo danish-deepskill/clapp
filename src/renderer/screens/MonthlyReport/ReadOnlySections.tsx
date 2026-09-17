@@ -12,10 +12,25 @@ import { ReportSection } from './ReportSection';
 
 // ─── Demografi ─────────────────────────────────────────────────────────────
 
-export function DemografiSection({ data }: { data: Demografi }) {
+export function DemografiSection({
+  data,
+  asOf,
+}: {
+  data: Demografi;
+  /** Month-end date the roster was reconstructed as of; null = live. */
+  asOf: string | null;
+}) {
   const visible = data.byStage.filter((s) => s.total > 0);
   return (
-    <ReportSection title="Demografi" readOnly hint="Jumlah jama'ah aktif saat ini">
+    <ReportSection
+      title="Demografi"
+      readOnly
+      hint={
+        asOf
+          ? `Jama'ah aktif per ${fmtDateID(asOf)} (rekonstruksi akhir bulan)`
+          : "Jumlah jama'ah aktif saat ini"
+      }
+    >
       <div className="overflow-hidden rounded border border-rule-strong">
         <div className="grid grid-cols-[1fr_70px_70px_80px] bg-paper-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-ink-600">
           <Cell head>Kelas</Cell>

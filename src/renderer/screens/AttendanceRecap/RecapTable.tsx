@@ -37,7 +37,7 @@ const STATUS_CELL: Record<AttendanceStatus, string> = {
   I: 'bg-izin-bg text-izin-ink',
 };
 
-function pctClass(pct: number, total: number): string {
+export function pctClass(pct: number, total: number): string {
   if (total === 0) return 'text-ink-400';
   if (pct === 0) return 'text-ink-400';
   if (pct < 20) return 'text-alpa font-semibold';

@@ -334,6 +334,18 @@ describe('attendanceService.saveBatch', () => {
     expect(db.select().from(attendance).all()).toHaveLength(0);
   });
 
+  it('rejects a malformed sessionDate (shape, month, day)', () => {
+    for (const bad of ['2026-00-15', '2026-13-05', '2026-02-30', '12-05-2026']) {
+      expect(() =>
+        attendanceService.saveBatch(
+          { db, clock: fixedClock() },
+          { ...makeInput(), sessionDate: bad },
+        ),
+      ).toThrow(InvalidAttendanceInputError);
+    }
+    expect(db.select().from(sessions).all()).toHaveLength(0);
+  });
+
   it('rejects empty rows', () => {
     expect(() =>
       attendanceService.saveBatch(
@@ -806,6 +818,44 @@ describe('attendanceService.loadRecap', () => {
     });
     expect(r.attendance.map((a) => a.memberId)).not.toContain(child.id);
     expect(r.attendance).toHaveLength(1);
+  });
+
+  it('past month: keeps a member who left after that month, with rosterAsOf', () => {
+    // Siti (not a KK head) moves away on 5 May → still on April's roster.
+    memberService.recordMovement(
+      { db },
+      { memberId: memberIds.siti, kind: 'Pindah Sambung', date: '2026-05-05' },
+    );
+    const april = attendanceService.loadRecap({ db, clock: fixedClock() }, {
+      month: 4,
+      year: 2026,
+    });
+    expect(april.rosterAsOf).toBe('2026-04-30');
+    expect(april.members.map((m) => m.fullName)).toContain('Siti Aminah Putri');
+
+    const may = attendanceService.loadRecap({ db, clock: fixedClock() }, {
+      month: 5,
+      year: 2026,
+    });
+    expect(may.rosterAsOf).toBe(null);
+    expect(may.members.map((m) => m.fullName)).not.toContain('Siti Aminah Putri');
+  });
+
+  it('past month: excludes a member whose Sambung Baru came after that month', () => {
+    memberService.addMember(
+      { db },
+      { ...FAISAL, fullName: 'Budi Baru', logAs: 'Sambung Baru', logDate: '2026-05-03' },
+    );
+    const april = attendanceService.loadRecap({ db, clock: fixedClock() }, {
+      month: 4,
+      year: 2026,
+    });
+    expect(april.members.map((m) => m.fullName)).not.toContain('Budi Baru');
+    const may = attendanceService.loadRecap({ db, clock: fixedClock() }, {
+      month: 5,
+      year: 2026,
+    });
+    expect(may.members.map((m) => m.fullName)).toContain('Budi Baru');
   });
 
   it('rejects out-of-range month or year', () => {

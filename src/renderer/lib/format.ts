@@ -1,4 +1,4 @@
-import { BULAN_ID, HARI_ID } from '@shared/enums';
+import { BULAN_ID, BULAN_SHORT, HARI_ID } from '@shared/enums';
 
 const IDR = new Intl.NumberFormat('id-ID', {
   style: 'currency',
@@ -33,6 +33,14 @@ export function fmtDateID(input: string | Date | null | undefined): string {
   return `${d.getDate()} ${BULAN_ID[d.getMonth()]} ${d.getFullYear()}`;
 }
 
+/** "12 Sep" — zero-padded day + short month, for dense list rows. Returns "—" for invalid input. */
+export function fmtDateShortID(input: string | Date | null | undefined): string {
+  if (input === null || input === undefined) return '—';
+  const d = input instanceof Date ? input : parseISO(input);
+  if (!d || Number.isNaN(d.getTime())) return '—';
+  return `${String(d.getDate()).padStart(2, '0')} ${BULAN_SHORT[d.getMonth()]}`;
+}
+
 /** "Senin" / "Kamis" / etc. Returns "—" for invalid input. */
 export function fmtDay(input: string | Date | null | undefined): string {
   if (input === null || input === undefined) return '—';
@@ -49,4 +57,21 @@ function parseISO(s: string): Date | null {
   }
   const d = new Date(s);
   return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/** "Mei 2026" — the Bulan/Tahun period label used on every month view. */
+export function fmtPeriodID(p: { month: number; year: number }): string {
+  return `${BULAN_ID[p.month - 1] ?? '?'} ${p.year}`;
+}
+
+const pad2 = (n: number) => String(n).padStart(2, '0');
+
+/** "17/09/2026" — numeric wall-calendar date (Beranda clock). */
+export function fmtDateNumericID(d: Date): string {
+  return `${pad2(d.getDate())}/${pad2(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+
+/** "15:02" — 24-hour wall-clock time. */
+export function fmtTimeHHMM(d: Date): string {
+  return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
 }

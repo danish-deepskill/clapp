@@ -107,6 +107,11 @@ export interface ReportData {
   finalizedAt: string | null;
 
   // Computed (live when draft; frozen snapshot when finalized).
+  /**
+   * Month-end date the roster behind demografi / limaBab was reconstructed
+   * as of (past periods), or null when live membership was used.
+   */
+  rosterAsOf: string | null;
   demografi: Demografi;
   limaBab: LimaBab;
   peristiwa: Peristiwa;

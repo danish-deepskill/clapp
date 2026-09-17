@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { Banner } from '@renderer/components/Banner';
+import { fmtPeriodID } from '@renderer/lib/format';
 import { availableYears, currentMonthYear } from '@renderer/lib/dates';
-import { BULAN_ID } from '@shared/enums';
 import type { EventLogEntry } from '@shared/eventLog';
 
 import { EventTable } from './EventTable';
@@ -56,7 +56,7 @@ export function EventLog() {
     [initialPeriod],
   );
 
-  const periodLabel = `${BULAN_ID[month - 1]} ${year}`;
+  const periodLabel = fmtPeriodID({ month, year });
 
   return (
     <div className="flex h-full flex-col bg-paper">

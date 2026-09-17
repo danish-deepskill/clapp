@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Banner } from '@renderer/components/Banner';
+import { fmtPeriodID } from '@renderer/lib/format';
+import { useExcelExport } from '@renderer/lib/useExcelExport';
 import { useToast } from '@renderer/components/Toast';
 import { availableYears, currentMonthYear } from '@renderer/lib/dates';
-import { BULAN_ID } from '@shared/enums';
 import type { SerkilerRow } from '@shared/serkiler';
 
 import { FilterBar } from './FilterBar';
@@ -15,6 +16,7 @@ export function Serkiler() {
   const initialPeriod = useMemo(() => currentMonthYear(), []);
   const [month, setMonth] = useState(initialPeriod.month);
   const [year, setYear] = useState(initialPeriod.year);
+  const exportExcel = useExcelExport();
 
   const [rows, setRows] = useState<SerkilerRow[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -93,7 +95,7 @@ export function Serkiler() {
     [initialPeriod],
   );
 
-  const periodLabel = `${BULAN_ID[month - 1]} ${year}`;
+  const periodLabel = fmtPeriodID({ month, year });
   const signedCount = (rows ?? []).filter((r) => r.paraf).length;
 
   return (
@@ -110,6 +112,7 @@ export function Serkiler() {
         signedCount={signedCount}
         onPrint={() => window.print()}
         printDisabled={(rows?.length ?? 0) === 0}
+        onDownload={() => void exportExcel('serkiler', { month, year })}
       />
 
       {loadError && (

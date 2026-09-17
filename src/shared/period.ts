@@ -45,3 +45,15 @@ export function monthRange(
     end: `${nextYear}-${String(nextMonth).padStart(2, '0')}-01`,
   };
 }
+
+/**
+ * True when the period ended before the wall-calendar month of `now`. Past
+ * periods get a month-end roster reconstruction; the current (and any
+ * future) period uses live membership.
+ */
+export function isPastPeriod(month: number, year: number, now: Date): boolean {
+  assertMonthYear(month, year);
+  const nowYear = now.getFullYear();
+  const nowMonth = now.getMonth() + 1;
+  return year < nowYear || (year === nowYear && month < nowMonth);
+}

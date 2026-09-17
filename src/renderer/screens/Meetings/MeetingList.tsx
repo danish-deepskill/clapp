@@ -1,6 +1,6 @@
 import { clsx } from 'clsx';
 
-import { BULAN_SHORT } from '@shared/enums';
+import { fmtDateShortID } from '@renderer/lib/format';
 import type { MeetingListItem } from '@shared/meeting';
 
 export interface MeetingListProps {
@@ -49,7 +49,7 @@ export function MeetingList({
             key={m.id}
             isSelected={selectedId === m.id}
             onClick={() => onSelect(m.id)}
-            dateLabel={formatShortDate(m.meetingDate)}
+            dateLabel={fmtDateShortID(m.meetingDate)}
             typeLabel={m.type}
             title={m.title}
             attendeeCount={m.attendeeCount}
@@ -109,13 +109,4 @@ function ListItem({
       </div>
     </button>
   );
-}
-
-function formatShortDate(iso: string): string {
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
-  if (!m || !m[1] || !m[2] || !m[3]) return iso;
-  const day = Number(m[3]);
-  const month = Number(m[2]) - 1;
-  const monthLabel = BULAN_SHORT[month] ?? '';
-  return `${String(day).padStart(2, '0')} ${monthLabel}`;
 }

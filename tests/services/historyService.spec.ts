@@ -282,3 +282,44 @@ describe('historyService.reconstructRosterAsOf', () => {
     ).toEqual(['Alice', 'Budi', 'Zaid']);
   });
 });
+
+// ─── rosterForPeriod: live vs month-end reconstruction ────────────────────
+
+describe('historyService.rosterForPeriod', () => {
+  const now = new Date('2026-05-25T10:00:00.000Z'); // Mei 2026
+
+  it('uses live membership for the current and any future month (asOf null)', () => {
+    const db = freshDb();
+    mk(db, 'Pak A');
+    mk(db, 'Pak B', { isActive: false });
+    for (const period of [
+      { month: 5, year: 2026 },
+      { month: 6, year: 2026 },
+      { month: 1, year: 2027 },
+    ]) {
+      const r = historyService.rosterForPeriod(db, period.month, period.year, now);
+      expect(r.asOf).toBe(null);
+      expect(r.members.map((m) => m.fullName)).toEqual(['Pak A']);
+    }
+  });
+
+  it('reconstructs as of the last day of a past month', () => {
+    const db = freshDb();
+    mk(db, 'Pak A');
+    const b = mk(db, 'Pak B', { isActive: false });
+    // B left on 10 May → still on the April roster, gone from May onward.
+    eventLogService.recordMovement(db, {
+      movementType: 'Pindah Sambung',
+      movementDate: '2026-05-10',
+      memberId: b,
+    });
+
+    const april = historyService.rosterForPeriod(db, 4, 2026, now);
+    expect(april.asOf).toBe('2026-04-30');
+    expect(april.members.map((m) => m.fullName)).toEqual(['Pak A', 'Pak B']);
+
+    const may = historyService.rosterForPeriod(db, 5, 2026, now);
+    expect(may.asOf).toBe(null);
+    expect(may.members.map((m) => m.fullName)).toEqual(['Pak A']);
+  });
+});

@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer, webUtils } from 'electron';
 
 import type {
   LoadRecapInput,
@@ -10,6 +10,18 @@ import type {
   SessionRow,
 } from '../shared/attendance';
 import type {
+  BackupFile,
+  BackupSettingsPatch,
+  BackupState,
+  RestoreResult,
+} from '../shared/backup';
+import type { DashboardData } from '../shared/dashboard';
+import type {
+  SeedCommitResult,
+  SeedPreviewResult,
+  SeedStatus,
+} from '../shared/seed';
+import type {
   EditHouseholdInput,
   HouseholdRow,
 } from '../shared/household';
@@ -18,6 +30,7 @@ import type {
   EventLogEntry,
   LoadEventLogInput,
 } from '../shared/eventLog';
+import type { ExportInput, ExportKind, ExportResult } from '../shared/export';
 import type {
   MasterDataItem,
   MasterDataKind,
@@ -73,6 +86,44 @@ function masterDataNamespace(kind: MasterDataKind): MasterDataNamespace {
 }
 
 const api = {
+  backup: {
+    getState: (): Promise<IpcResult<BackupState>> =>
+      ipcRenderer.invoke('backup:getState'),
+    setSettings: (patch: BackupSettingsPatch): Promise<IpcResult<BackupState>> =>
+      ipcRenderer.invoke('backup:setSettings', patch),
+    chooseFolder: (): Promise<IpcResult<BackupState | null>> =>
+      ipcRenderer.invoke('backup:chooseFolder'),
+    runNow: (): Promise<IpcResult<BackupFile>> =>
+      ipcRenderer.invoke('backup:runNow'),
+    chooseRestoreFile: (): Promise<IpcResult<string | null>> =>
+      ipcRenderer.invoke('backup:chooseRestoreFile'),
+    restore: (sourcePath: string): Promise<IpcResult<RestoreResult>> =>
+      ipcRenderer.invoke('backup:restore', sourcePath),
+    openFolder: (): Promise<IpcResult<null>> =>
+      ipcRenderer.invoke('backup:openFolder'),
+  },
+  dashboard: {
+    get: (): Promise<IpcResult<DashboardData>> =>
+      ipcRenderer.invoke('dashboard:get'),
+    actionItemCount: (): Promise<IpcResult<number>> =>
+      ipcRenderer.invoke('dashboard:actionItemCount'),
+  },
+  seed: {
+    status: (): Promise<SeedStatus> => ipcRenderer.invoke('seed:status'),
+    pickFile: (): Promise<string | null> => ipcRenderer.invoke('seed:pickFile'),
+    preview: (path: string): Promise<SeedPreviewResult> =>
+      ipcRenderer.invoke('seed:preview', path),
+    commit: (path: string): Promise<IpcResult<SeedCommitResult>> =>
+      ipcRenderer.invoke('seed:commit', path),
+    /** Absolute path of a File dropped onto the window (Electron webUtils). */
+    pathForFile: (file: File): string => webUtils.getPathForFile(file),
+  },
+  exportDoc: {
+    excel: (kind: ExportKind, input: ExportInput): Promise<IpcResult<ExportResult | null>> =>
+      ipcRenderer.invoke('export:excel', kind, input),
+    open: (path: string): Promise<IpcResult<null>> =>
+      ipcRenderer.invoke('export:open', path),
+  },
   masterData: {
     roles: {
       ...masterDataNamespace('roles'),

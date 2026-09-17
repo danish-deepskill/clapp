@@ -31,3 +31,7 @@ Thumbs.db
 
 # Claude Code (per-machine settings; team-shared .claude/settings.json is OK to commit)
 .claude/settings.local.json
+
+# The manager's real workbook (congregation names) stays local; the export
+# fidelity test skips itself when it isn't present.
+clapp-handoff/*.xlsx

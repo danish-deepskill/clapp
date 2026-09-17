@@ -1,4 +1,4 @@
-import { Printer } from 'lucide-react';
+import { Download, Printer } from 'lucide-react';
 
 import { Button } from '@renderer/components/Button';
 import {
@@ -18,6 +18,8 @@ export interface SerkilerFilterBarProps {
 
   onPrint: () => void;
   printDisabled?: boolean;
+  /** Excel export of this period's sheet (HANDOFF §7). */
+  onDownload: () => void;
 }
 
 export function FilterBar({
@@ -29,6 +31,7 @@ export function FilterBar({
   signedCount,
   onPrint,
   printDisabled,
+  onDownload,
 }: SerkilerFilterBarProps) {
   return (
     <FilterStrip>
@@ -57,6 +60,18 @@ export function FilterBar({
           Anggota diatur lewat "Termasuk Serkiler" di Jama'ah. Cetak lembar
           kosong → kelilingkan untuk paraf → catat kembali di sini.
         </span>
+      </FilterCell>
+
+      <FilterCell>
+        <Button
+          variant="ghost"
+          size="sm"
+          icon={<Download size={13} strokeWidth={1.7} />}
+          onClick={onDownload}
+          disabled={printDisabled}
+        >
+          Unduh Excel
+        </Button>
       </FilterCell>
 
       <FilterCell>

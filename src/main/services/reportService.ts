@@ -1,6 +1,10 @@
 import { and, eq, inArray } from 'drizzle-orm';
 
-import { ATTENDANCE_LIFE_STAGES, LIFE_STAGE } from '../../shared/enums';
+import {
+  ATTENDANCE_LIFE_STAGES,
+  LIFE_STAGE,
+  isPresentStatus,
+} from '../../shared/enums';
 import type {
   Demografi,
   FinalizeInput,
@@ -13,6 +17,7 @@ import type {
   VisitPlan,
   ConstructionProject,
 } from '../../shared/report';
+import type { MemberAsOf } from '../../shared/history';
 import { assertMonthYear, monthRange } from '../../shared/period';
 import type { DB, DBLike } from '../db';
 import {
@@ -21,6 +26,7 @@ import {
   attendance,
   familyVisits,
   households,
+  meetingAttendees,
   meetings,
   members,
   monthlyReports,
@@ -28,6 +34,7 @@ import {
   sickRecords,
 } from '../db/schema';
 import { eventLogService } from './eventLogService';
+import { historyService } from './historyService';
 
 export interface ReportDeps {
   db: DB;
@@ -64,16 +71,9 @@ function getOrCreateReport(tx: DBLike, month: number, year: number) {
 
 // ─── Computed sections ─────────────────────────────────────────────────────
 
-function computeDemografi(db: DBLike): Demografi {
-  const active = db
-    .select({
-      gender: members.gender,
-      lifeStage: members.lifeStage,
-      maritalStatus: members.maritalStatus,
-    })
-    .from(members)
-    .where(eq(members.isActive, true))
-    .all();
+// Roster = historyService.rosterForPeriod: live for the current month, the
+// month-end reconstruction for a past one (HANDOFF §8 #10 late finalize).
+function computeDemografi(active: MemberAsOf[]): Demografi {
 
   const byStage = LIFE_STAGE.map((stage) => {
     const inStage = active.filter((m) => m.lifeStage === stage);
@@ -93,7 +93,12 @@ function computeDemografi(db: DBLike): Demografi {
 }
 
 /** % Hadir = (H + S + I) / total sessions, per attendance-eligible member. */
-function computeLimaBab(db: DBLike, month: number, year: number): LimaBab {
+function computeLimaBab(
+  db: DBLike,
+  month: number,
+  year: number,
+  roster: MemberAsOf[],
+): LimaBab {
   const { start, end } = monthRange(month, year);
   const sessionIds = db
     .select({ id: sessions.id, sessionDate: sessions.sessionDate })
@@ -111,16 +116,10 @@ function computeLimaBab(db: DBLike, month: number, year: number): LimaBab {
   };
   if (sessionIds.length === 0) return empty;
 
-  const eligible = db
-    .select({ id: members.id })
-    .from(members)
-    .where(
-      and(
-        eq(members.isActive, true),
-        inArray(members.lifeStage, [...ATTENDANCE_LIFE_STAGES]),
-      ),
+  const eligible = roster
+    .filter((m) =>
+      (ATTENDANCE_LIFE_STAGES as readonly string[]).includes(m.lifeStage),
     )
-    .all()
     .map((m) => m.id);
   if (eligible.length === 0) return empty;
 
@@ -140,7 +139,7 @@ function computeLimaBab(db: DBLike, month: number, year: number): LimaBab {
 
   const presentByMember = new Map<number, number>();
   for (const r of rows) {
-    if (r.status === 'H' || r.status === 'S' || r.status === 'I') {
+    if (isPresentStatus(r.status)) {
       presentByMember.set(r.memberId, (presentByMember.get(r.memberId) ?? 0) + 1);
     }
   }
@@ -237,20 +236,35 @@ function readChildren(db: DBLike, reportId: number) {
   // Kegiatan = every ACTIVE activity_type, merged with its record for this
   // report (default Belum when no record exists yet). So the operator sees
   // the full checklist, not just rows the §8 trigger happened to create.
-  const recordByType = new Map(
-    db
-      .select()
-      .from(activityRecords)
-      .where(eq(activityRecords.reportId, reportId))
-      .all()
-      .map((r) => [r.activityTypeId, r]),
-  );
+  const records = db
+    .select()
+    .from(activityRecords)
+    .where(eq(activityRecords.reportId, reportId))
+    .all();
+  const recordByType = new Map(records.map((r) => [r.activityTypeId, r]));
+  // Meeting-sourced rows carry no typed count: the attendee count is derived
+  // from the meeting's attendee list (CONTEXT §2), unless the operator typed one.
+  const meetingIds = records
+    .map((r) => r.sourceMeetingId)
+    .filter((id): id is number => id !== null);
+  const attendeesByMeeting = new Map<number, number>();
+  if (meetingIds.length > 0) {
+    for (const a of db
+      .select({ meetingId: meetingAttendees.meetingId })
+      .from(meetingAttendees)
+      .where(inArray(meetingAttendees.meetingId, meetingIds))
+      .all()) {
+      attendeesByMeeting.set(a.meetingId, (attendeesByMeeting.get(a.meetingId) ?? 0) + 1);
+    }
+  }
   const activities = db
     .select()
     .from(activityTypes)
     .all()
     .filter((at) => at.isActive)
-    .sort((a, b) => a.name.localeCompare(b.name, 'id'))
+    // Master-data order (the manager's sheet lists activities in a fixed
+    // order; Pengaturan shows them the same way), not alphabetical.
+    .sort((a, b) => a.id - b.id)
     .map((at) => {
       const r = recordByType.get(at.id);
       return {
@@ -259,7 +273,11 @@ function readChildren(db: DBLike, reportId: number) {
         sourceKind: at.sourceKind,
         status: r?.status ?? ('Belum' as const),
         executedDate: r?.executedDate ?? null,
-        attendeeCount: r?.attendeeCount ?? null,
+        attendeeCount:
+          r?.attendeeCount ??
+          (r?.sourceMeetingId != null
+            ? (attendeesByMeeting.get(r.sourceMeetingId) ?? 0)
+            : null),
         location: r?.location ?? null,
         sourceMeetingId: r?.sourceMeetingId ?? null,
       };
@@ -276,12 +294,18 @@ export const reportService = {
     return deps.db.transaction((tx) => {
       const report = getOrCreateReport(tx, month, year);
       const finalized = report.finalizedAt !== null;
+      const roster = historyService.rosterForPeriod(
+        tx,
+        month,
+        year,
+        deps.clock?.() ?? new Date(),
+      );
 
       // Demografi + Lima Bab freeze at finalize; everything else stays live.
       const demografi: Demografi =
         finalized && report.demographicsSnapshot
           ? (report.demographicsSnapshot as Demografi)
-          : computeDemografi(tx);
+          : computeDemografi(roster.members);
 
       const limaBab: LimaBab = finalized
         ? {
@@ -289,9 +313,10 @@ export const reportService = {
             kurangLancar: report.limaBabKurangLancar ?? 0,
             kurangSambung: report.limaBabKurangSambung ?? 0,
             tabayyun: report.limaBabTabayyun ?? 0,
-            sessionCount: computeLimaBab(tx, month, year).sessionCount,
+            sessionCount: computeLimaBab(tx, month, year, roster.members)
+              .sessionCount,
           }
-        : computeLimaBab(tx, month, year);
+        : computeLimaBab(tx, month, year, roster.members);
 
       const children = readChildren(tx, report.id);
 
@@ -301,6 +326,7 @@ export const reportService = {
         finalizedAt: report.finalizedAt
           ? report.finalizedAt.toISOString()
           : null,
+        rosterAsOf: roster.asOf,
         demografi,
         limaBab,
         peristiwa: computePeristiwa(deps, month, year),
@@ -410,8 +436,14 @@ export const reportService = {
       if (report.finalizedAt !== null) {
         throw new ReportLockedError(month, year);
       }
-      const demografi = computeDemografi(tx);
-      const limaBab = computeLimaBab(tx, month, year);
+      const roster = historyService.rosterForPeriod(
+        tx,
+        month,
+        year,
+        deps.clock?.() ?? new Date(),
+      );
+      const demografi = computeDemografi(roster.members);
+      const limaBab = computeLimaBab(tx, month, year, roster.members);
       tx.update(monthlyReports)
         .set({
           finalizedAt: deps.clock?.() ?? new Date(),

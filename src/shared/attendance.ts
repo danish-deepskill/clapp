@@ -94,6 +94,8 @@ export interface RecapMember {
   fullName: string;
   gender: Gender;
   lifeStage: LifeStage;
+  /** Household number — the Excel export groups rows by KK. */
+  householdNo: string;
 }
 
 export interface RecapAttendance {
@@ -115,5 +117,10 @@ export interface RecapData {
   members: RecapMember[];
   /** Saved attendance rows for sessions in this period (any status). */
   attendance: RecapAttendance[];
+  /**
+   * Month-end date the roster was reconstructed as of (past periods), or
+   * null when `members` is live membership (current / future period).
+   */
+  rosterAsOf: string | null;
 }
 

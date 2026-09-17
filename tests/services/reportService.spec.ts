@@ -455,3 +455,78 @@ describe('reportService.finalize / unlock', () => {
     ).not.toThrow();
   });
 });
+
+// ─── Past months use the month-end roster (HANDOFF §8 #10) ────────────────
+
+describe('reportService — past-month roster reconstruction', () => {
+  function departOn(db: DB, memberId: number, date: string) {
+    // Same effect as memberService.recordMovement minus head reassignment
+    // (every helper-made member heads their own KK).
+    db.update(membersTable)
+      .set({ isActive: false })
+      .where(eq(membersTable.id, memberId))
+      .run();
+    eventLogService.recordMovement(db, {
+      movementType: 'Pindah Sambung',
+      movementDate: date,
+      memberId,
+    });
+  }
+
+  it('a draft for a past month counts a member who left after that month', () => {
+    const db = freshDb();
+    addMember(db, 'Pak A', 'Laki-Laki', 'Dewasa');
+    const b = addMember(db, 'Pak B', 'Laki-Laki', 'Dewasa');
+    departOn(db, b, '2026-05-10');
+
+    const april = reportService.getReport({ db, clock: fixedClock }, { month: 4, year: 2026 });
+    expect(april.rosterAsOf).toBe('2026-04-30');
+    expect(april.demografi.total).toBe(2);
+
+    const may = reportService.getReport({ db, clock: fixedClock }, { month: 5, year: 2026 });
+    expect(may.rosterAsOf).toBe(null);
+    expect(may.demografi.total).toBe(1);
+  });
+
+  it('late finalize snapshots the month-end roster, not today\'s', () => {
+    const db = freshDb();
+    addMember(db, 'Pak A', 'Laki-Laki', 'Dewasa');
+    const b = addMember(db, 'Pak B', 'Laki-Laki', 'Dewasa');
+    departOn(db, b, '2026-05-10');
+
+    const locked = reportService.finalize({ db, clock: fixedClock }, { month: 4, year: 2026 });
+    expect(locked.demografi.total).toBe(2);
+    // Re-read: the snapshot, not a live recount.
+    expect(
+      reportService.getReport({ db, clock: fixedClock }, { month: 4, year: 2026 }).demografi
+        .total,
+    ).toBe(2);
+  });
+
+  it('lima bab for a past month buckets the month-end roster', () => {
+    const db = freshDb();
+    const typeId = db
+      .insert(sessionTypes)
+      .values({ name: 'Hasda' })
+      .returning({ id: sessionTypes.id })
+      .get().id;
+    const a = addMember(db, 'Pak A', 'Laki-Laki', 'Dewasa');
+    const b = addMember(db, 'Pak B', 'Laki-Laki', 'Dewasa');
+    const sessionId = db
+      .insert(sessions)
+      .values({ sessionDate: '2026-04-10', sessionTypeId: typeId })
+      .returning({ id: sessions.id })
+      .get().id;
+    db.insert(attendance)
+      .values([
+        { memberId: a, sessionId, status: 'H' },
+        { memberId: b, sessionId, status: 'H' },
+      ])
+      .run();
+    departOn(db, b, '2026-05-10');
+
+    const { limaBab } = reportService.getReport({ db, clock: fixedClock }, { month: 4, year: 2026 });
+    expect(limaBab.sessionCount).toBe(1);
+    expect(limaBab.lancar).toBe(2); // B still counted for April
+  });
+});

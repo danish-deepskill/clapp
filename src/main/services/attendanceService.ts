@@ -10,7 +10,7 @@ import type {
   SaveBatchResult,
   SessionRow,
 } from '../../shared/attendance';
-import { todayISO } from '../../shared/dates';
+import { isValidISODate, todayISO } from '../../shared/dates';
 import { ATTENDANCE_LIFE_STAGES } from '../../shared/enums';
 import { monthRange } from '../../shared/period';
 import type { DB, DBLike } from '../db';
@@ -25,6 +25,7 @@ import {
   sessionTypes,
   sessions,
 } from '../db/schema';
+import { historyService } from './historyService';
 
 export interface AttendanceDeps {
   db: DB;
@@ -288,23 +289,25 @@ export const attendanceService = {
       sessionTypeName: typeMap.get(s.sessionTypeId) ?? `id ${s.sessionTypeId}`,
     }));
 
-    // Eligible active members — same filter as loadRoster.
-    const membersOut = deps.db
-      .select({
-        id: members.id,
-        fullName: members.fullName,
-        gender: members.gender,
-        lifeStage: members.lifeStage,
-      })
-      .from(members)
-      .where(
-        and(
-          eq(members.isActive, true),
-          inArray(members.lifeStage, [...ATTENDANCE_LIFE_STAGES]),
-        ),
+    // Eligible members for the period: live for the current month, the
+    // month-end reconstruction for a past month (same rule as Laporan).
+    const roster = historyService.rosterForPeriod(
+      deps.db,
+      input.month,
+      input.year,
+      deps.clock?.() ?? new Date(),
+    );
+    const membersOut = roster.members
+      .filter((m) =>
+        (ATTENDANCE_LIFE_STAGES as readonly string[]).includes(m.lifeStage),
       )
-      .all()
-      .sort((a, b) => a.fullName.localeCompare(b.fullName, 'id'));
+      .map((m) => ({
+        id: m.id,
+        fullName: m.fullName,
+        gender: m.gender,
+        lifeStage: m.lifeStage,
+        householdNo: m.householdNo,
+      }));
 
     // Attendance rows for in-period sessions × eligible members only.
     // The member filter is defensive — old data from before the eligibility
@@ -334,6 +337,7 @@ export const attendanceService = {
       sessions: sessionsOut,
       members: membersOut,
       attendance: attendanceOut,
+      rosterAsOf: roster.asOf,
     };
   },
 
@@ -397,6 +401,11 @@ export const attendanceService = {
    * Blocks future session_date.
    */
   saveBatch(deps: AttendanceDeps, input: SaveBatchInput): SaveBatchResult {
+    if (!isValidISODate(input.sessionDate)) {
+      throw new InvalidAttendanceInputError(
+        `Tanggal  bukan tanggal YYYY-MM-DD yang valid`,
+      );
+    }
     if (isFutureDate(deps, input.sessionDate)) {
       throw new FutureDateError(input.sessionDate);
     }

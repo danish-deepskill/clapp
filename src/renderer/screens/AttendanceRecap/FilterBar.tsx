@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react';
+import { Download, Plus } from 'lucide-react';
 import { clsx } from 'clsx';
 
 import { Button } from '@renderer/components/Button';
@@ -8,6 +8,7 @@ import {
   FilterStrip,
 } from '@renderer/components/FilterStrip';
 import { PeriodSelect } from '@renderer/components/PeriodSelect';
+import { fmtDateShortID } from '@renderer/lib/format';
 import { type AttendanceStatus } from '@shared/enums';
 
 const PILL_TOKENS: Record<
@@ -31,8 +32,12 @@ export interface RecapFilterBarProps {
 
   sessionCount: number;
   memberCount: number;
+  /** Month-end date the roster was reconstructed as of; null = live. */
+  rosterAsOf: string | null;
   overallPct: number; // 0–100 integer
 
+  /** Excel export of this period (HANDOFF §7). */
+  onDownload: () => void;
   /** Opens the AttendanceDrawer for today's date (new or existing session). */
   onCatatAbsensi: () => void;
   /** Disable the "+ Catat Absensi" button (e.g. when period is entirely in the future). */
@@ -48,7 +53,9 @@ export function FilterBar({
   onSearchChange,
   sessionCount,
   memberCount,
+  rosterAsOf,
   overallPct,
+  onDownload,
   onCatatAbsensi,
   catatAbsensiDisabled,
 }: RecapFilterBarProps) {
@@ -67,7 +74,12 @@ export function FilterBar({
         </span>
       </FilterCell>
 
-      <FilterCell label="Jama'ah" minWidth={130}>
+      <FilterCell
+        label={
+          rosterAsOf ? `Jama'ah per ${fmtDateShortID(rosterAsOf)}` : "Jama'ah"
+        }
+        minWidth={150}
+      >
         <span className="text-[14px] font-semibold text-ink-900">
           <span className="font-mono">{memberCount}</span> orang
         </span>
@@ -109,6 +121,18 @@ export function FilterBar({
             );
           })}
         </div>
+      </FilterCell>
+
+      <FilterCell>
+        <Button
+          variant="ghost"
+          size="sm"
+          icon={<Download size={13} strokeWidth={1.7} />}
+          onClick={onDownload}
+          disabled={memberCount === 0}
+        >
+          Unduh
+        </Button>
       </FilterCell>
 
       <FilterCell>
